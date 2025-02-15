@@ -1,17 +1,17 @@
+import { Button, ThemeProvider } from "@mui/material";
+import "./App.css";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
-import { Button } from '@mui/material'
-import './App.css'
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import customTheme from "./themes/customTheme";
+import Navbar from "./customer/components/Navbar/Navbar";
 function App() {
-  
-
   return (
-    <div>
-      <h1 className='font-bold text-3xl text-amber-500'>Code with Rin</h1>
-      <Button variant='contained'>Code now</Button>
-      <AddShoppingCartIcon />
-    </div>
-  )
+    <>
+      <ThemeProvider theme={customTheme}>
+        <Navbar />
+      </ThemeProvider>
+    </>
+  );
 }
 
-export default App
+export default App;

@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+html {
+    font-family: "Poppins", serif;
+}
+
+:root {
+  --primary-color: #3498db;
+  /* --primary-color-dark: #004182; */
+  --secondary-color: #eaf0f1;
+}
+
+
+
+
+
+
