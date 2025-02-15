@@ -26,27 +26,31 @@ const Navbar = () => {
         <div className="flex items-center justify-between px-5 lg:px-20 h-[70px] border-b">
           <div className="flex gap-9 items-center">
             <div className="items-center flex gap-2">
-              <IconButton>
+              {
+                !isLarge && <IconButton>
                 <MenuIcon />
               </IconButton>
+              }
               <h1
                 className={`${classes.logo} cursor-pointer text-lg md:text-2xl`}
               >
                 Nrin Bazaar
               </h1>
             </div>
-            <ul className="flex items-center text-gray-800">
-              {["Men", "Women", "Home & Furniture", "Electronics"].map(
-                (item) => (
-                  <li
-                    className="hover:text-[var(--primary-color)]
-                    hover:border-b-3 h-[70px] border-[var(--primary-color)] px-4 flex items-center"
-                  >
-                    {item}
-                  </li>
-                )
-              )}
-            </ul>
+            {
+                isLarge && <ul className="flex items-center text-gray-800">
+                {["Men", "Women", "Home & Furniture", "Electronics"].map(
+                  (item) => (
+                    <li
+                      className="hover:text-[var(--primary-color)]
+                      hover:border-b-3 h-[70px] border-[var(--primary-color)] px-4 flex items-center"
+                    >
+                      {item}
+                    </li>
+                  )
+                )}
+              </ul>
+            }
           </div>
 
           <div className="flex items-center gap-1 lg:gap-6">
