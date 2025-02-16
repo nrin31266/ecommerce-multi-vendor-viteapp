@@ -6,12 +6,14 @@ import customTheme from "./themes/customTheme";
 import Navbar from "./customer/components/Navbar/Navbar";
 import Home from './customer/pages/Home/Home';
 import Deal from "./customer/pages/Home/components/Deal/Deal";
+import Product from "./customer/pages/Product/Product";
 function App() {
   return (
     <>
       <ThemeProvider theme={customTheme}>
         <Navbar />
-        <Home/>
+        {/* <Home/> */}
+        <Product/>
         
       </ThemeProvider>
     </>

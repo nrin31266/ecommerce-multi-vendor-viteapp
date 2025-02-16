@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -15,10 +15,14 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { Storefront } from "@mui/icons-material";
 import classes from "./Navbar.module.css";
+import CategorySheet from "./components/CategorySheet/CategorySheet";
+import { mainCategories } from "../../../data/category/mainCategory";
 
 const Navbar = () => {
   const them = useTheme();
   const isLarge = useMediaQuery(them.breakpoints.up("lg"));
+  const [selectedCategory, setSelectedCategory] = useState("men");
+  const [isShowCategorySheet, setIsShowCategorySheet] = useState(false);
 
   return (
     <div className={classes.root}>
@@ -26,31 +30,33 @@ const Navbar = () => {
         <div className="flex items-center justify-between px-5 lg:px-20 h-[70px] border-b">
           <div className="flex gap-9 items-center">
             <div className="items-center flex gap-2">
-              {
-                !isLarge && <IconButton>
-                <MenuIcon />
-              </IconButton>
-              }
-              <h1
-                className={`logo cursor-pointer text-lg md:text-2xl`}
-              >
+              {!isLarge && (
+                <IconButton>
+                  <MenuIcon />
+                </IconButton>
+              )}
+              <h1 className={`logo cursor-pointer text-lg md:text-2xl`}>
                 Nrin Bazaar
               </h1>
             </div>
-            {
-                isLarge && <ul className="flex items-center text-gray-800">
-                {["Men", "Women", "Home & Furniture", "Electronics"].map(
-                  (item) => (
-                    <li
-                      className="hover:text-[var(--primary-color)]
-                      hover:border-b-3 h-[70px] border-[var(--primary-color)] px-4 flex items-center"
-                    >
-                      {item}
-                    </li>
-                  )
-                )}
+            {isLarge && (
+              <ul className="flex items-center text-gray-800">
+                {mainCategories.map((item) => (
+                  <li
+                    onMouseLeave={() => setIsShowCategorySheet(false)}
+                    onMouseEnter={() => {
+                      setIsShowCategorySheet(true);
+                      setSelectedCategory(item.categoryId);
+                    }}
+                    id={item.categoryId}
+                    className="hover:text-[var(--primary-color)]
+                      hover:border-b-3 h-[70px] border-[var(--primary-color)] px-4 flex items-center cursor-pointer"
+                  >
+                    {item.name}
+                  </li>
+                ))}
               </ul>
-            }
+            )}
           </div>
 
           <div className="flex items-center gap-1 lg:gap-6">
@@ -89,6 +95,15 @@ const Navbar = () => {
             )}
           </div>
         </div>
+        {isShowCategorySheet && (
+          <div
+            onMouseEnter={() => setIsShowCategorySheet(true)}
+            onMouseLeave={() => setIsShowCategorySheet(false)}
+            className="absolute top-[4.41rem] left-20 right-20"
+          >
+            <CategorySheet selectedCategory={selectedCategory} />
+          </div>
+        )}
       </Box>
     </div>
   );
