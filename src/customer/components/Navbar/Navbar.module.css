@@ -1,8 +1,6 @@
 .root {
-  .logo {
-    font-family: "Pacifico", serif;
-    font-weight: 400;
-    font-style: normal;
-    color: var(--primary-color);
-  }
+  position: sticky;
+  top: 0;
+  z-index: 1000; 
+  background: white; 
 }

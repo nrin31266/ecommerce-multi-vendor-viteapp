@@ -32,7 +32,7 @@ const Navbar = () => {
               </IconButton>
               }
               <h1
-                className={`${classes.logo} cursor-pointer text-lg md:text-2xl`}
+                className={`logo cursor-pointer text-lg md:text-2xl`}
               >
                 Nrin Bazaar
               </h1>
