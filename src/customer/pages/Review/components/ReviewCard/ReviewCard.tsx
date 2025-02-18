@@ -30,9 +30,7 @@ const ReviewCard = () => {
         </Grid2>
         <p>
           Value for money product, great product Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Nihil cupiditate explicabo dolores
-          reiciendis esse voluptatem sed impedit quas! Quisquam quia recusandae
-          maxime fuga saepe soluta omnis accusantium dignissimos velit sequi?
+          consectetur
         </p>
         <div className="mt-3">
           <img

@@ -14,7 +14,8 @@ import {
 import { Button, Divider } from "@mui/material";
 import React, { useState } from "react";
 import SimilarProduct from "./components/SimilarProduct/SimilarProduct";
-import ReviewCard from "../../components/Review/components/ReviewCard/ReviewCard";
+import ReviewCard from "../Review/components/ReviewCard/ReviewCard";
+
 
 const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
