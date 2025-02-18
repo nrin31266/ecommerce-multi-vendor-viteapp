@@ -9,6 +9,7 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
+  Pagination,
   Select,
   useMediaQuery,
   useTheme,
@@ -19,8 +20,13 @@ const Product = () => {
   const them = useTheme();
   const isLarge = useMediaQuery(them.breakpoints.up("lg"));
   const [sortType, setSortType] = useState();
+  const [page, setPage] = useState(1);
 
   const handleChangeSort = () => {};
+  const handlePageChange = (value : number)=>{
+
+  }
+
 
   return (
     <div className={`mt-10 -z-10 ${classes.root}`}>
@@ -68,7 +74,11 @@ const Product = () => {
               [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1].map((item)=><ProductCard />)
             }
           </section>
+          <section className="py-10 flex justify-center ">
+            <Pagination shape="rounded" color="primary" count={10} variant="outlined" onChange={(e, value)=> handlePageChange(value)}/>
+          </section>
         </div>
+
       </div>
     </div>
   );

@@ -17,20 +17,20 @@ const FilterSection = () => {
   const [expandColor, setExpandColor] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const updateFilterParam = (e: React.ChangeEvent<HTMLInputElement>)=>{
-      const {value , name} = e.target;
+  const updateFilterParam = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
 
-      if(value){
-        searchParams.set(name, value);
-      }else{
-        searchParams.delete(name);
-      }
+    if (value) {
+      searchParams.set(name, value);
+    } else {
+      searchParams.delete(name);
+    }
 
-      setSearchParams(searchParams);
-  }
+    setSearchParams(searchParams);
+  };
 
-  const clearAllFilter = ()=>{
-    searchParams.forEach((value:any, key: any)=>{
+  const clearAllFilter = () => {
+    searchParams.forEach((value: any, key: any) => {
       searchParams.delete(key);
     });
 
@@ -41,7 +41,11 @@ const FilterSection = () => {
     <div className="-z-50 space-y-5 bg-white">
       <div className="flex items-center justify-between h-[40px] px-9 lg:border-r border-gray-200">
         <p className="text-lg font-semibold">Filters</p>
-        <Button onClick={clearAllFilter} size="small" className="text-cyan-600 font-semibold">
+        <Button
+          onClick={clearAllFilter}
+          size="small"
+          className="text-cyan-600 font-semibold"
+        >
           Clear All
         </Button>
       </div>
@@ -115,7 +119,7 @@ const FilterSection = () => {
               Price Range
             </FormLabel>
             <RadioGroup
-            onChange={updateFilterParam}
+              onChange={updateFilterParam}
               aria-labelledby="price-range"
               defaultValue=""
               name="price-range"
@@ -152,7 +156,7 @@ const FilterSection = () => {
               Discount
             </FormLabel>
             <RadioGroup
-            onChange={updateFilterParam}
+              onChange={updateFilterParam}
               aria-labelledby="discount"
               defaultValue=""
               name="discount"
