@@ -10,7 +10,7 @@ const Cart = () => {
                     [1,1,1,1,1,1,1,1].map((item)=><CartItem/>)
                 }
             </div>
-            <div className='col-span-1 text-sm space-y-3 border'>
+            <div className='col-span-1 text-sm space-y-3 border border-gray-200'>
 
             </div>
 
