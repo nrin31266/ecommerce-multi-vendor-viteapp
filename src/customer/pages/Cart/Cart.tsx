@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CartItem from "./components/CartItem/CartItem";
 import { Close, LocalOffer } from "@mui/icons-material";
 import { Button, IconButton, TextField } from "@mui/material";
+import PricingCart from "./components/PricingCard/PricingCart";
 
 const Cart = () => {
   const [couponCode, setCouponCode] = useState("");
@@ -14,8 +15,8 @@ const Cart = () => {
             <CartItem />
           ))}
         </div>
-        <div className="col-span-1 text-sm space-y-3">
-          <div>
+        <div className="col-span-1 text-sm space-y-3 ">
+          <div className="space-y-3">
             <div className="border rounded-md px-5 py-3 space-y-5 border-gray-200">
               <div className="flex- items-center gap-3">
                 <LocalOffer
@@ -46,6 +47,12 @@ const Cart = () => {
                     </IconButton>
                 </div>
               )}
+            </div>
+            <div className="border border-gray-200 rounded-md">
+              <PricingCart/>
+              <div className="px-5 pb-5">
+                <Button size="large" variant="contained" fullWidth>Buy now</Button>
+              </div>
             </div>
           </div>
         </div>
