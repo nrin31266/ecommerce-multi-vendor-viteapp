@@ -50,7 +50,7 @@ const CartItem = () => {
       </div>
       <div className="absolute right-1 top-1">
         <IconButton>
-            <Close sx={{color: red[800]}}/>
+            <Close className="text-red-600"/>
         </IconButton>
       </div>
     </div>
