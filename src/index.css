@@ -1,4 +1,4 @@
-@import "tailwindcss";
+
 
 html {
     font-family: "Poppins", serif;
@@ -16,6 +16,8 @@ html {
   font-style: normal;
   color: var(--primary-color);
 }
+
+@import "tailwindcss";
 
 
 
