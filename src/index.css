@@ -6,8 +6,9 @@ html {
 
 :root {
   --primary-color: #3498db;
-  /* --primary-color-dark: #004182; */
+  --primary-color-dark: #004182;
   --secondary-color: #eaf0f1;
+
 }
 
 .logo {
