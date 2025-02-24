@@ -1,28 +1,26 @@
 import { Divider } from "@mui/material";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
 import Profile from "./components/Profile/Profile";
 import Orders from "./components/Orders/Orders";
 import Address from "./components/Address/Address";
 
 const menu = [
-  { name: "orders", path: "/account/orders" },
   { name: "profile", path: "/account/profile" },
+  { name: "orders", path: "/account/orders" },
   { name: "saved cards", path: "/account/saved-cards" },
   { name: "addresses", path: "/account/addresses" },
   { name: "logout", path: "/" },
 ];
 
 const Account = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-
-    const handleClick = (path: string) => {
-        navigate(path);
-    }
-
+  const handleClick = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <div className="lg:px-60 px-5 min-h-screen mt-10">
@@ -33,10 +31,13 @@ const Account = () => {
           <section className="left col-span-1 lg:border-r lg:pr-5 py-5 h-full border-gray-200 space-y-1">
             {menu.map((item) => (
               <div
-                onClick={()=>handleClick(item.path)}
+                onClick={() => handleClick(item.path)}
                 key={item.name}
                 className={`
-                    ${location.pathname === item.path && "bg-[var(--primary-color)] text-white"}
+                    ${
+                      location.pathname === item.path &&
+                      "bg-[var(--primary-color)] text-white"
+                    }
                     py-3 hover:bg-[var(--primary-color)] hover:text-white cursor-pointer rounded-md px-5 border-b border-gray-200`}
               >
                 <p>{item.name}</p>
@@ -44,10 +45,7 @@ const Account = () => {
             ))}
           </section>
           <section className="right lg:col-span-2 lg:pl-5 py-5">
-            {/* <Orders/> */}
-            {/* <OrderDetails/> */}
-            {/* <Profile/> */}
-            <Address/>
+            <Outlet />
           </section>
         </div>
       </div>

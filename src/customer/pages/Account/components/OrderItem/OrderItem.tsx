@@ -1,5 +1,6 @@
 import { ElectricBolt } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
+import { amber } from "@mui/material/colors";
 import React from "react";
 
 const OrderItem = () => {
@@ -7,7 +8,7 @@ const OrderItem = () => {
     <div className="text-sm bg-white p-5 space-y-4 border rounded-md cursor-pointer border-gray-200">
       <div className="flex items-center gap-5">
         <div>
-          <Avatar sizes="small" sx={{ bgcolor: "var(--primary-color-light)" }}>
+          <Avatar sizes="small" sx={{ bgcolor: amber[100] }}>
             <ElectricBolt />
           </Avatar>
         </div>

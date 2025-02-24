@@ -20,12 +20,14 @@ import { Storefront } from "@mui/icons-material";
 import classes from "./Navbar.module.css";
 import CategorySheet from "./components/CategorySheet/CategorySheet";
 import { mainCategories } from "../../../data/category/mainCategory";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const them = useTheme();
   const isLarge = useMediaQuery(them.breakpoints.up("lg"));
   const [selectedCategory, setSelectedCategory] = useState("men");
   const [isShowCategorySheet, setIsShowCategorySheet] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className={classes.root}>
@@ -38,7 +40,7 @@ const Navbar = () => {
                   <MenuIcon />
                 </IconButton>
               )}
-              <h1 className={`logo cursor-pointer text-lg md:text-2xl`}>
+              <h1 onClick={()=>navigate("/")} className={`logo cursor-pointer text-lg md:text-2xl`}>
                 Nrin Bazaar
               </h1>
             </div>
@@ -67,8 +69,8 @@ const Navbar = () => {
               <SearchIcon />
             </IconButton>
 
-            {false ? (
-              <Button>
+            {true ? (
+              <Button className="flex gap-2" onClick={()=>navigate("/account/profile")}>
                 <Avatar
                   sx={{ height: "2.5rem", width: "2.5rem" }}
                   src="https://img.freepik.com/premium-photo/majestic-eagle-closeup-face-ai-generated_1020331-5725.jpg"
@@ -84,7 +86,9 @@ const Navbar = () => {
             <IconButton>
               <FavoriteBorderIcon sx={{ fontSize: 29 }} />
             </IconButton>
-            <IconButton>
+            <IconButton
+              onClick={()=>navigate("/cart")}
+            >
               <AddShoppingCartIcon
                 sx={{ fontSize: 29 }}
                 className="text-gray-700"

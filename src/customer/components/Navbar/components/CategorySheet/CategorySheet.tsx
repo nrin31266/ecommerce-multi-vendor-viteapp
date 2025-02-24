@@ -8,6 +8,7 @@ import { womenLevelThree } from "../../../../../data/category/womenLevelThree";
 import { homeFurnitureLevelThree } from "../../../../../data/category/homeFurnitureLevelThree";
 import { electronicsLevelThree } from "../../../../../data/category/electronicsLevelThree";
 import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface Category{
     
@@ -34,7 +35,9 @@ const categoriesLevelThree:{[key:string]:Category[]} = {
 
 
 const CategorySheet = ({selectedCategory}:{selectedCategory: string}) => {
-    
+
+  const navigate = useNavigate();
+
   return (
     <div>
       <Box className="bg-white shadow-lg drop-shadow-lg lg:h-[500px] overflow-y-scroll">
@@ -48,7 +51,10 @@ const CategorySheet = ({selectedCategory}:{selectedCategory: string}) => {
                 {categoriesLevelThree[selectedCategory].map((categoryLevel3) => {
                   if (categoryLevel3.parentCategory === item.categoryId)
                     return (
-                      <li className="cursor-pointer hover:text-[var(--primary-color)]">
+                      <li onClick={()=> {
+                        navigate(`/products/${categoryLevel3.categoryId}`);
+                        
+                      }} className="cursor-pointer hover:text-[var(--primary-color)]">
                         {categoryLevel3.name}
                       </li>
                     );

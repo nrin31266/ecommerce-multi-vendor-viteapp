@@ -8,7 +8,7 @@ const Orders = () => {
             <h1 className='font-semibold'>All Orders</h1>
             <p>form anytime</p>
         </div>
-        <div>
+        <div className='space-y-5'>
             {[1,1,1,1,1,1,1].map((item)=><OrderItem/>)}
         </div>
     </div>

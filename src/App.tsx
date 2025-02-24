@@ -12,19 +12,38 @@ import Review from "./customer/pages/Review/Review";
 import Cart from "./customer/pages/Cart/Cart";
 import Checkout from "./customer/pages/Checkout/Checkout";
 import Account from "./customer/pages/Account/Account";
+import { Route, Router, Routes } from "react-router-dom";
+import Profile from "./customer/pages/Account/components/Profile/Profile";
+import Orders from "./customer/pages/Account/components/Orders/Orders";
+import Address from "./customer/pages/Account/components/Address/Address";
 function App() {
   return (
     <>
       <ThemeProvider theme={customTheme}>
-        <Navbar />
+        {/* <Navbar /> */}
         {/* <Home/>
         <Product/>
         <ProductDetail/>
         <Review/>
         <Cart/> */}
         {/* <Checkout/> */}
-        <Account/>
-        
+        {/* <Account/> */}
+        <Navbar/>
+        <Routes>
+          <Route path="/" element={<Home/>}/>
+          <Route path="/products/:categoryId" element={<Product/>}/>
+          <Route path="/product-details/:productId" element={<ProductDetail/>}/>
+          <Route path="/reviews/:productId" element={<Review/>}/>
+          <Route path="/cart" element={<Cart/>}/>
+          <Route path="/checkout" element={<Checkout/>}/>
+          <Route path="/account" element={<Account/>}>
+            <Route path="profile" element={<Profile/>}/>
+            <Route path="orders" element={<Orders/>}/>
+            <Route path="addresses" element={<Address/>}/>
+            <Route path="saved-cards" element={<div>Saved Cards</div>}/>
+            <Route path="order/:orderId/:orderItemId"/>
+          </Route>
+        </Routes>
       </ThemeProvider>
     </>
   );

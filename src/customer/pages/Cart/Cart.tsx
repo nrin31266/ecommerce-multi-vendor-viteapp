@@ -3,9 +3,11 @@ import CartItem from "./components/CartItem/CartItem";
 import { Close, LocalOffer } from "@mui/icons-material";
 import { Button, IconButton, TextField } from "@mui/material";
 import PricingCart from "./components/PricingCard/PricingCart";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [couponCode, setCouponCode] = useState("");
+  const navigate = useNavigate();
 
   return (
     <div className="pt-10 px-5 sm:px-10 md:px-60 min-h-screen">
@@ -51,7 +53,9 @@ const Cart = () => {
             <div className="border border-gray-200 rounded-md">
               <PricingCart/>
               <div className="px-5 pb-5">
-                <Button size="large" variant="contained" fullWidth>Buy now</Button>
+                <Button size="large" variant="contained" fullWidth onClick={()=>{
+                  navigate("/checkout")
+                }}>Buy now</Button>
               </div>
             </div>
           </div>
