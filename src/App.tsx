@@ -16,6 +16,7 @@ import { Route, Router, Routes } from "react-router-dom";
 import Profile from "./customer/pages/Account/components/Profile/Profile";
 import Orders from "./customer/pages/Account/components/Orders/Orders";
 import Address from "./customer/pages/Account/components/Address/Address";
+import BecomeSeller from "./customer/pages/BecomeSeller/BecomeSeller";
 function App() {
   return (
     <>
@@ -43,6 +44,7 @@ function App() {
             <Route path="saved-cards" element={<div>Saved Cards</div>}/>
             <Route path="order/:orderId/:orderItemId"/>
           </Route>
+          <Route path="/become-seller" element={<BecomeSeller/>}/>
         </Routes>
       </ThemeProvider>
     </>

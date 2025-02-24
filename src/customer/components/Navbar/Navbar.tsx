@@ -32,7 +32,7 @@ const Navbar = () => {
   return (
     <div className={classes.root}>
       <Box>
-        <div className="flex items-center justify-between px-5 lg:px-20 h-[70px] border-b">
+        <div className="flex items-center justify-between px-5 lg:px-20 h-[70px] border-b border-gray-200 ">
           <div className="flex gap-9 items-center">
             <div className="items-center flex gap-2">
               {!isLarge && (
@@ -96,7 +96,7 @@ const Navbar = () => {
             </IconButton>
 
             {isLarge && (
-              <Button startIcon={<Storefront />} variant="outlined">
+              <Button onClick={()=>navigate("/become-seller")} startIcon={<Storefront />} variant="outlined">
                 Become seller
               </Button>
             )}
