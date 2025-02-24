@@ -18,6 +18,13 @@ import Orders from "./customer/pages/Account/components/Orders/Orders";
 import Address from "./customer/pages/Account/components/Address/Address";
 import BecomeSeller from "./customer/pages/BecomeSeller/BecomeSeller";
 import SellerDashboard from "./seller/pages/SellerDashboard/SellerDashboard";
+import Dashboard from "./seller/pages/Dashboard/Dashboard";
+import OrdersSeller  from './seller/pages/Orders/Orders';
+import Products from "./seller/pages/Products/Products";
+import AddProduct from "./seller/pages/AddProduct/AddProduct";
+import Payment from "./seller/pages/Payment/Payment";
+import Transaction from "./seller/pages/Transaction/Transaction";
+import AccountSeller from './seller/pages/Account/Account';
 function App() {
   return (
     <>
@@ -46,7 +53,15 @@ function App() {
             <Route path="order/:orderId/:orderItemId"/>
           </Route>
           <Route path="/become-seller" element={<BecomeSeller/>}/>
-          <Route path="/seller/*" element={<SellerDashboard/>}/>
+          <Route path="/seller" element={<SellerDashboard/>}>
+            <Route path="" element={<Dashboard/>}/>
+            <Route path="orders" element={<OrdersSeller/>}/>
+            <Route path="products" element={<Products/>}/>
+            <Route path="add-product" element={<AddProduct/>}/>
+            <Route path="payment" element={<Payment/>}/>
+            <Route path="transaction" element={<Transaction />}/>
+            <Route path="account" element={<AccountSeller/>}/>
+          </Route>
         </Routes>
       </ThemeProvider>
     </>

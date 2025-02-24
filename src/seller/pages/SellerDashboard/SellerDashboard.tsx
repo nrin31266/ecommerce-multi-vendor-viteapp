@@ -1,5 +1,6 @@
 import React from 'react'
 import SellerDrawerList from '../../components/SellerDrawerList/SellerDrawerList'
+import { Outlet } from 'react-router-dom'
 
 const SellerDashboard = () => {
 
@@ -14,7 +15,7 @@ const SellerDashboard = () => {
                 <SellerDrawerList toggleDrawer={handleToggleDrawer}/>
             </section>
             <section className='p-10 w-full lg:w-[80%] overflow-y-auto'>
-                seller router
+                <Outlet/>
             </section>
         </div>
     </div>
