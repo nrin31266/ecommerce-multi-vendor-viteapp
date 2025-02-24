@@ -7,7 +7,7 @@ import Orders from "./components/Orders/Orders";
 import Address from "./components/Address/Address";
 
 const menu = [
-  { name: "profile", path: "/account/profile" },
+  { name: "profile", path: "/account" },
   { name: "orders", path: "/account/orders" },
   { name: "saved cards", path: "/account/saved-cards" },
   { name: "addresses", path: "/account/addresses" },
@@ -17,6 +17,8 @@ const menu = [
 const Account = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  console.log(location.pathname)
 
   const handleClick = (path: string) => {
     navigate(path);

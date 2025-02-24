@@ -7,7 +7,7 @@ html {
 :root {
   --primary-color: #3498db;
   --primary-color-dark: #004182;
-  --secondary-color: #d5dfe0;
+  --secondary-color: #e0edee;
   --primary-color-light: oklch(0.984 0.019 200.873);
 
 }

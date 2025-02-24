@@ -17,6 +17,7 @@ import Profile from "./customer/pages/Account/components/Profile/Profile";
 import Orders from "./customer/pages/Account/components/Orders/Orders";
 import Address from "./customer/pages/Account/components/Address/Address";
 import BecomeSeller from "./customer/pages/BecomeSeller/BecomeSeller";
+import SellerDashboard from "./seller/pages/SellerDashboard/SellerDashboard";
 function App() {
   return (
     <>
@@ -38,13 +39,14 @@ function App() {
           <Route path="/cart" element={<Cart/>}/>
           <Route path="/checkout" element={<Checkout/>}/>
           <Route path="/account" element={<Account/>}>
-            <Route path="profile" element={<Profile/>}/>
+            <Route path="" element={<Profile/>}/>
             <Route path="orders" element={<Orders/>}/>
             <Route path="addresses" element={<Address/>}/>
             <Route path="saved-cards" element={<div>Saved Cards</div>}/>
             <Route path="order/:orderId/:orderItemId"/>
           </Route>
           <Route path="/become-seller" element={<BecomeSeller/>}/>
+          <Route path="/seller/*" element={<SellerDashboard/>}/>
         </Routes>
       </ThemeProvider>
     </>
