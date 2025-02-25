@@ -8,7 +8,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -47,17 +46,18 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-const Transaction = () => {
+const OrderTable = () => {
   return (
     <div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Date</StyledTableCell>
-              <StyledTableCell>Customer Details</StyledTableCell>
-              <StyledTableCell align="right">Order</StyledTableCell>
-              <StyledTableCell align="right">Amount</StyledTableCell>
+              <StyledTableCell>Order Id</StyledTableCell>
+              <StyledTableCell>Products</StyledTableCell>
+              <StyledTableCell align="right">Shipping Address</StyledTableCell>
+              <StyledTableCell align="right">Order Status</StyledTableCell>
+              <StyledTableCell align="right">Update</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -69,6 +69,7 @@ const Transaction = () => {
                 <StyledTableCell>{row.calories}</StyledTableCell>
                 <StyledTableCell align="right">{row.fat}</StyledTableCell>
                 <StyledTableCell align="right">{row.carbs}</StyledTableCell>
+                <StyledTableCell align="right">{row.protein}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -78,4 +79,4 @@ const Transaction = () => {
   );
 };
 
-export default Transaction;
+export default OrderTable;

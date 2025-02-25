@@ -29,14 +29,6 @@ function App() {
   return (
     <>
       <ThemeProvider theme={customTheme}>
-        {/* <Navbar /> */}
-        {/* <Home/>
-        <Product/>
-        <ProductDetail/>
-        <Review/>
-        <Cart/> */}
-        {/* <Checkout/> */}
-        {/* <Account/> */}
         <Navbar/>
         <Routes>
           <Route path="/" element={<Home/>}/>
