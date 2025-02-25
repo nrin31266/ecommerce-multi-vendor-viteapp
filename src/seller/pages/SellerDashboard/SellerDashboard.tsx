@@ -14,7 +14,7 @@ const SellerDashboard = () => {
             <section className='hidden lg:block h-full'>
                 <SellerDrawerList toggleDrawer={handleToggleDrawer}/>
             </section>
-            <section className='p-10 w-full lg:w-[80%] overflow-y-auto'>
+            <section className='p-10 w-full lg:w-[100%] overflow-y-auto'>
                 <Outlet/>
             </section>
         </div>

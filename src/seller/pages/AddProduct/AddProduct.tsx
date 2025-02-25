@@ -1,5 +1,5 @@
 import { Add, Close } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import React, { useState } from "react";
 import ImageCard from "./components/ImageCard/ImageCard";
 import { useFormik, validateYupSchema } from "formik";
@@ -19,14 +19,22 @@ const AddProduct = () => {
   };
 
   const handleRemoveImage = (index: number) => {
-    setImageSelected(
-      imageSelected.slice(0, index).concat(imageSelected.slice(index + 1))
-    );
+    setImageSelected(imageSelected.filter((_, i) => i !== index));
   };
 
   const formik = useFormik({
     initialValues: {
       title: "",
+      description: "",
+      mrpPrice: "",
+      sellingPrice: "",
+      quantity: "",
+      color: "",
+      image: [],
+      category1: "",
+      category2: "",
+      category3: "",
+      sizes: "",
     },
     onSubmit: (values) => {
       console.log(values);
@@ -64,6 +72,19 @@ const AddProduct = () => {
                 </div>
               </div>
             </label>
+          </div>
+          <div className="grid grid-cols-12 gap-3 mt-5">
+            <div className="col-span-12">
+              <TextField
+                fullWidth
+                name="title"
+                label="Title"
+                value={formik.values.title}
+                onChange={formik.handleChange}
+                error={formik.touched.title && Boolean(formik.errors.title)}
+                helperText={formik.touched.title && formik.errors.title}
+              />
+            </div>
           </div>
         </div>
       </form>
