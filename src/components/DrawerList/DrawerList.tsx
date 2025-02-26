@@ -27,11 +27,11 @@ const DrawerList = ({ menu1, menu2, toggleDrawer }: Props) => {
           <div className="space-y-2">
             {
                 menu1.map((item, index)=><div onClick={()=>navigate(item.path)} className=" cursor-pointer" key={index}>
-                    <p className={`${location.pathname === item.path? "bg-[var(--primary-color)] text-white" : "hover:bg-[var(--secondary-color)]"} 
+                    <div className={`${location.pathname === item.path? "bg-[var(--primary-color)] text-white" : "hover:bg-[var(--secondary-color)]"} 
                     flex p-3 items-center px-3 `}>
                         <ListItemIcon>{location.pathname === item.path ? item.activeIcon : item.icon}</ListItemIcon>
                         <ListItemText primary={item.name}/>
-                    </p>
+                    </div>
                 </div>)
             }
           </div>
@@ -39,11 +39,11 @@ const DrawerList = ({ menu1, menu2, toggleDrawer }: Props) => {
           <div className="space-y-2">
             {
                 menu2.map((item, index)=><div onClick={()=>navigate(item.path)} className=" cursor-pointer" key={index}>
-                    <p className={`flex p-3 items-center px-3 ${location.pathname === item.path? "bg-[var(--primary-color)] text-white" : "hover:bg-[var(--secondary-color)]"} 
+                    <div className={`flex p-3 items-center px-3 ${location.pathname === item.path? "bg-[var(--primary-color)] text-white" : "hover:bg-[var(--secondary-color)]"} 
                     `}>
                         <ListItemIcon>{location.pathname === item.path ? item.activeIcon : item.icon}</ListItemIcon>
                         <ListItemText primary={item.name}/>
-                    </p>
+                    </div>
                 </div>)
             }
           </div>
