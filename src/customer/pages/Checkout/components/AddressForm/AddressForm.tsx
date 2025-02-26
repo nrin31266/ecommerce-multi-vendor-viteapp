@@ -1,41 +1,40 @@
 import { Close } from "@mui/icons-material";
 import { Box, Button, IconButton, TextField } from "@mui/material";
 import React from "react";
-import { useFormik } from 'formik';
-import * as Yup from 'yup'
-
-
-
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 interface Props {
   onClose: () => void;
 }
 
 const addressFormSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  mobile: Yup.string().required('Mobile is required'),
-  pinCode: Yup.string().required('Pin Code is required').matches(/^[0-9]{6}$/, 'Pin Code must be 6 digits'),
-  address: Yup.string().required('Address is required'),
-  city: Yup.string().required('City is required'),
-  state: Yup.string().required('State is required'),
-  locality: Yup.string().required('Locality is required')
-})
+  name: Yup.string().required("Name is required"),
+  mobile: Yup.string().required("Mobile is required"),
+  pinCode: Yup.string()
+    .required("Pin Code is required")
+    .matches(/^[0-9]{6}$/, "Pin Code must be 6 digits"),
+  address: Yup.string().required("Address is required"),
+  city: Yup.string().required("City is required"),
+  state: Yup.string().required("State is required"),
+  locality: Yup.string().required("Locality is required"),
+});
 
 const AddressForm = ({ onClose }: Props) => {
   const formik = useFormik({
     initialValues: {
-      name: '',
-      mobile: '',
-      pinCode: '',
-      address: '',
-      city: '',
-      state: '',
-      locality: ''
+      name: "",
+      mobile: "",
+      pinCode: "",
+      address: "",
+      city: "",
+      state: "",
+      locality: "",
     },
     validationSchema: addressFormSchema,
-    onSubmit: (values) =>{
-      console.log(values)
-    }
+    onSubmit: (values) => {
+      console.log(values);
+    },
   });
 
   const handleClose = () => {
@@ -51,7 +50,7 @@ const AddressForm = ({ onClose }: Props) => {
         </IconButton>
       </div>
       <form onSubmit={formik.handleSubmit}>
-        <div className=" grid grid-cols-12 gap-5" >
+        <div className=" grid grid-cols-12 gap-5">
           <div className="col-span-12">
             <TextField
               fullWidth
@@ -59,7 +58,7 @@ const AddressForm = ({ onClose }: Props) => {
               label="Name"
               value={formik.values.name}
               onChange={formik.handleChange}
-              error= {formik.touched.name && Boolean(formik.errors.name)}
+              error={formik.touched.name && Boolean(formik.errors.name)}
               helperText={formik.touched.name && formik.errors.name}
             />
           </div>
@@ -70,7 +69,7 @@ const AddressForm = ({ onClose }: Props) => {
               label="Mobile"
               value={formik.values.mobile}
               onChange={formik.handleChange}
-              error= {formik.touched.mobile && Boolean(formik.errors.mobile)}
+              error={formik.touched.mobile && Boolean(formik.errors.mobile)}
               helperText={formik.touched.mobile && formik.errors.mobile}
             />
           </div>
@@ -81,7 +80,7 @@ const AddressForm = ({ onClose }: Props) => {
               label="PinCode"
               value={formik.values.pinCode}
               onChange={formik.handleChange}
-              error= {formik.touched.pinCode && Boolean(formik.errors.pinCode)}
+              error={formik.touched.pinCode && Boolean(formik.errors.pinCode)}
               helperText={formik.touched.pinCode && formik.errors.pinCode}
             />
           </div>
@@ -92,7 +91,7 @@ const AddressForm = ({ onClose }: Props) => {
               label="Address"
               value={formik.values.address}
               onChange={formik.handleChange}
-              error= {formik.touched.address && Boolean(formik.errors.address)}
+              error={formik.touched.address && Boolean(formik.errors.address)}
               helperText={formik.touched.address && formik.errors.address}
             />
           </div>
@@ -103,7 +102,7 @@ const AddressForm = ({ onClose }: Props) => {
               label="City"
               value={formik.values.city}
               onChange={formik.handleChange}
-              error= {formik.touched.city && Boolean(formik.errors.city)}
+              error={formik.touched.city && Boolean(formik.errors.city)}
               helperText={formik.touched.city && formik.errors.city}
             />
           </div>
@@ -114,7 +113,7 @@ const AddressForm = ({ onClose }: Props) => {
               label="State"
               value={formik.values.state}
               onChange={formik.handleChange}
-              error= {formik.touched.state && Boolean(formik.errors.state)}
+              error={formik.touched.state && Boolean(formik.errors.state)}
               helperText={formik.touched.state && formik.errors.state}
             />
           </div>
@@ -125,14 +124,15 @@ const AddressForm = ({ onClose }: Props) => {
               label="Locality"
               value={formik.values.locality}
               onChange={formik.handleChange}
-              error= {formik.touched.locality && Boolean(formik.errors.locality)}
+              error={formik.touched.locality && Boolean(formik.errors.locality)}
               helperText={formik.touched.locality && formik.errors.locality}
             />
           </div>
-          
         </div>
         <div className="mt-8">
-        <Button type="submit" fullWidth variant="contained"  size="large">Add New Address</Button>
+          <Button type="submit" fullWidth variant="contained" size="large">
+            Add New Address
+          </Button>
         </div>
       </form>
     </Box>
