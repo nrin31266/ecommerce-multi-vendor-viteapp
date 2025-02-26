@@ -34,7 +34,7 @@ const menu: MenuItem[] = [
     activeIcon: <Add className="text-white" />,
   },
   {
-    name: "Home Page",
+    name: "Home Category",
     path: "/admin/home-grid",
     icon: <Home className="text-[var(--primary-color)]" />,
     activeIcon: <Home className="text-white" />,

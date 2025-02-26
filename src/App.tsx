@@ -29,11 +29,12 @@ import AdminDashboard from "./admin/pages/AdminDashboard/AdminDashboard";
 import Sellers from "./admin/pages/Sellers/Sellers";
 import Coupon from "./admin/pages/Coupon/Coupon";
 import AddNewCoupon from "./admin/pages/AddNewCoupon/AddNewCoupon";
-import HomePage from "./admin/pages/HomePage/HomePage";
+
 import ElectronicsCategory from "./admin/pages/ElectronicsCategory/ElectronicsCategory";
 import ShopByCategory from "./admin/pages/ShopByCategory/ShopByCategory";
 import Deals from "./admin/pages/Deals/Deals";
 import AdminAccount from "./admin/pages/AdminAccount/AdminAccount";
+import HomeCategory from "./admin/pages/HomePage/HomeCategory";
 function App() {
   return (
     <>
@@ -67,7 +68,7 @@ function App() {
             <Route path="" element={<Sellers/>}/>
             <Route path="coupon" element={<Coupon/>}/>
             <Route path="add-new-coupon" element={<AddNewCoupon/>}/>
-            <Route path="home-grid" element={<HomePage/>}/>
+            <Route path="home-grid" element={<HomeCategory/>}/>
             <Route path="electronics-category" element={<ElectronicsCategory/>}/>
             <Route path="shop-by-category" element={<ShopByCategory/>}/>
             <Route path="deals" element={<Deals/>}/>
