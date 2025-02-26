@@ -25,6 +25,15 @@ import AddProduct from "./seller/pages/AddProduct/AddProduct";
 import Payment from "./seller/pages/Payment/Payment";
 import Transaction from "./seller/pages/Transaction/Transaction";
 import AccountSeller from './seller/pages/Account/Account';
+import AdminDashboard from "./admin/pages/AdminDashboard/AdminDashboard";
+import Sellers from "./admin/pages/Sellers/Sellers";
+import Coupon from "./admin/pages/Coupon/Coupon";
+import AddNewCoupon from "./admin/pages/AddNewCoupon/AddNewCoupon";
+import HomePage from "./admin/pages/HomePage/HomePage";
+import ElectronicsCategory from "./admin/pages/ElectronicsCategory/ElectronicsCategory";
+import ShopByCategory from "./admin/pages/ShopByCategory/ShopByCategory";
+import Deals from "./admin/pages/Deals/Deals";
+import AdminAccount from "./admin/pages/AdminAccount/AdminAccount";
 function App() {
   return (
     <>
@@ -53,6 +62,16 @@ function App() {
             <Route path="payment" element={<Payment/>}/>
             <Route path="transaction" element={<Transaction />}/>
             <Route path="account" element={<AccountSeller/>}/>
+          </Route>
+          <Route path="/admin" element={<AdminDashboard/>}>
+            <Route path="" element={<Sellers/>}/>
+            <Route path="coupon" element={<Coupon/>}/>
+            <Route path="add-new-coupon" element={<AddNewCoupon/>}/>
+            <Route path="home-grid" element={<HomePage/>}/>
+            <Route path="electronics-category" element={<ElectronicsCategory/>}/>
+            <Route path="shop-by-category" element={<ShopByCategory/>}/>
+            <Route path="deals" element={<Deals/>}/>
+            <Route path="account" element={<AdminAccount/>}/>
           </Route>
         </Routes>
       </ThemeProvider>
