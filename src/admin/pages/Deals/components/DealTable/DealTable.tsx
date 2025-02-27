@@ -8,7 +8,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { IconButton } from "@mui/material";
-import { Edit, UploadTwoTone } from "@mui/icons-material";
+import { Delete, Edit, Remove, UploadTwoTone } from "@mui/icons-material";
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,7 +49,7 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-const HomeCategory = () => {
+const DealTable = () => {
   return (
     <div>
       <TableContainer component={Paper}>
@@ -58,8 +59,8 @@ const HomeCategory = () => {
               <StyledTableCell>No</StyledTableCell>
               <StyledTableCell>Id</StyledTableCell>
               <StyledTableCell align="right">Image</StyledTableCell>
-              <StyledTableCell align="right">Category</StyledTableCell>
-              <StyledTableCell align="right">Update</StyledTableCell>
+              <StyledTableCell align="right">Discount</StyledTableCell>
+              <StyledTableCell align="right">Actions</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -71,10 +72,15 @@ const HomeCategory = () => {
                 <StyledTableCell>{row.calories}</StyledTableCell>
                 <StyledTableCell align="right">{row.fat}</StyledTableCell>
                 <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell>
+                  <div className="flex gap-3 items-center justify-end">
                   <IconButton color="primary">
                     <Edit />
                   </IconButton>
+                  <IconButton color="error">
+                   <Delete/>
+                  </IconButton>
+                  </div>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -85,4 +91,4 @@ const HomeCategory = () => {
   );
 };
 
-export default HomeCategory;
+export default DealTable;

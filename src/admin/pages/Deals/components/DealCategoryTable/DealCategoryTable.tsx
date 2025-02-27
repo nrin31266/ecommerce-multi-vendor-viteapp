@@ -10,6 +10,7 @@ import Paper from "@mui/material/Paper";
 import { IconButton } from "@mui/material";
 import { Edit, UploadTwoTone } from "@mui/icons-material";
 
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -48,7 +49,7 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-const HomeCategory = () => {
+const DealCategoryTable = () => {
   return (
     <div>
       <TableContainer component={Paper}>
@@ -85,4 +86,4 @@ const HomeCategory = () => {
   );
 };
 
-export default HomeCategory;
+export default DealCategoryTable;
