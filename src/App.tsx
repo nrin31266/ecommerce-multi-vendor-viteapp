@@ -35,7 +35,12 @@ import ShopByCategory from "./admin/pages/ShopByCategory/ShopByCategory";
 import Deals from "./admin/pages/Deals/Deals";
 import AdminAccount from "./admin/pages/AdminAccount/AdminAccount";
 import HomeCategory from "./admin/pages/HomePage/HomeCategory";
+import { useEffect } from "react";
+import { fetchProducts } from "./states/fetchProduct";
 function App() {
+  useEffect(() => {
+    fetchProducts();
+  }, []);
   return (
     <>
       <ThemeProvider theme={customTheme}>
