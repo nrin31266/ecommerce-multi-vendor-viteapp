@@ -1,24 +1,25 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+ // Thunk không cần destructure
+import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import { thunk } from 'redux-thunk';
-import { useDispatch, useSelector } from './../../node_modules/react-redux';
-import { TypedUseSelectorHook } from './../../node_modules/react-redux/src/types';
 
-
-
-
+// Khai báo rootReducer
 const rootReducer = combineReducers({
-  
+  // Thêm reducers tại đây
 });
 
+// Cấu hình store
 const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware)=>getDefaultMiddleware().concat(thunk)
-})
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+});
 
-// export type AppDispatch = typeof store.dispatch;
-// export type RootState = ReturnType<typeof rootReducer>;
+// Định nghĩa type cho Redux
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof rootReducer>;
 
-// export const useAppDispatch = useDispatch<AppDispatch>();
-// export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+// Custom hooks cho useDispatch và useSelector
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export default store;

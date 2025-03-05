@@ -4,7 +4,7 @@ import SellerLoginForm from "./components/SellerLoginForm/SellerLoginForm";
 import { Button } from "@mui/material";
 
 const BecomeSeller = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   const handleShowPage = () => {
     setIsLogin(!isLogin);
