@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../configurations/api";
+import { AxiosError } from "axios";
 
 export const sendLoginSignupOtp = createAsyncThunk(
   "/sellers/sendLoginSignupOtp",
@@ -15,7 +16,7 @@ export const sendLoginSignupOtp = createAsyncThunk(
 
       console.log("Response: ", response);
     } catch (error) {
-      console.log("Error: ", error);
+      console.log(error)
     }
   }
 );
@@ -37,9 +38,10 @@ export const signing = createAsyncThunk(
         { email: email, otp: otp }
       );
 
-      console.log("Response: ", response);
+      const jwt = response.data.jwt;
+      localStorage.setItem("jwt"  , jwt);
     } catch (error) {
-      console.log("Error: ", error);
+      console.log(error)
     }
   }
 );

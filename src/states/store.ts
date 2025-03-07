@@ -2,10 +2,10 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
  // Thunk không cần destructure
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import { thunk } from 'redux-thunk';
-
+import sellerSlide from './seller/sellerSlide';
 // Khai báo rootReducer
 const rootReducer = combineReducers({
-  // Thêm reducers tại đây
+  seller: sellerSlide
 });
 
 // Cấu hình store

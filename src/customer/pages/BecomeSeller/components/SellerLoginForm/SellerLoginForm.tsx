@@ -25,28 +25,21 @@ const SellerLoginForm = () => {
   const [isEnterEmail, setIsEnterEmail] = useState(false);
   const handleSendOtp = async (email: string) => {
     setIsLoading(true);
-    try {
-       await dispatch(sendLoginSignupOtp({ email: "signing_" + email, role:  role}));
-       setIsEnterEmail(true);
-    } catch (error) {
-      console.log(error);
-    }finally{
+    await dispatch(sendLoginSignupOtp({ email: "signing_" + email, role:  role}))
+    .then(()=>{
+      setIsEnterEmail(true);
+    }).finally(()=>{
       setIsLoading(false);
-    }
+    });
   }
   const dispatch = useAppDispatch();
 
 
   const handleLogin = async (email: string, otp: string)=>{
     setIsLoading(true);
-    try {
-       await dispatch(signing({ email:  email, role:  role, otp: otp}));
-       setIsEnterEmail(true);
-    } catch (error) {
-      console.log(error);
-    }finally{
+    await dispatch(signing({ email:  email, role:  role, otp: otp})).finally(()=>{
       setIsLoading(false);
-    }
+    });
   }
 
 

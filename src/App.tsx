@@ -12,7 +12,7 @@ import Review from "./customer/pages/Review/Review";
 import Cart from "./customer/pages/Cart/Cart";
 import Checkout from "./customer/pages/Checkout/Checkout";
 import Account from "./customer/pages/Account/Account";
-import { Route, Router, Routes } from "react-router-dom";
+import { Route, Router, Routes, useNavigate } from "react-router-dom";
 import Profile from "./customer/pages/Account/components/Profile/Profile";
 import Orders from "./customer/pages/Account/components/Orders/Orders";
 import Address from "./customer/pages/Account/components/Address/Address";
@@ -37,10 +37,23 @@ import AdminAccount from "./admin/pages/AdminAccount/AdminAccount";
 import HomeCategory from "./admin/pages/HomePage/HomeCategory";
 import { useEffect } from "react";
 import { fetchProducts } from "./states/fetchProduct";
+import { useAppDispatch, useAppSelector } from "./states/store";
+import { fetchSellerProfile } from "./states/seller/sellerSlide";
 function App() {
+  const dispatch = useAppDispatch();
+  const seller = useAppSelector(store => store.seller);
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetchProducts();
+    dispatch(fetchSellerProfile(localStorage.getItem("jwt") as string));
   }, []);
+
+  useEffect(() => {
+    if (seller.profile) {
+      navigate("/seller");
+    }
+  }, [seller.profile]);
+
   return (
     <>
       <ThemeProvider theme={customTheme}>
