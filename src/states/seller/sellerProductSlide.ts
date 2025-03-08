@@ -23,7 +23,7 @@ export const fetchSellerProducts = createAsyncThunk<Product[], any>(
 
 export const createProduct = createAsyncThunk<
   Product,
-  { jwt: string; request: any }
+  { jwt: string | null; request: any }
 >("/sellerProduct/createProduct", async (args, { rejectWithValue }) => {
   const { jwt, request } = args;
   try {

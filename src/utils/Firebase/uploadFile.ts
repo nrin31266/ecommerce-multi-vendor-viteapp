@@ -14,7 +14,7 @@ export const uploadImage = async (file: File): Promise<string> => {
     }
 
     // 1️⃣ Tạo đường dẫn lưu trữ file trong Firebase Storage
-    const fileRef = ref(storage, `ecommerce/images/${Date.now()}-${file.name}`);
+    const fileRef = ref(storage, `ecommerce_project1/images/${Date.now()}-${file.name}`);
 
     // 2️⃣ Bắt đầu upload file
     const uploadTask = uploadBytesResumable(fileRef, file);
@@ -26,6 +26,14 @@ export const uploadImage = async (file: File): Promise<string> => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log(`Upload is ${progress.toFixed(2)}% done`);
+        switch (snapshot.state) {
+          case 'paused':
+            console.log('Upload is paused');
+            break;
+          case 'running':
+            console.log('Upload is running');
+            break;
+        }
       },
       (error) => reject(error), // 4️⃣ Bắt lỗi nếu upload thất bại
       async () => {

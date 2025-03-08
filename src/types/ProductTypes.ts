@@ -16,6 +16,9 @@ export interface Product {
     seller?: Seller
 }
 
-interface Category{
-
+export interface Category{
+    "name": string
+    "categoryId": string
+    "level": number
+    "parentCategory": string
 }

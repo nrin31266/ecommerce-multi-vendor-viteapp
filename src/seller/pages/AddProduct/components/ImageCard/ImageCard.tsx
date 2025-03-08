@@ -26,7 +26,8 @@ const ImageCard = ({item, onRemove}: {item: File, onRemove: () => void}) => {
         onRemove();
       }}
         className={`${
-          isHovered ? "flex" : "hidden"
+          // isHovered ? "flex" : "hidden"
+          'flex'
         } items-center justify-center border rounded-[100%] border-gray-200 top-0 right-0 absolute cursor-pointer`}
       >
         <Close

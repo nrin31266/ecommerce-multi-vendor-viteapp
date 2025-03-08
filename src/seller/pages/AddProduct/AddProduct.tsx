@@ -1,4 +1,4 @@
-import { Add, Close } from "@mui/icons-material";
+import { Add, Close, ImageSearch } from "@mui/icons-material";
 import {
   Button,
   FormControl,
@@ -10,17 +10,42 @@ import {
   TextareaAutosize,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ImageCard from "./components/ImageCard/ImageCard";
 import { useFormik, validateYupSchema } from "formik";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { colors } from "../../../data/filter/colors";
 import { mainCategories } from "../../../data/category/mainCategory";
+import { uploadImage } from "../../../utils/Firebase/uploadFile";
+import { useAppDispatch } from "../../../states/store";
+import { createProduct } from "../../../states/seller/sellerProductSlide";
+import { Category } from "../../../types/ProductTypes";
+import { menLevelTwo } from "../../../data/category/menLevelTwo";
+import { womenLevelTwo } from "../../../data/category/womenLevelTwo";
+import { homeFurnitureLevelTwo } from "../../../data/category/homeFurnitureLevelTwo";
+import { electronicsLevelTwo } from "../../../data/category/electronicsLevelTwo";
+import { menLevelThree } from "../../../data/category/menCategoryLevelThree";
+import { womenLevelThree } from "../../../data/category/womenLevelThree";
+import { homeFurnitureLevelThree } from "../../../data/category/homeFurnitureLevelThree";
+import { electronicsLevelThree } from "../../../data/category/electronicsLevelThree";
 
+const categoriesLevelTwo: { [key: string]: Category[] } = {
+  men: menLevelTwo,
+  women: womenLevelTwo,
+  home_furniture: homeFurnitureLevelTwo,
+  electronics: electronicsLevelTwo,
+};
+
+const categoriesLevelThree: { [key: string]: Category[] } = {
+  men: menLevelThree,
+  women: womenLevelThree,
+  home_furniture: homeFurnitureLevelThree,
+  electronics: electronicsLevelThree,
+};
 const AddProduct = () => {
   const [imageSelected, setImageSelected] = useState<File[]>([]);
 
-  console.log(imageSelected);
+  const dispatch = useAppDispatch();
 
   const handleSelectImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (imageSelected.length > 0) {
@@ -42,17 +67,33 @@ const AddProduct = () => {
       sellingPrice: "",
       quantity: "",
       color: "",
-      image: [],
+      images: [],
       category1: "",
       category2: "",
       category3: "",
       sizes: "",
     },
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      const images = await handleUpload();
+      formik.setFieldValue("images", images);
+
+      await dispatch(
+        createProduct({ jwt: localStorage.getItem("jwt"), request: values })
+      );
     },
     validationSchema: null,
   });
+
+  const handleUpload = async (): Promise<string[]> => {
+    const images = await Promise.all(
+      imageSelected.map(async (item) => {
+        const url = await uploadImage(item);
+        return url;
+      })
+    );
+
+    return images;
+  };
 
   return (
     <div>
@@ -154,25 +195,27 @@ const AddProduct = () => {
               <FormControl fullWidth required>
                 <InputLabel id="color">Color</InputLabel>
                 <Select
-                name="color"
+                  name="color"
                   labelId="color"
                   id="color"
                   value={formik.values.color}
                   label="Color"
                   onChange={formik.handleChange}
-
                 >
-                  <MenuItem value={""}><em>None</em></MenuItem>
-                  {
-                    colors.map((color, index) => (
-                      <MenuItem value={color.name} key={index}>
-                        <div className="flex gap-3 items-center">
-                          <span>{color.name}</span>
-                          <div className="w-5 h-5 rounded-full" style={{ backgroundColor: color.hex }}></div>
-                        </div>
-                      </MenuItem>
-                    ))
-                  }
+                  <MenuItem value={""}>
+                    <em>None</em>
+                  </MenuItem>
+                  {colors.map((color, index) => (
+                    <MenuItem value={color.name} key={index}>
+                      <div className="flex gap-3 items-center">
+                        <span>{color.name}</span>
+                        <div
+                          className="w-5 h-5 rounded-full"
+                          style={{ backgroundColor: color.hex }}
+                        ></div>
+                      </div>
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </div>
@@ -180,17 +223,16 @@ const AddProduct = () => {
               <FormControl fullWidth required>
                 <InputLabel id="sizes">Sizes</InputLabel>
                 <Select
-                  
                   name="sizes"
                   labelId="sizes"
                   id="sizes"
                   value={formik.values.sizes}
                   label="Sizes"
                   onChange={formik.handleChange}
-
                 >
-                  <MenuItem value={""}><em>None</em></MenuItem>
-                 
+                  <MenuItem value={""}>
+                    <em>None</em>
+                  </MenuItem>
                 </Select>
               </FormControl>
             </div>
@@ -198,21 +240,23 @@ const AddProduct = () => {
               <FormControl fullWidth required>
                 <InputLabel id="category1">Category</InputLabel>
                 <Select
-                name="category1"
+                  name="category1"
                   labelId="category1"
                   id="category1"
                   value={formik.values.category1}
                   label="Category"
-                  onChange={formik.handleChange}
-
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                  }}
                 >
-                  <MenuItem value={""}><em>None</em></MenuItem>
-                  {
-                    mainCategories.map((category, index) => (
-                      <MenuItem value={category.name} key={index}>{category.name}</MenuItem>
-
-                    ))
-                  }
+                  <MenuItem value={""}>
+                    <em>None</em>
+                  </MenuItem>
+                  {mainCategories.map((category, index) => (
+                    <MenuItem value={category.categoryId} key={index}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </div>
@@ -220,15 +264,23 @@ const AddProduct = () => {
               <FormControl fullWidth required>
                 <InputLabel id="category2">Second Category</InputLabel>
                 <Select
-                name="category2"
+                  name="category2"
                   labelId="category2"
                   id="category2"
                   value={formik.values.category2}
                   label="Second Category"
                   onChange={formik.handleChange}
-
                 >
-                  <MenuItem value={""}><em>None</em></MenuItem>
+                  <MenuItem value={""}>
+                    <em>None</em>
+                  </MenuItem>
+                  {categoriesLevelTwo[formik.values.category1]?.map(
+                    (category, index) => (
+                      <MenuItem value={category.categoryId} key={index}>
+                        {category.name}
+                      </MenuItem>
+                    )
+                  )}
                 </Select>
               </FormControl>
             </div>
@@ -236,21 +288,37 @@ const AddProduct = () => {
               <FormControl fullWidth required>
                 <InputLabel id="category3">Third Category</InputLabel>
                 <Select
-                name="category3"
+                  name="category3"
                   labelId="category3"
                   id="category3"
                   value={formik.values.category3}
                   label="Third Category"
                   onChange={formik.handleChange}
-
                 >
-                  <MenuItem value={""}><em>None</em></MenuItem>
+                  <MenuItem value={""}>
+                    <em>None</em>
+                  </MenuItem>
+                  {categoriesLevelThree[formik.values.category1]?.map(
+                    (category, index) => {
+                      if (
+                        formik.values.category2 &&
+                        category.parentCategory === formik.values.category2
+                      )
+                        return (
+                          <MenuItem value={category.categoryId} key={index}>
+                            {category.name}
+                          </MenuItem>
+                        );
+                    }
+                  )}
                 </Select>
               </FormControl>
             </div>
           </div>
           <div className="mt-10">
-          <Button type="submit" variant="contained" fullWidth size="large">Add Product</Button>
+            <Button type="submit" variant="contained" fullWidth size="large">
+              Add Product
+            </Button>
           </div>
         </div>
       </form>
