@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,6 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { useAppDispatch, useAppSelector } from '../../../../../states/store';
+import { fetchSellerProducts } from '../../../../../states/seller/sellerProductSlide';
+import { Button, IconButton } from '@mui/material';
+import { Edit } from '@mui/icons-material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -46,6 +50,13 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 const ProductTable = () => {
+  const dispatch = useAppDispatch();
+  const sellerProduct = useAppSelector((state) => state.sellerProduct);
+
+
+  useEffect(() => {
+    dispatch(fetchSellerProducts(localStorage.getItem("jwt")));
+  }, []);
   return (
     <div>
           <TableContainer component={Paper}>
@@ -62,17 +73,25 @@ const ProductTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name}>
+            {sellerProduct.product.map((row) => (
+              <StyledTableRow key={row.id}>
                 <StyledTableCell component="th" scope="row">
-                  {row.name}
+                 <div className='flex flex-wrap gap-1'>
+                 {row.images.map((image) => (<img className='w-20 rounded-md' src={image} alt="" />))}
+                 </div>
                 </StyledTableCell>
-                <StyledTableCell>{row.calories}</StyledTableCell>
-                <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                <StyledTableCell align="right">{row.protein}</StyledTableCell>
+                <StyledTableCell>{row.title}</StyledTableCell>
+                <StyledTableCell align="right">{row.mrpPrice}</StyledTableCell>
+                <StyledTableCell align="right">{row.sellingPrice}</StyledTableCell>
+                <StyledTableCell align="right">{row.color}</StyledTableCell>
+                <StyledTableCell align="right">{
+                  <Button>in_stock</Button>
+                  }</StyledTableCell>
+                <StyledTableCell align="right">{
+                  <IconButton color='primary'>
+                    <Edit/>
+                  </IconButton>
+                  }</StyledTableCell>
                 
               </StyledTableRow>
             ))}

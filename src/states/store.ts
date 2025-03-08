@@ -3,9 +3,12 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import { thunk } from 'redux-thunk';
 import sellerSlide from './seller/sellerSlide';
+import sellerProductSlide from './seller/sellerProductSlide';
+
 // Khai báo rootReducer
 const rootReducer = combineReducers({
-  seller: sellerSlide
+  seller: sellerSlide,
+  sellerProduct: sellerProductSlide
 });
 
 // Cấu hình store
