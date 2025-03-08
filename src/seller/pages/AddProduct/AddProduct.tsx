@@ -220,21 +220,22 @@ const AddProduct = () => {
               </FormControl>
             </div>
             <div className="col-span-3">
-              <FormControl fullWidth required>
-                <InputLabel id="sizes">Sizes</InputLabel>
-                <Select
-                  name="sizes"
-                  labelId="sizes"
-                  id="sizes"
-                  value={formik.values.sizes}
-                  label="Sizes"
-                  onChange={formik.handleChange}
-                >
-                  <MenuItem value={""}>
-                    <em>None</em>
-                  </MenuItem>
-                </Select>
-              </FormControl>
+            <TextField
+                type="text"
+                required
+                fullWidth
+                name="sizes"
+                label="Sizes"
+                value={formik.values.sizes}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.sizes &&
+                  Boolean(formik.errors.sizes)
+                }
+                helperText={
+                  formik.touched.sizes && formik.errors.sizes
+                }
+              />
             </div>
             <div className="col-span-4">
               <FormControl fullWidth required>

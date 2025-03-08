@@ -75,9 +75,9 @@ const ProductTable = () => {
           <TableBody>
             {sellerProduct.product.map((row) => (
               <StyledTableRow key={row.id}>
-                <StyledTableCell component="th" scope="row">
-                 <div className='flex flex-wrap gap-1'>
-                 {row.images.map((image) => (<img className='w-20 rounded-md' src={image} alt="" />))}
+                <StyledTableCell  component="th" scope="row" className='w-[300px]'>
+                 <div className='flex flex-nowrap gap-1 w-full overflow-x-auto overflow-y-hidden'>
+                 {row.images.map((image) => (<img className='w-20 rounded-md ' src={image} alt="" />))}
                  </div>
                 </StyledTableCell>
                 <StyledTableCell>{row.title}</StyledTableCell>

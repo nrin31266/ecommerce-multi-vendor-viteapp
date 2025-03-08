@@ -32,7 +32,7 @@ export const createProduct = createAsyncThunk<
         Authorization: `Bearer ${jwt}`,
       },
     });
-
+    
     return response.data;
   } catch (error) {
     throw error;

@@ -16,7 +16,7 @@ export const sendLoginSignupOtp = createAsyncThunk(
 
       console.log("Response: ", response);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 );
@@ -39,9 +39,18 @@ export const signing = createAsyncThunk(
       );
 
       const jwt = response.data.jwt;
-      localStorage.setItem("jwt"  , jwt);
+      localStorage.setItem("jwt", jwt);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
+  }
+);
+
+export const logout = createAsyncThunk(
+  "/auth/logout",
+  async ({navigate} : {navigate: any}, { rejectWithValue }) => {
+    
+    localStorage.clear();
+    navigate("/");
   }
 );
