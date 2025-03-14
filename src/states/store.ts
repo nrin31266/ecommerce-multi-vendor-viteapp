@@ -4,17 +4,17 @@ import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import { thunk } from 'redux-thunk';
 import sellerSlide from './seller/sellerSlide';
 import sellerProductSlide from './seller/sellerProductSlide';
-import productSlide from './customer/ProductSlide';
+import productSlide from './customer/productSlide';
 
 
-// Khai báo rootReducer
+
 const rootReducer = combineReducers({
   seller: sellerSlide,
   sellerProduct: sellerProductSlide,
   product: productSlide
 });
 
-// Cấu hình store
+
 const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),

@@ -1,85 +1,84 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { api } from "../../configurations/api";
 import { Product } from "../../types/ProductTypes";
+import handleAPI from "../../configurations/handleApi";
 
-export const fetchSellerProducts = createAsyncThunk<Product[], any>(
+export const fetchSellerProducts = createAsyncThunk<Product[]>(
   "/sellerProduct/fetchSellerProducts",
-  async (jwt: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/api/sellers/products", {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
+      return await handleAPI<Product[]>({
+        endpoint: "/api/sellers/products",
+        method: "get",
+        isAuthenticated: true, 
       });
-
-    console.log("Seller products: ", response.data);
-
-      return response.data;
     } catch (error) {
-      throw error;
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }
   }
 );
 
 export const createProduct = createAsyncThunk<
   Product,
-  { jwt: string | null; request: any }
->("/sellerProduct/createProduct", async (args, { rejectWithValue }) => {
-  const { jwt, request } = args;
-  try {
-    const response = await api.post("/api/sellers/products", request, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
-    
-    return response.data;
-  } catch (error) {
-    throw error;
+  {request: any }
+>(
+  "/sellerProduct/createProduct",
+  async ({ request }, { rejectWithValue }) => {
+    try {
+      return await handleAPI<Product>({
+        endpoint: "/api/sellers/products",
+        method: "post",
+        body: request,
+        isAuthenticated: true,
+      });
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
+    }
   }
-});
+);
 
 interface SellerProductState {
   product: Product[];
   loading: boolean;
-  error: any;
+  error: string;
 }
 
 const initState: SellerProductState = {
   product: [],
   loading: false,
-  error: null,
+  error: "",
 };
 
-const sellerProductSlide = createSlice({
+const sellerProductSlice = createSlice({
   name: "sellerProduct",
   initialState: initState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchSellerProducts.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(fetchSellerProducts.fulfilled, (state, action) => {
-      state.loading = false;
-      state.product = action.payload;
-    });
-    builder.addCase(fetchSellerProducts.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    });
+    builder
+      .addCase(fetchSellerProducts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchSellerProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.product = action.payload;
+      })
+      .addCase(fetchSellerProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
 
-    builder.addCase(createProduct.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(createProduct.fulfilled, (state, action) => {
-      state.loading = false;
-      state.product.push(action.payload);
-    });
-    builder.addCase(createProduct.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    });
+    builder
+      .addCase(createProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.product.push(action.payload);
+      })
+      .addCase(createProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
-export default sellerProductSlide.reducer;
+export default sellerProductSlice.reducer;

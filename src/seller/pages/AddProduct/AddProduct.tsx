@@ -78,7 +78,7 @@ const AddProduct = () => {
       formik.setFieldValue("images", images);
 
       await dispatch(
-        createProduct({ jwt: localStorage.getItem("jwt"), request: values })
+        createProduct({ request: values })
       );
     },
     validationSchema: null,

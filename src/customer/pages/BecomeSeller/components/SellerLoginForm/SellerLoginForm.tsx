@@ -3,11 +3,14 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import { useAppDispatch,  } from './../../../../../states/store';
 import { sendLoginSignupOtp, signing } from "../../../../../states/authSlide";
+import { useNavigate } from "react-router-dom";
 
 
 const SellerLoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const role = "ROLE_SELLER";
+const navigate = useNavigate();
+
 
   const formik = useFormik({
     initialValues: {
@@ -31,13 +34,16 @@ const SellerLoginForm = () => {
     }).finally(()=>{
       setIsLoading(false);
     });
+
   }
   const dispatch = useAppDispatch();
 
 
   const handleLogin = async (email: string, otp: string)=>{
     setIsLoading(true);
-    await dispatch(signing({ email:  email, role:  role, otp: otp})).finally(()=>{
+    await dispatch(signing({ email:  email, role:  role, otp: otp})).then((data) => {
+      navigate("/")
+    }).finally(()=>{
       setIsLoading(false);
     });
   }

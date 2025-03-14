@@ -1,15 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { api } from "../../configurations/api";
+
 import { Product } from "../../types/ProductTypes";
+import handleAPI from "../../configurations/handleApi";
 
 export const fetchProductById = createAsyncThunk(
   "products/fetchProductById",
   async (productId: string, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/products/${productId}`);
-      return response.data;
+      return await handleAPI<Product>({ endpoint: `/products/${productId}`, method: "get" });
     } catch (error) {
-      rejectWithValue(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }
   }
 );
@@ -18,31 +18,21 @@ export const searchProduct = createAsyncThunk(
   "products/searchProduct",
   async (query: string, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/products/search`, {
-        params: {
-          query: query,
-        },
-      });
-      return response.data;
+      const data = await handleAPI<Product[]>({ endpoint: "/products/search", params: { query } });
+      return data;
     } catch (error) {
-      rejectWithValue(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }
   }
 );
 
-export const fetchAllProduct = createAsyncThunk<any, any>(
+export const fetchAllProduct = createAsyncThunk(
   "products/fetchAllProduct",
-  async (params, { rejectWithValue }) => {
-    try {
-      const response = await api.get(`/products/search`, {
-        params: {
-          ...params,
-        },
-      });
-      console.log("All products data: ", response.data);
-      return response.data;
+  async (params : string, { rejectWithValue }) => {
+    try{
+      return await handleAPI<Product[]>({ endpoint: "/products", params: params });
     } catch (error) {
-      rejectWithValue(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }
   }
 );
@@ -52,7 +42,7 @@ interface ProductState {
   products: Product[];
   totalPages: number;
   loading: boolean;
-  error: any;
+  error: string;
   searchProduct: Product[];
 }
 
@@ -61,7 +51,7 @@ const initialState: ProductState = {
   products: [],
   totalPages: 1,
   loading: false,
-  error: null,
+  error: "",
   searchProduct: [],
 };
 
@@ -79,7 +69,7 @@ const productSlide = createSlice({
     });
     builder.addCase(fetchProductById.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      state.error = action.payload as string;
     });
 
     builder.addCase(searchProduct.pending, (state) => {
@@ -87,11 +77,11 @@ const productSlide = createSlice({
     });
     builder.addCase(searchProduct.fulfilled, (state, action) => {
       state.loading = false;
-      state.product = action.payload;
+      state.products = action.payload;
     });
     builder.addCase(searchProduct.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      state.error = action.payload as string;
     });
 
     builder.addCase(fetchAllProduct.pending, (state) => {
@@ -99,11 +89,11 @@ const productSlide = createSlice({
     });
     builder.addCase(fetchAllProduct.fulfilled, (state, action) => {
       state.loading = false;
-      state.product = action.payload;
+      state.products = action.payload;
     });
     builder.addCase(fetchAllProduct.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      state.error = action.payload as string;
     });
   },
 });

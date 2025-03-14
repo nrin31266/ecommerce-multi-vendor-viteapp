@@ -1,20 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { api } from "../../configurations/api";
+import handleAPI from "../../configurations/handleApi";
 
 export const fetchSellerProfile = createAsyncThunk(
   "/sellers/fetchSellerProfile",
-  async (jwt: string, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/sellers/profile", {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.log("Error: ", error);
+      return await handleAPI({endpoint: "/sellers/profile", isAuthenticated: true});
+    } catch (error:any) {
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }
   }
 );
@@ -26,7 +19,7 @@ interface SellerState {
   profile: any
   report: any
   loading: boolean
-  error: any
+  error: string
 }
 
 const initState: SellerState = {
@@ -35,7 +28,7 @@ const initState: SellerState = {
   profile: null,
   report: null,
   loading: false,
-  error: null
+  error: ""
 }
 
 const sellerSlide = createSlice({
@@ -54,7 +47,7 @@ const sellerSlide = createSlice({
       })
       builder.addCase(fetchSellerProfile.rejected, (state, action)=>{
         state.loading = false
-        state.error = action.payload
+        state.error = action.payload as string
       })
   },
 })

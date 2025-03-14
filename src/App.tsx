@@ -36,7 +36,6 @@ import Deals from "./admin/pages/Deals/Deals";
 import AdminAccount from "./admin/pages/AdminAccount/AdminAccount";
 import HomeCategory from "./admin/pages/HomePage/HomeCategory";
 import { useEffect } from "react";
-import { fetchProducts } from "./states/fetchProduct";
 import { useAppDispatch, useAppSelector } from "./states/store";
 import { fetchSellerProfile } from "./states/seller/sellerSlide";
 function App() {
@@ -45,7 +44,7 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchSellerProfile(localStorage.getItem("jwt") as string));
+    dispatch(fetchSellerProfile());
   }, []);
 
   useEffect(() => {

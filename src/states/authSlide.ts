@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "../configurations/api";
-import { AxiosError } from "axios";
+import handleAPI from "../configurations/handleApi";
 
 export const sendLoginSignupOtp = createAsyncThunk(
   "/sellers/sendLoginSignupOtp",
@@ -9,14 +8,13 @@ export const sendLoginSignupOtp = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await api.post("/auth/send-login-signup-otp", {
-        email: email,
-        role: role,
+      return await handleAPI({
+        endpoint: "/auth/send-login-signup-otp",
+        method: "post",
+        body: { email, role },
       });
-
-      console.log("Response: ", response);
     } catch (error) {
-      console.log(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }
   }
 );
@@ -32,25 +30,28 @@ export const signing = createAsyncThunk(
       CUSTOMER: "ROLE_CUSTOMER",
       ADMIN: "ROLE_ADMIN",
     };
-    try {
-      const response = await api.post(
-        `/${role === roles.CUSTOMER ? "auth" : "sellers"}/signing`,
-        { email: email, otp: otp }
-      );
 
-      const jwt = response.data.jwt;
-      localStorage.setItem("jwt", jwt);
+    try {
+      const data = await handleAPI<{ jwt: string }>({
+        endpoint: `/${role === roles.CUSTOMER ? "auth" : "sellers"}/signing`,
+        method: "post",
+        body: { email, otp },
+      });
+
+      localStorage.setItem("jwt", data.jwt);
+
+      return data;
     } catch (error) {
-      console.log(error);
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }
   }
 );
 
 export const logout = createAsyncThunk(
   "/auth/logout",
-  async ({navigate} : {navigate: any}, { rejectWithValue }) => {
-    
+  async ({ navigate }: { navigate: any }) => {
     localStorage.clear();
     navigate("/");
   }
 );
+
