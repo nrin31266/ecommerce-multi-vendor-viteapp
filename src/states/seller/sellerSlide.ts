@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import handleAPI from "../../configurations/handleApi";
+import handleAPI from "../../configurations/handleAPI";
 
-export const fetchSellerProfile = createAsyncThunk(
+
+export const fetchSellerProfile = createAsyncThunk<any>(
   "/sellers/fetchSellerProfile",
   async (_, { rejectWithValue }) => {
     try {

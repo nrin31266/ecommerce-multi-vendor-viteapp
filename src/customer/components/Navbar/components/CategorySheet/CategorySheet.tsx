@@ -43,15 +43,15 @@ const CategorySheet = ({selectedCategory}:{selectedCategory: string}) => {
       <Box className="bg-white shadow-lg drop-shadow-lg lg:h-[500px] overflow-y-scroll">
         <div className="flex text-sm flex-wrap">
           {categoriesLevelTwo[selectedCategory]?.map((item, index) => (
-            <div className={`p-8 lg:w-[20%] ${index % 2===0 && "bg-slate-50"}`}>
+            <div key={index} className={`p-8 lg:w-[20%] ${index % 2===0 && "bg-slate-50"}`}>
               <p className="text-[var(--primary-color)] font-semibold pb-5">
                 {item.name}
               </p>
               <ul className="space-y-3">
-                {categoriesLevelThree[selectedCategory].map((categoryLevel3) => {
+                {categoriesLevelThree[selectedCategory].map((categoryLevel3, index) => {
                   if (categoryLevel3.parentCategory === item.categoryId)
                     return (
-                      <li onClick={()=> {
+                      <li key={index} onClick={()=> {
                         navigate(`/products/${categoryLevel3.categoryId}`);
                         
                       }} className="cursor-pointer hover:text-[var(--primary-color)]">

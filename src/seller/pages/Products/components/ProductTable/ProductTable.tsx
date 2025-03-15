@@ -55,7 +55,7 @@ const ProductTable = () => {
 
 
   useEffect(() => {
-    dispatch(fetchSellerProducts(localStorage.getItem("jwt")));
+    dispatch(fetchSellerProducts());
   }, []);
   return (
     <div>

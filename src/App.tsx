@@ -49,7 +49,7 @@ function App() {
 
   useEffect(() => {
     if (seller.profile) {
-      navigate("/seller");
+      // navigate("/seller");
     }
   }, [seller.profile]);
 

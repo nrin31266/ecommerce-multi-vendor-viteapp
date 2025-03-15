@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { Product } from "../../types/ProductTypes";
-import handleAPI from "../../configurations/handleApi";
+import { PageableType, Product } from "../../types/ProductTypes";
+import handleAPI from "../../configurations/handleAPI";
 
 export const fetchProductById = createAsyncThunk(
   "products/fetchProductById",
@@ -26,11 +26,15 @@ export const searchProduct = createAsyncThunk(
   }
 );
 
-export const fetchAllProduct = createAsyncThunk(
+export const fetchAllProduct = createAsyncThunk<Product[], {params: Record<string, string>}>(
   "products/fetchAllProduct",
-  async (params : string, { rejectWithValue }) => {
+  async ({params} , { rejectWithValue }) => {
     try{
-      return await handleAPI<Product[]>({ endpoint: "/products", params: params });
+      const data = await handleAPI<PageableType<Product>>({ endpoint: "/products", params: params });
+
+      console.log(data)
+
+      return data.content;
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }

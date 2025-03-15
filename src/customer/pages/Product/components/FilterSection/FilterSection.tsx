@@ -13,28 +13,26 @@ import { priceRanges } from "../../../../../data/filter/price";
 import { discounts } from "../../../../../data/filter/discounts";
 import { useSearchParams } from "react-router-dom";
 
-const FilterSection = () => {
+interface FilterSectionProps {
+  filterValues: Record<string, string>;
+  onClearFilter: () => void;
+  onAddFilterValue: (name: string, value: string) => void;
+}
+
+const FilterSection = ({
+  filterValues,
+  onAddFilterValue,
+  onClearFilter,
+}: FilterSectionProps) => {
   const [expandColor, setExpandColor] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const updateFilterParam = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
-
-    if (value) {
-      searchParams.set(name, value);
-    } else {
-      searchParams.delete(name);
-    }
-
-    setSearchParams(searchParams);
+    onAddFilterValue(name, value);
   };
 
   const clearAllFilter = () => {
-    searchParams.forEach((value: any, key: any) => {
-      searchParams.delete(key);
-    });
-
-    setSearchParams(searchParams);
+    onClearFilter();
   };
 
   return (
@@ -70,26 +68,30 @@ const FilterSection = () => {
               defaultValue=""
               name="color"
               color="var(--primary-color)"
+              value={filterValues.colors ?? ""}
             >
-              {colors.slice(0, expandColor ? colors.length : 5).map((item) => (
-                <FormControlLabel
-                  value={item.hex}
-                  control={<Radio />}
-                  label={
-                    <div className="flex items-center gap-1">
-                      <p>{item.name}</p>
-                      <div
-                        className={`h-5 w-5 rounded-full ${
-                          item.name === "White" && "border border-gray-200"
-                        }`}
-                        style={{ backgroundColor: item.hex }}
-                      >
-                        {" "}
+              {colors
+                .slice(0, expandColor ? colors.length : 5)
+                .map((item, index) => (
+                  <FormControlLabel
+                    key={index}
+                    value={item.hex}
+                    control={<Radio />}
+                    label={
+                      <div className="flex items-center gap-1">
+                        <p>{item.name}</p>
+                        <div
+                          className={`h-5 w-5 rounded-full ${
+                            item.name === "White" && "border border-gray-200"
+                          }`}
+                          style={{ backgroundColor: item.hex }}
+                        >
+                          {" "}
+                        </div>
                       </div>
-                    </div>
-                  }
-                />
-              ))}
+                    }
+                  />
+                ))}
             </RadioGroup>
           </FormControl>
           <div>
@@ -124,9 +126,15 @@ const FilterSection = () => {
               defaultValue=""
               name="price-range"
               color="var(--primary-color)"
+              value={
+                filterValues.minimumPrice && filterValues.maximumPrice
+                  ? filterValues.minimumPrice + "-" + filterValues.maximumPrice
+                  : ""
+              }
             >
-              {priceRanges.map((item) => (
+              {priceRanges.map((item, index) => (
                 <FormControlLabel
+                  key={index}
                   value={item.value}
                   control={<Radio />}
                   label={
@@ -161,9 +169,11 @@ const FilterSection = () => {
               defaultValue=""
               name="discount"
               color="var(--primary-color)"
+              value={filterValues.minimumDiscount ?? ""}
             >
-              {discounts.map((item) => (
+              {discounts.map((item, index) => (
                 <FormControlLabel
+                  key={index}
                   value={item.value}
                   control={<Radio />}
                   label={

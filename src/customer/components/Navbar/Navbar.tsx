@@ -2,8 +2,6 @@ import React, { useState } from "react";
 
 import MenuIcon from "@mui/icons-material/Menu";
 
-
-
 import {
   Avatar,
   Box,
@@ -40,14 +38,18 @@ const Navbar = () => {
                   <MenuIcon />
                 </IconButton>
               )}
-              <h1 onClick={()=>navigate("/")} className={`logo cursor-pointer text-lg md:text-2xl`}>
+              <h1
+                onClick={() => navigate("/")}
+                className={`logo cursor-pointer text-lg md:text-2xl`}
+              >
                 Nrin Bazaar
               </h1>
             </div>
             {isLarge && (
               <ul className="flex items-center text-gray-800">
-                {mainCategories.map((item) => (
+                {mainCategories.map((item, index) => (
                   <li
+                    key={index}
                     onMouseLeave={() => setIsShowCategorySheet(false)}
                     onMouseEnter={() => {
                       setIsShowCategorySheet(true);
@@ -70,7 +72,10 @@ const Navbar = () => {
             </IconButton>
 
             {true ? (
-              <Button className="flex gap-2" onClick={()=>navigate("/account/profile")}>
+              <Button
+                className="flex gap-2"
+                onClick={() => navigate("/account/profile")}
+              >
                 <Avatar
                   sx={{ height: "2.5rem", width: "2.5rem" }}
                   src="https://img.freepik.com/premium-photo/majestic-eagle-closeup-face-ai-generated_1020331-5725.jpg"
@@ -86,9 +91,7 @@ const Navbar = () => {
             <IconButton>
               <FavoriteBorderIcon sx={{ fontSize: 29 }} />
             </IconButton>
-            <IconButton
-              onClick={()=>navigate("/cart")}
-            >
+            <IconButton onClick={() => navigate("/cart")}>
               <AddShoppingCartIcon
                 sx={{ fontSize: 29 }}
                 className="text-gray-700"
@@ -96,7 +99,11 @@ const Navbar = () => {
             </IconButton>
 
             {isLarge && (
-              <Button onClick={()=>navigate("/become-seller")} startIcon={<Storefront />} variant="outlined">
+              <Button
+                onClick={() => navigate("/become-seller")}
+                startIcon={<Storefront />}
+                variant="outlined"
+              >
                 Become seller
               </Button>
             )}
