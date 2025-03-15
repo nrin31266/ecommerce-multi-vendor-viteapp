@@ -81,8 +81,9 @@ export const logout = createAsyncThunk(
   }
 );
 
-interface AuthStateProps{
-  
-}
+// interface AuthStateProps{
+//   jwt: string,
 
-const initState={}
+// }
+
+// const initState={}
