@@ -1,54 +1,31 @@
-import { Button, TextField } from '@mui/material';
-import { useFormik } from 'formik';
-import React from 'react'
+import { Button, TextField } from "@mui/material";
+import { useFormik } from "formik";
+import React, { useState } from "react";
+import LoginForm from "./components/LoginForm/LoginForm";
+import RegisterForm from "./components/RegisterForm/RegisterForm";
 
 const Auth = () => {
-  const formik = useFormik({
-      initialValues: {
-        email: "",
-        otp: "",
-      },
-      onSubmit: () => {},
-    });
-  
-    return (
-      <div className="space-y-5">
-        <h1 className="text-center text-xl text-[var(--primary-color)] font-bold">
-          Login As Seller
-        </h1>
-        <div className="mt-10 grid grid-cols-12 gap-5">
-          <div className="col-span-12">
-            <TextField
-              fullWidth
-              name="email"
-              label="Email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-            />
-          </div>
-          {true && (
-            <div className="col-span-12 space-y-2">
-              <p className="font-medium text-sm opacity-20">Enter OTP code sent to your email</p>
-              <TextField
-                fullWidth
-                name="otp"
-                label="Otp"
-                value={formik.values.otp}
-                onChange={formik.handleChange}
-                error={formik.touched.otp && Boolean(formik.errors.otp)}
-                helperText={formik.touched.otp && formik.errors.otp}
-              />
-            </div>
-          )}
+  const [isLogin, setIsLogin] = useState(true);
 
-          <div>
-            <Button variant='contained' size='large' sx={{py: '11px'}}>Login</Button>
+  return (
+    <div className="md:justify-center flex items-center flex-col h-[90vh] justify-normal ">
+      <div className="md:shadow-2xl md:w-md md:rounded-md">
+        <img
+          className="md:h-50 w-full object-cover object-top md:rounded-t-md"
+          src="/assets/images/banner-1.png"
+          alt=""
+        />
+        <div className="p-6">
+          {isLogin ? <LoginForm /> : <RegisterForm />}
+          <div className="mt-12 flex justify-center items-center">
+            <h1 className="text-center text-sm font-medium text-gray-600">{`${
+              isLogin ? "Don't Have An Account?" : "Already Have An Account?"
+            }`} </h1><a className="text-[var(--primary-color)] hover:text-[var(--secondary-color)] cursor-pointer ml-1 duration-200" onClick={() => setIsLogin(!isLogin)}>{isLogin ? "Register" : "Login"}</a>
           </div>
         </div>
       </div>
-    );
-}
+    </div>
+  );
+};
 
-export default Auth
+export default Auth;

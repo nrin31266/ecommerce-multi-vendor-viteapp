@@ -38,6 +38,7 @@ import HomeCategory from "./admin/pages/HomePage/HomeCategory";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./states/store";
 import { fetchSellerProfile } from "./states/seller/sellerSlide";
+import Auth from "./customer/pages/Auth/Auth";
 function App() {
   const dispatch = useAppDispatch();
   const seller = useAppSelector(store => store.seller);
@@ -71,6 +72,7 @@ function App() {
             <Route path="saved-cards" element={<div>Saved Cards</div>}/>
             <Route path="order/:orderId/:orderItemId"/>
           </Route>
+          <Route path="/authentication" element={<Auth/>}/>
           <Route path="/become-seller" element={<BecomeSeller/>}/>
           <Route path="/seller" element={<SellerDashboard/>}>
             <Route path="" element={<Dashboard/>}/>

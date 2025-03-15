@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import handleAPI from "../configurations/handleApi";
+import handleAPI from "../configurations/handleAPI";
 
 export const sendLoginSignupOtp = createAsyncThunk(
   "/sellers/sendLoginSignupOtp",
@@ -18,6 +18,8 @@ export const sendLoginSignupOtp = createAsyncThunk(
     }
   }
 );
+
+
 
 export const signing = createAsyncThunk(
   "/auth/signing",
@@ -47,6 +49,30 @@ export const signing = createAsyncThunk(
   }
 );
 
+export const signup = createAsyncThunk<any, {email: string, fullName: string, otp:string}>(
+  "/auth/signing",
+  async (
+    { email, fullName, otp },
+    { rejectWithValue }
+  ) => {
+    
+
+    try {
+      const data = await handleAPI<{ jwt: string }>({
+        endpoint: `/auth/signup`,
+        method: "post",
+        body: { email, fullName, otp },
+      });
+
+      localStorage.setItem("jwt", data.jwt);
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
+    }
+  }
+);
+
 export const logout = createAsyncThunk(
   "/auth/logout",
   async ({ navigate }: { navigate: any }) => {
@@ -55,3 +81,8 @@ export const logout = createAsyncThunk(
   }
 );
 
+interface AuthStateProps{
+  
+}
+
+const initState={}

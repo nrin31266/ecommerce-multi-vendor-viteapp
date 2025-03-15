@@ -21,7 +21,14 @@ html {
 
 @import "tailwindcss";
 
-
+.error{
+  color: red;
+  font-size: 0.8rem;
+}
+.successfully{
+  color: green;
+  font-size: 0.8rem;
+}
 
 
 

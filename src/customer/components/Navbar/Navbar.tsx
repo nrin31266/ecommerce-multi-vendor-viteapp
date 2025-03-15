@@ -71,7 +71,7 @@ const Navbar = () => {
               <SearchIcon />
             </IconButton>
 
-            {true ? (
+            {false ? (
               <Button
                 className="flex gap-2"
                 onClick={() => navigate("/account/profile")}
@@ -83,7 +83,7 @@ const Navbar = () => {
                 <h1 className="font-semibold hidden lg:block">Rin</h1>
               </Button>
             ) : (
-              <Button variant="contained" startIcon={<AccountCircleIcon />}>
+              <Button onClick={() => navigate("/authentication")} variant="contained" startIcon={<AccountCircleIcon />}>
                 Login
               </Button>
             )}

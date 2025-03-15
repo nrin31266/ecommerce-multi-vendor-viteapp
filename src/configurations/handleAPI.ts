@@ -35,7 +35,7 @@ const handleAPI = async <T, B = unknown>({
       data: body,
       headers,
       baseURL: API_BASE_URL,
-      timeout: 5000,
+      // timeout: 5000,
       params: params
     });
 

@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PageableType, Product } from "../../types/ProductTypes";
 import handleAPI from "../../configurations/handleAPI";
 
-export const fetchProductById = createAsyncThunk(
+export const fetchProductById = createAsyncThunk<Product, string>(
   "products/fetchProductById",
   async (productId: string, { rejectWithValue }) => {
     try {
