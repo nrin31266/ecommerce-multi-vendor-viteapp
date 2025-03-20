@@ -28,7 +28,7 @@ const Navbar = () => {
   const [selectedCategory, setSelectedCategory] = useState("men");
   const [isShowCategorySheet, setIsShowCategorySheet] = useState(false);
   const navigate = useNavigate();
-  const {auth} = useAppSelector(store => store);
+  const auth = useAppSelector(store => store.auth);
   return (
     <div className={classes.root}>
       <Box>

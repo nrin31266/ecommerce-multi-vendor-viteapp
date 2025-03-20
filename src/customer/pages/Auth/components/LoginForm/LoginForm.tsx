@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../../states/store";
 import { sendLoginSignupOtp, signing } from "../../../../../states/authSlide";
 import { useNavigate } from "react-router-dom";
+import { EUserRole } from "../../../../../types/UserTypes";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const { auth } = useAppSelector((store) => store);
+  const role = EUserRole.ROLE_CUSTOMER;
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -27,11 +29,11 @@ const LoginForm = () => {
 
 
   const handleSentToEmail = async (email: string) => {
-    await dispatch(sendLoginSignupOtp({ email: "signing_" + email, role: "ROLE_CUSTOMER" }));
+    await dispatch(sendLoginSignupOtp({ email: "signing_" + email, role: role }));
   };
 
   const handleLogin = async (email: string, otp: string) => {
-    await dispatch(signing({ email: email, role: "ROLE_CUSTOMER", otp: otp, navigate }));
+    await dispatch(signing({ email: email, role: role, otp: otp, navigate }));
   };
 
   return (
@@ -70,7 +72,7 @@ const LoginForm = () => {
           )}
           {auth.error && (
             <div className="col-span-12 p-y-3">
-              <p className="text-sm text-red-500">{auth.error}</p>
+              <p className="error">{auth.error}</p>
             </div>
           )}
           {auth.successfullyMessage && (

@@ -11,7 +11,7 @@ export interface IUser {
 }
 
 export enum EUserRole {
-  BUYER = "BUYER",
-  SELLER = "SELLER",
-  ADMIN = "ADMIN",
+  ROLE_CUSTOMER = "ROLE_CUSTOMER",
+  ROLE_SELLER = "ROLE_SELLER",
+  ROLE_ADMIN = "ROLE_ADMIN",
 }

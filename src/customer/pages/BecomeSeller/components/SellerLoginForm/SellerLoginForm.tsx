@@ -1,53 +1,39 @@
 import { Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
-import React, { useState } from "react";
-import { useAppDispatch,  } from './../../../../../states/store';
+
+import { useAppDispatch, useAppSelector } from "./../../../../../states/store";
 import { sendLoginSignupOtp, signing } from "../../../../../states/authSlide";
 import { useNavigate } from "react-router-dom";
-
+import { EUserRole } from "../../../../../types/UserTypes";
 
 const SellerLoginForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const role = "ROLE_SELLER";
-const navigate = useNavigate();
-
-
+  const role = EUserRole.ROLE_SELLER;
+  const navigate = useNavigate();
+  const { auth } = useAppSelector((store) => store);
+  const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
       email: "",
       otp: "",
     },
-    onSubmit: async(values) => {
-      if(!isEnterEmail){
+    onSubmit: async (values) => {
+      if (!auth.otpSent) {
         await handleSendOtp(values.email);
-      }else{
+      } else {
         await handleLogin(values.email, values.otp);
       }
     },
   });
-  const [isEnterEmail, setIsEnterEmail] = useState(false);
+
   const handleSendOtp = async (email: string) => {
-    setIsLoading(true);
-    await dispatch(sendLoginSignupOtp({ email: "signing_" + email, role:  role}))
-    .then(()=>{
-      setIsEnterEmail(true);
-    }).finally(()=>{
-      setIsLoading(false);
-    });
+    await dispatch(
+      sendLoginSignupOtp({ email: "signing_" + email, role: role })
+    );
+  };
 
-  }
-  const dispatch = useAppDispatch();
-
-
-  const handleLogin = async (email: string, otp: string)=>{
-    setIsLoading(true);
-    await dispatch(signing({ email:  email, role:  role, otp: otp})).then((data) => {
-      navigate("/")
-    }).finally(()=>{
-      setIsLoading(false);
-    });
-  }
-
+  const handleLogin = async (email: string, otp: string) => {
+    await dispatch(signing({ email: email, role: role, otp: otp, navigate }));
+  };
 
   return (
     <div className="space-y-5">
@@ -55,55 +41,52 @@ const navigate = useNavigate();
         Login As Seller
       </h1>
       <form onSubmit={formik.handleSubmit}>
-      <div className="mt-10 grid grid-cols-12 gap-5">
-        <div className="col-span-12">
-          <TextField
-            required
-            fullWidth
-            name="email"
-            label="Email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
-          />
-        </div>
+        <div className="mt-10 grid grid-cols-12 gap-5">
+          <div className="col-span-12">
+            <TextField
+              required
+              fullWidth
+              name="email"
+              label="Email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+            />
+          </div>
 
-        {isEnterEmail ? (
-          <>
-            <div className="col-span-12 space-y-2">
-              <p className="font-medium text-sm opacity-20">
-                Enter OTP code sent to your email
-              </p>
-              <TextField
-                fullWidth
-                required
-                type="number"
-                
-                name="otp"
-                label="Otp"
-                value={formik.values.otp}
-                onChange={formik.handleChange}
-                error={formik.touched.otp && Boolean(formik.errors.otp)}
-                helperText={formik.touched.otp && formik.errors.otp}
-              />
+          {auth.otpSent && (
+            <>
+              {" "}
+              <div className="col-span-12 space-y-2">
+                <p className="font-medium text-sm opacity-20">
+                  Enter OTP code sent to your email
+                </p>
+                <TextField
+                  fullWidth
+                  required
+                  type="number"
+                  name="otp"
+                  label="Otp"
+                  value={formik.values.otp}
+                  onChange={formik.handleChange}
+                  error={formik.touched.otp && Boolean(formik.errors.otp)}
+                  helperText={formik.touched.otp && formik.errors.otp}
+                />
+              </div>
+            </>
+          )}
+
+          {auth.error && (
+            <div className="col-span-12 p-y-3">
+              <p className="error">{auth.error}</p>
             </div>
-            <div className="mt-8 col-span-12">
-              <Button
-                variant="contained"
-                fullWidth
-                size="large"
-                sx={{ py: "11px" }}
-                type="submit"
-                disabled={isLoading}
-                loading={isLoading}
-                loadingPosition="start"
-              >
-                Login
-              </Button>
+          )}
+          {auth.successfullyMessage && (
+            <div className="col-span-12 p-y-3">
+              <p className="successfully">{auth.successfullyMessage}</p>
             </div>
-          </>
-        ) : (
+          )}
           <div className="mt-8 col-span-12">
             <Button
               variant="contained"
@@ -111,15 +94,14 @@ const navigate = useNavigate();
               size="large"
               sx={{ py: "11px" }}
               type="submit"
-              disabled={isLoading}
-              loading={isLoading}
+              disabled={auth.loading}
+              loading={auth.loading}
               loadingPosition="start"
             >
-              Send OTP
+              {auth.otpSent ? "Login" : "Send OTP"}
             </Button>
           </div>
-        )}
-      </div>
+        </div>
       </form>
     </div>
   );

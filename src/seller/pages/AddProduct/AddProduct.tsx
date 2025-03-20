@@ -17,9 +17,9 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { colors } from "../../../data/filter/colors";
 import { mainCategories } from "../../../data/category/mainCategory";
 import { uploadImage } from "../../../utils/Firebase/uploadFile";
-import { useAppDispatch } from "../../../states/store";
+import { useAppDispatch, useAppSelector } from "../../../states/store";
 import { createProduct } from "../../../states/seller/sellerProductSlide";
-import { Category } from "../../../types/ProductTypes";
+
 import { menLevelTwo } from "../../../data/category/menLevelTwo";
 import { womenLevelTwo } from "../../../data/category/womenLevelTwo";
 import { homeFurnitureLevelTwo } from "../../../data/category/homeFurnitureLevelTwo";
@@ -28,15 +28,16 @@ import { menLevelThree } from "../../../data/category/menCategoryLevelThree";
 import { womenLevelThree } from "../../../data/category/womenLevelThree";
 import { homeFurnitureLevelThree } from "../../../data/category/homeFurnitureLevelThree";
 import { electronicsLevelThree } from "../../../data/category/electronicsLevelThree";
+import { ICategory } from "../../../types/ProductTypes";
 
-const categoriesLevelTwo: { [key: string]: Category[] } = {
+const categoriesLevelTwo: { [key: string]: ICategory[] } = {
   men: menLevelTwo,
   women: womenLevelTwo,
   home_furniture: homeFurnitureLevelTwo,
   electronics: electronicsLevelTwo,
 };
 
-const categoriesLevelThree: { [key: string]: Category[] } = {
+const categoriesLevelThree: { [key: string]: ICategory[] } = {
   men: menLevelThree,
   women: womenLevelThree,
   home_furniture: homeFurnitureLevelThree,
@@ -46,14 +47,13 @@ const AddProduct = () => {
   const [imageSelected, setImageSelected] = useState<File[]>([]);
 
   const dispatch = useAppDispatch();
-
+  const sellerProduct = useAppSelector(store => store.sellerProduct);
   const handleSelectImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (imageSelected.length > 0) {
-      setImageSelected([...imageSelected, ...e.target.files!]);
-    } else {
-      setImageSelected([...e.target.files!]);
+    if (e.target.files) {
+      setImageSelected((prev) => [...e.target.files!, ...prev]); 
     }
   };
+  
 
   const handleRemoveImage = (index: number) => {
     setImageSelected(imageSelected.filter((_, i) => i !== index));
@@ -74,26 +74,17 @@ const AddProduct = () => {
       sizes: "",
     },
     onSubmit: async (values) => {
-      const images = await handleUpload();
-      formik.setFieldValue("images", images);
+
 
       await dispatch(
-        createProduct({ request: values })
+        createProduct({ request: values, imageFiles: imageSelected.reverse() })
       );
     },
     validationSchema: null,
   });
 
-  const handleUpload = async (): Promise<string[]> => {
-    const images = await Promise.all(
-      imageSelected.map(async (item) => {
-        const url = await uploadImage(item);
-        return url;
-      })
-    );
 
-    return images;
-  };
+
 
   return (
     <div>
@@ -206,7 +197,7 @@ const AddProduct = () => {
                     <em>None</em>
                   </MenuItem>
                   {colors.map((color, index) => (
-                    <MenuItem value={color.name} key={index}>
+                    <MenuItem value={color.hex} key={index}>
                       <div className="flex gap-3 items-center">
                         <span>{color.name}</span>
                         <div
@@ -317,8 +308,8 @@ const AddProduct = () => {
             </div>
           </div>
           <div className="mt-10">
-            <Button type="submit" variant="contained" fullWidth size="large">
-              Add Product
+            <Button disabled={sellerProduct.loading} type="submit" variant="contained" fullWidth size="large">
+              {sellerProduct.loading? "Adding Product..." : "Add Product"}
             </Button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IProduct } from "../../types/ProductTypes";
 import handleAPI from "../../configurations/handleAPI";
+import { uploadImage } from "../../utils/Firebase/uploadFile";
 
 export const fetchSellerProducts = createAsyncThunk<IProduct[]>(
   "/sellerProduct/fetchSellerProducts",
@@ -9,21 +10,29 @@ export const fetchSellerProducts = createAsyncThunk<IProduct[]>(
       return await handleAPI<IProduct[]>({
         endpoint: "/api/sellers/products",
         method: "get",
-        isAuthenticated: true, 
+        isAuthenticated: true,
       });
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
     }
   }
 );
 
-export const createProduct = createAsyncThunk<
-IProduct,
-  {request: any }
->(
+export const createProduct = createAsyncThunk<IProduct, { request: any, imageFiles?: File[] }>(
   "/sellerProduct/createProduct",
-  async ({ request }, { rejectWithValue }) => {
+  async ({ request, imageFiles }, { rejectWithValue }) => {
     try {
+      if (imageFiles) {
+        const uploadedImages = await Promise.all(
+          imageFiles.map((file) => uploadImage(file))
+        );
+
+        request.images = uploadedImages;
+      }
+
+
       return await handleAPI<IProduct>({
         endpoint: "/api/sellers/products",
         method: "post",
@@ -31,7 +40,26 @@ IProduct,
         isAuthenticated: true,
       });
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+);
+
+export const deleteProduct = createAsyncThunk<void, { id: number }>(
+  "/sellerProduct/deleteProduct",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      await handleAPI<IProduct>({
+        endpoint: `/api/sellers/products/${id}`,
+        method: "delete",
+        isAuthenticated: true,
+      });
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
     }
   }
 );
@@ -75,6 +103,21 @@ const sellerProductSlice = createSlice({
         state.product.push(action.payload);
       })
       .addCase(createProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.product = state.product.filter(
+          (product) => product.id !== action.meta.arg.id
+        );
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

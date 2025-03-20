@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CartItem from "./components/CartItem/CartItem";
 import { Close, LocalOffer } from "@mui/icons-material";
 import { Button, IconButton, TextField } from "@mui/material";
 import PricingCart from "./components/PricingCard/PricingCart";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../states/store";
+import { fetchUserCart } from "../../../states/customer/cartSlide";
 
 const Cart = () => {
   const [couponCode, setCouponCode] = useState("");
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUserCart());
+  }, []);
 
   return (
     <div className="pt-10 px-5 sm:px-10 md:px-60 min-h-screen">

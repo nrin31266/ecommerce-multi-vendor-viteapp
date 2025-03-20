@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import handleAPI from "../configurations/handleAPI";
-import { IUser } from "../types/UserTypes";
+import { EUserRole, IUser } from "../types/UserTypes";
 import { NavigateFunction, NavigateProps } from "react-router-dom";
 
 export const sendLoginSignupOtp = createAsyncThunk(
   "/sellers/sendLoginSignupOtp",
   async (
-    { email, role }: { email: string; role: string },
+    { email, role }: { email: string; role: EUserRole },
     { rejectWithValue }
   ) => {
     try {
@@ -26,24 +26,39 @@ export const sendLoginSignupOtp = createAsyncThunk(
 export const signing = createAsyncThunk(
   "/auth/signing",
   async (
-    { email, role, otp, navigate }: { email: string; role: string; otp: string, navigate: NavigateFunction },
+    {
+      email,
+      role,
+      otp,
+      navigate,
+    }: {
+      email: string;
+      role: EUserRole;
+      otp: string;
+      navigate: NavigateFunction;
+    },
     { rejectWithValue }
   ) => {
-    const roles = {
-      SELLER: "ROLE_SELLER",
-      CUSTOMER: "ROLE_CUSTOMER",
-      ADMIN: "ROLE_ADMIN",
-    };
-
     try {
       const data = await handleAPI<{ jwt: string }>({
-        endpoint: `/${role === roles.CUSTOMER ? "auth" : "sellers"}/signing`,
+        endpoint: `/${
+          role === EUserRole.ROLE_SELLER ? "sellers" : "auth"
+        }/signing`,
         method: "post",
-        body: { email, otp },
+        body: {
+          email: role === EUserRole.ROLE_SELLER ?  email : email,
+          otp,
+        },
       });
 
       localStorage.setItem("jwt", data.jwt);
-      navigate("/");
+      if (role === EUserRole.ROLE_CUSTOMER) {
+        navigate("/");
+      } else if (role === EUserRole.ROLE_SELLER) {
+        navigate("/seller");
+      } else if (role === EUserRole.ROLE_ADMIN) {
+        navigate("/admin");
+      }
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -109,6 +124,7 @@ interface AuthStateProps {
   error: string;
   user: IUser | null;
   successfullyMessage: string;
+  role: EUserRole | null;
 }
 const initState: AuthStateProps = {
   jwt: "",
@@ -118,6 +134,7 @@ const initState: AuthStateProps = {
   error: "",
   user: null,
   successfullyMessage: "",
+  role: null,
 };
 
 const authSlide = createSlice({
@@ -160,7 +177,6 @@ const authSlide = createSlice({
       .addCase(sendLoginSignupOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-        
       })
       .addCase(logout.fulfilled, () => initState);
   },

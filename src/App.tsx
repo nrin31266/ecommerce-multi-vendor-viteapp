@@ -42,12 +42,13 @@ import Auth from "./customer/pages/Auth/Auth";
 import { fetchUserProfile } from "./states/authSlide";
 function App() {
   const dispatch = useAppDispatch();
-  const {seller, auth} = useAppSelector(store => store);
+  const seller = useAppSelector(store => store.seller);
+  const auth = useAppSelector(store => store.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchSellerProfile());
-  }, []);
+  }, [auth.jwt]);
 
   useEffect(() => {
     if (seller.profile) {
