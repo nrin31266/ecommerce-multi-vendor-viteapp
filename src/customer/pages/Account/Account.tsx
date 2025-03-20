@@ -5,6 +5,8 @@ import OrderDetails from "./components/OrderDetails/OrderDetails";
 import Profile from "./components/Profile/Profile";
 import Orders from "./components/Orders/Orders";
 import Address from "./components/Address/Address";
+import { useAppDispatch, useAppSelector } from "../../../states/store";
+import { logout } from "../../../states/authSlide";
 
 const menu = [
   { name: "profile", path: "/account" },
@@ -18,7 +20,8 @@ const Account = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(location.pathname)
+  const dispatch = useAppDispatch()
+ 
 
   const handleClick = (path: string) => {
     navigate(path);
@@ -33,7 +36,14 @@ const Account = () => {
           <section className="left col-span-1 lg:border-r lg:pr-5 py-5 h-full border-gray-200 space-y-1">
             {menu.map((item) => (
               <div
-                onClick={() => handleClick(item.path)}
+                onClick={() => {
+                  if(item.name === "logout"){
+                    dispatch(logout({navigate}))
+                  }else{
+                    handleClick(item.path)
+                  }
+
+                }}
                 key={item.name}
                 className={`
                     ${

@@ -7,8 +7,8 @@ const ShopByCategoryCard = () => {
       className={`${classes.root} flex flex-col justify-center items-center cursor-pointer`}
     >
       <div
-        className={`${classes.customBorder} group w-[150px] h-[150px] 
-            lg:w-[249px] lg:h-[249px] rounded-full bg-[var(--primary-color)]`}
+        className={`${classes.customBorder} group w-[175px] h-[175px] 
+            lg:w-[200px] lg:h-[200px] rounded-full bg-[var(--primary-color)]`}
       >
         <img
           className="rounded-full group-hover:scale-95 transition-transform transform-duration-700

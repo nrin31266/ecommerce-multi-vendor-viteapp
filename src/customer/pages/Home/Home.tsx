@@ -14,16 +14,16 @@ const Home = () => {
         <ElectricCategories />
         <CategoryGrid />
         <section className="pt-20">
-          <Title>TODAY'S DEAL</Title>
+          <Title level="4">TODAY'S DEAL</Title>
           <Deal />
         </section>
         <section className="pt-20">
           <Title level="4">Shop By Category</Title>
           <ShopByCategory />
         </section>
-        <section className="lg:px-20 pt-20 relative h-full w-full">
+        <section className="lg:px-20  pt-20 relative h-full w-full">
           <img
-            className="h-full w-full object-cover border-1"
+            className="h-full w-full border-1 border-gray-200 rounded-md object-cover "
             src="https://m.media-amazon.com/images/G/31/amazonservices/Becoming_an_online_seller.jpg"
             alt=""
           />

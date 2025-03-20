@@ -3,7 +3,7 @@ import ShopByCategoryCard from './components/ShopByCategoryCard/ShopByCategoryCa
 
 const ShopByCategory = () => {
   return (
-    <div className='flex flex-wrap justify-start gap-4 lg:px-20'>
+    <div className='lg:px-20 grid grid-cols-2 mt-8 gap-4 md:grid-cols-4 lg:grid-cols-5'>
         {
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,].map((item)=><ShopByCategoryCard/>)
         }

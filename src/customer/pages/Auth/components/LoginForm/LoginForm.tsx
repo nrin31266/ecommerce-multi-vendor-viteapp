@@ -1,19 +1,20 @@
 import { Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { useAppDispatch } from "../../../../../states/store";
+import { useAppDispatch, useAppSelector } from "../../../../../states/store";
 import { sendLoginSignupOtp, signing } from "../../../../../states/authSlide";
 import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { auth } = useAppSelector((store) => store);
   const formik = useFormik({
     initialValues: {
       email: "",
       otp: "",
     },
     onSubmit: (values) => {
-      if (!isSentToEmail) {
+      if (!auth.otpSent) {
         handleSentToEmail(values.email);
       } else {
         handleLogin(values.email, values.otp);
@@ -21,43 +22,16 @@ const LoginForm = () => {
     },
   });
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successfullyMessage, setSuccessfullyMessage] = useState("");
   const dispatch = useAppDispatch();
 
-  const [isSentToEmail, setIsSentToEmail] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-
-  const handleMessage = (successfully: string, error: string) => {
-    setSuccessfullyMessage(successfully);
-    setErrorMessage(error);
-  };
 
   const handleSentToEmail = async (email: string) => {
-    setIsLoading(true);
-    await dispatch(
-      sendLoginSignupOtp({ email: "signing_" + email, role: "ROLE_CUSTOMER" })
-    )
-      .unwrap()
-      .then(() => {
-        setIsSentToEmail(true);
-        handleMessage("We have sent an OTP to your email. Please check your email and enter the OTP", "")
-      })
-      .finally(() => setIsLoading(false))
-      .catch((error) => {
-        handleMessage("", error);
-      });
-
+    await dispatch(sendLoginSignupOtp({ email: "signing_" + email, role: "ROLE_CUSTOMER" }));
   };
 
   const handleLogin = async (email: string, otp: string) => {
-    setIsLoading(true);
-    await dispatch(signing({ email: email, role: "ROLE_CUSTOMER", otp: otp })).unwrap()
-      .then(() => navigate("/"))
-      .finally(() => setIsLoading(false)).catch((error)=>{
-        handleMessage("", error);
-      });
+    await dispatch(signing({ email: email, role: "ROLE_CUSTOMER", otp: otp, navigate }));
   };
 
   return (
@@ -78,7 +52,7 @@ const LoginForm = () => {
               helperText={formik.touched.email && formik.errors.email}
             />
           </div>
-          {isSentToEmail && (
+          {auth.otpSent && (
             <div className="col-span-12 space-y-2">
               <p className="font-medium text-sm opacity-20">
                 Enter OTP code sent to your email
@@ -94,28 +68,26 @@ const LoginForm = () => {
               />
             </div>
           )}
-          {errorMessage && (
+          {auth.error && (
             <div className="col-span-12 p-y-3">
-              <p className="text-sm text-red-500">{errorMessage}</p>
+              <p className="text-sm text-red-500">{auth.error}</p>
             </div>
           )}
-          {
-            successfullyMessage && (
-              <div className="col-span-12 p-y-3">
-                <p className="successfully">{successfullyMessage}</p>
-              </div>
-            )
-          }
+          {auth.successfullyMessage && (
+            <div className="col-span-12 p-y-3">
+              <p className="successfully">{auth.successfullyMessage}</p>
+            </div>
+          )}
 
           <div className="col-span-12 mt-4">
             <Button
-              disabled={isLoading}
+              disabled={auth.loading}
               type="submit"
               fullWidth
               variant="contained"
               size="large"
             >
-              {isSentToEmail ? "Login" : "Send OTP"}
+              {auth.otpSent ? "Login" : "Send OTP"}
             </Button>
           </div>
         </div>
