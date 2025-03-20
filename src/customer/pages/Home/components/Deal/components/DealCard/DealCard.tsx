@@ -2,7 +2,7 @@ import React from 'react'
 
 const DealCard = () => {
   return (
-    <div className='w-[13rem] cursor-pointer'>
+    <div className='cursor-pointer min-w-[13rem]'>
         <img
         className='border-x-[7px] border-t-[7px] border-yellow-500 h-[12rem] w-full object-cover object-top'
         src="https://th.bing.com/th/id/OIP.HfDaw-1w0DpMnKa0e5FcBQHaHa?rs=1&pid=ImgDetMain" alt="" />

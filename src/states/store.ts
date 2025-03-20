@@ -5,13 +5,16 @@ import { thunk } from 'redux-thunk';
 import sellerSlide from './seller/sellerSlide';
 import sellerProductSlide from './seller/sellerProductSlide';
 import productSlide from './customer/productSlide';
-
+import themeModeSlide from './system/themeModeSlide';
+import authSlide from './authSlide';
 
 
 const rootReducer = combineReducers({
   seller: sellerSlide,
   sellerProduct: sellerProductSlide,
-  product: productSlide
+  product: productSlide,
+  themeMode: themeModeSlide,
+  auth: authSlide
 });
 
 

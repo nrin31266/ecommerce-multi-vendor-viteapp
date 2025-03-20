@@ -39,9 +39,10 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./states/store";
 import { fetchSellerProfile } from "./states/seller/sellerSlide";
 import Auth from "./customer/pages/Auth/Auth";
+import { fetchUserProfile } from "./states/authSlide";
 function App() {
   const dispatch = useAppDispatch();
-  const seller = useAppSelector(store => store.seller);
+  const {seller, auth} = useAppSelector(store => store);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,8 +55,14 @@ function App() {
     }
   }, [seller.profile]);
 
+
+
+  useEffect(() => {
+    dispatch(fetchUserProfile());
+  }, [auth.jwt]);
+
   return (
-    <>
+    <div className="dark">
       <ThemeProvider theme={customTheme}>
         <Navbar/>
         <Routes>
@@ -95,7 +102,7 @@ function App() {
           </Route>
         </Routes>
       </ThemeProvider>
-    </>
+    </div>
   );
 }
 

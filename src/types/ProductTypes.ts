@@ -1,6 +1,6 @@
-import { Seller } from "./SellerTypes";
+import { ISeller } from "./SellerTypes";
 
-export interface Product {
+export interface IProduct {
   id: number;
   title: string;
   description: string;
@@ -9,23 +9,23 @@ export interface Product {
   quantity: number;
   color: string;
   images: string[];
-  category: Category;
+  category: ICategory;
   sizes: string;
   discountPercentage: number;
   createdAt: Date;
-  seller?: Seller;
+  seller?: ISeller;
 }
 
-export interface Category {
+export interface ICategory {
   name: string;
   categoryId: string;
   level: number;
   parentCategory: string;
 }
 
-export interface PageableType<T> {
+export interface IPageableType<T> {
   content: T[];
-  pageable: Pageable;
+  pageable: IPageable;
   last: boolean;
   totalPages: number;
   totalElements: number;
@@ -37,7 +37,7 @@ export interface PageableType<T> {
   empty: boolean;
 }
 
-export interface Pageable {
+export interface IPageable {
   pageNumber: number;
   pageSize: number;
   sort: any[];

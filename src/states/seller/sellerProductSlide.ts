@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Product } from "../../types/ProductTypes";
+import { IProduct } from "../../types/ProductTypes";
 import handleAPI from "../../configurations/handleAPI";
 
-export const fetchSellerProducts = createAsyncThunk<Product[]>(
+export const fetchSellerProducts = createAsyncThunk<IProduct[]>(
   "/sellerProduct/fetchSellerProducts",
   async (_, { rejectWithValue }) => {
     try {
-      return await handleAPI<Product[]>({
+      return await handleAPI<IProduct[]>({
         endpoint: "/api/sellers/products",
         method: "get",
         isAuthenticated: true, 
@@ -18,13 +18,13 @@ export const fetchSellerProducts = createAsyncThunk<Product[]>(
 );
 
 export const createProduct = createAsyncThunk<
-  Product,
+IProduct,
   {request: any }
 >(
   "/sellerProduct/createProduct",
   async ({ request }, { rejectWithValue }) => {
     try {
-      return await handleAPI<Product>({
+      return await handleAPI<IProduct>({
         endpoint: "/api/sellers/products",
         method: "post",
         body: request,
@@ -37,7 +37,7 @@ export const createProduct = createAsyncThunk<
 );
 
 interface SellerProductState {
-  product: Product[];
+  product: IProduct[];
   loading: boolean;
   error: string;
 }

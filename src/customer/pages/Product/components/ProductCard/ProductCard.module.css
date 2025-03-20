@@ -1,0 +1,84 @@
+.root {
+   
+}
+
+.group {
+    @apply relative w-[250px];
+}
+
+.card {
+    @apply relative w-full h-[300px] overflow-hidden;
+}
+
+.cardMedia {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+    cursor: pointer;
+    object-fit: cover;
+}
+
+.thinLineThrough {
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+}
+
+.groupHoverEffect {
+    padding: 1rem;
+    transition: transform 0.3s;
+}
+
+.group:hover .groupHoverEffect {
+    transform: translateY(0.25rem);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
+}
+
+.title{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shopName{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.details{
+    border-radius: 0.3rem;
+}
+
+
+
+
+/* .indicator{
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+
+
+.indicator-button{
+    width: 10px;
+    height: 10px;
+    background-color: rgb(255, 255, 255, 0.5);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.indicator-button.active{
+    background-color: rgb(255, 255, 255, 1);
+} */

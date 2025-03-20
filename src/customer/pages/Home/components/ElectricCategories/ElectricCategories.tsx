@@ -3,7 +3,7 @@ import ElectricCategoryCard from '../ElectricCategoryCard/ElectricCategoryCard'
 
 const ElectricCategories = () => {
   return (
-    <div className='flex flex-wrap justify-between py-5 lg:px-20 border-b'>
+    <div className='flex flex-wrap justify-between py-5 lg:px-20 border-b border-b-gray-200'>
         {
             [1,1,1,1,1,1,1].map((item)=><ElectricCategoryCard/>)
         }

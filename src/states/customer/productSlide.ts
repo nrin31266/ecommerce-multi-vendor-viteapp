@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { PageableType, Product } from "../../types/ProductTypes";
+import { IPageableType, IProduct } from "../../types/ProductTypes";
 import handleAPI from "../../configurations/handleAPI";
 
-export const fetchProductById = createAsyncThunk<Product, string>(
+export const fetchProductById = createAsyncThunk<IProduct, string>(
   "products/fetchProductById",
   async (productId: string, { rejectWithValue }) => {
     try {
-      return await handleAPI<Product>({ endpoint: `/products/${productId}`, method: "get" });
+      return await handleAPI<IProduct>({ endpoint: `/products/${productId}`, method: "get" });
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
     }
@@ -18,7 +18,7 @@ export const searchProduct = createAsyncThunk(
   "products/searchProduct",
   async (query: string, { rejectWithValue }) => {
     try {
-      const data = await handleAPI<Product[]>({ endpoint: "/products/search", params: { query } });
+      const data = await handleAPI<IProduct[]>({ endpoint: "/products/search", params: { query } });
       return data;
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : "Unknown error");
@@ -26,11 +26,11 @@ export const searchProduct = createAsyncThunk(
   }
 );
 
-export const fetchAllProduct = createAsyncThunk<Product[], {params: Record<string, string>}>(
+export const fetchAllProduct = createAsyncThunk<IProduct[], {params: Record<string, string>}>(
   "products/fetchAllProduct",
   async ({params} , { rejectWithValue }) => {
     try{
-      const data = await handleAPI<PageableType<Product>>({ endpoint: "/products", params: params });
+      const data = await handleAPI<IPageableType<IProduct>>({ endpoint: "/products", params: params });
 
       console.log(data)
 
@@ -42,12 +42,12 @@ export const fetchAllProduct = createAsyncThunk<Product[], {params: Record<strin
 );
 
 interface ProductState {
-  product: Product | null;
-  products: Product[];
+  product: IProduct | null;
+  products: IProduct[];
   totalPages: number;
   loading: boolean;
   error: string;
-  searchProduct: Product[];
+  searchProduct: IProduct[];
 }
 
 const initialState: ProductState = {

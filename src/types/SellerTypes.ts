@@ -1,21 +1,24 @@
+import { EUserRole } from "./UserTypes"
 
-export interface Seller {
+export interface ISeller {
     id: number
     sellerName: string
     mobile: string
     email: string
     password: string
-    businessDetails: BusinessDetails
-    bankDetails: BankDetails
-    role: string
+    businessDetails: IBusinessDetails
+    bankDetails: IBankDetails
+    role: EUserRole
     accountStatus: string
-    pickupAddress: PickupAddress
+    pickupAddress: IPickupAddress
     gstin: any
     emailVerified: boolean
     taxCode:string
   }
+
+
   
-  export interface BusinessDetails {
+  export interface IBusinessDetails {
     businessName: string
     businessEmail: string
     businessMobile: string
@@ -24,14 +27,14 @@ export interface Seller {
     banner: string
   }
   
-  export interface BankDetails {
+  export interface IBankDetails {
     accountNumber: string
     accountHolderName: string
     ifscCode: string
     swiftCode: string
   }
   
-  export interface PickupAddress {
+  export interface IPickupAddress {
     id: number
     name: string
     locality: string
@@ -43,9 +46,9 @@ export interface Seller {
     zipCode: string
   }
 
-  export interface SellerReport {
+  export interface ISellerReport {
     id: number;
-    seller: Seller;
+    seller: ISeller;
     totalEarnings: number;
     totalSales: number;
     totalRefunds: number;

@@ -15,8 +15,8 @@ const Deal = () => {
 
   return (
     <div className="py-5 lg:px-20">
-      <div className="flex items-center justify-between">
-        {[1, 1, 1, 1, 1, 1].map((item) => (
+      <div className="flex items-center gap-2 justify-start overflow-auto px-4 flex-nowrap">
+        {[1, 1, 1, 1, 1, 1,1,1,1].map((item) => (
           <DealCard />
         ))}
       </div>
