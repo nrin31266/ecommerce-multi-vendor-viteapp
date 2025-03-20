@@ -4,13 +4,14 @@ import { Close, LocalOffer } from "@mui/icons-material";
 import { Button, IconButton, TextField } from "@mui/material";
 import PricingCart from "./components/PricingCard/PricingCart";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../../states/store";
+import { useAppDispatch, useAppSelector } from "../../../states/store";
 import { fetchUserCart } from "../../../states/customer/cartSlide";
 
 const Cart = () => {
   const [couponCode, setCouponCode] = useState("");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const cart = useAppSelector(store => store.cart);
 
   useEffect(() => {
     dispatch(fetchUserCart());
@@ -20,8 +21,8 @@ const Cart = () => {
     <div className="pt-10 px-5 sm:px-10 md:px-60 min-h-screen">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="cartItemSection lg:col-span-2 space-y-3">
-          {[1, 1, 1, 1, 1, 1, 1, 1].map((item) => (
-            <CartItem />
+          {!cart.cart?.cartItems && cart.cart?.cartItems.length === 0  ? <div><p>No items in cart</p></div>: cart.cart?.cartItems.map((item, index) => (
+            <CartItem cartItem={item} key={index}/>
           ))}
         </div>
         <div className="col-span-1 text-sm space-y-3 ">
