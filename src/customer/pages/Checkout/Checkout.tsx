@@ -14,19 +14,11 @@ import AddressCard from "./components/AddressCard/AddressCard";
 import AddressForm from "./components/AddressForm/AddressForm";
 import { Close } from "@mui/icons-material";
 import PricingCart from "../Cart/components/PricingCard/PricingCart";
-import './Checkout.css';
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-  width: 500,
-  borderRadius: "4px",
-};
+import classes from "./Checkout.module.css";
+import { useDispatch } from "react-redux";
+import { IPickupAddress } from "../../../types/SellerTypes";
+import { createOrder } from "../../../states/customer/orderSlide";
+import { useAppDispatch, useAppSelector } from "../../../states/store";
 
 const paymentGateways = [
   {
@@ -53,9 +45,26 @@ const paymentGateways = [
     label: "VNPay",
   },
 ];
+const defaultAddress: IPickupAddress={
+  address: "28, NB",
+  city: "QN",
+  locality: "DT",
+  mobile: "083232322",
+  name: "NVR",
+  state: "DX",
+  zipCode: "123445",
+pinCode:""
+}
 
 const Checkout = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState<IPickupAddress | null>(
+    
+  );
+  const order = useAppSelector(store=>store.order)
+  const [paymentGateway, setPaymentGateway] = useState(
+    paymentGateways[0].value
+  );
   const handleClose = () => {
     setIsOpenModal(false);
   };
@@ -64,17 +73,25 @@ const Checkout = () => {
     setIsOpenModal(true);
   };
 
-  const handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>)=>{
+  const handlePaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentGateway(event.target.value);
-  }
+  };
 
-  const [paymentGateway, setPaymentGateway] = useState(paymentGateways[0].value);
+  const dispatch = useAppDispatch();
+  const handleCreateOrder = (newAddress?: IPickupAddress) => {
+    dispatch(
+      createOrder({
+        address: newAddress ?? selectedAddress!,
+        paymentGateway: paymentGateway,
+      })
+    );
+  };
 
   return (
     <>
-      <div className="pt-10 px-5 sm:px-10 md:px-44 lg:px-60 min-h-screen">
-        <div className="space-y-5 lg:grid-cols-3 lg:space-y-0 lg:grid lg:gap-9">
-          <div className="col-span-2 space-y-5">
+      <div className="pt-10 px-5 sm:px-10 lg:px-20 min-h-screen">
+        <div className="space-y-5 lg:space-y-0 lg:grid lg:gap-9 lg:grid-cols-12">
+          <div className="col-span-7 space-y-5">
             <div className="flex justify-between items-center">
               <h1 className="font-bold">Select Delivery Address</h1>
               <Button onClick={handleOpenModal} variant="outlined">
@@ -94,7 +111,7 @@ const Checkout = () => {
               </div>
             </div>
           </div>
-          <div className="space-y-5">
+          <div className="col-span-5 space-y-5">
             <div className="border rounded-md border-gray-200 p-5 space-y-5">
               <div>
                 <h1 className="text-center text-lg text-[var(--primary-color)]">
@@ -110,14 +127,14 @@ const Checkout = () => {
                   value={paymentGateway}
                 >
                   <div className="flex flex-wrap gap-3 items-center">
-                  {paymentGateways.map((item) => (
-                    <FormControlLabel
-                      className="border rounded-md border-gray-200 w-[120px] h-[60px] p-2"
-                      value={item.value}
-                      control={<Radio />}
-                      label={<img src={item.image} alt="" />}
-                    />
-                  ))}
+                    {paymentGateways.map((item) => (
+                      <FormControlLabel
+                        className="border rounded-md border-gray-200 w-[120px] h-[60px] p-2"
+                        value={item.value}
+                        control={<Radio />}
+                        label={<img src={item.image} alt="" />}
+                      />
+                    ))}
                   </div>
                 </RadioGroup>
               </FormControl>
@@ -125,7 +142,7 @@ const Checkout = () => {
             <div className="border border-gray-200 rounded-md">
               <PricingCart />
               <div className="px-5 pb-5">
-                <Button size="large" variant="contained" fullWidth>
+                <Button onClick={()=>handleCreateOrder(defaultAddress)} disabled={order.loading && !isOpenModal} size="large" variant="contained" fullWidth>
                   Pay now
                 </Button>
               </div>
@@ -139,8 +156,13 @@ const Checkout = () => {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={style}>
-          <AddressForm onClose={handleClose} />
+        <Box className={classes.model}>
+          <AddressForm
+            onCheckout={(newAddress) => {
+              handleCreateOrder(newAddress);
+            }}
+            onClose={handleClose}
+          />
         </Box>
       </Modal>
     </>

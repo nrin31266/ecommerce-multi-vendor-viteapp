@@ -7,7 +7,7 @@ interface RequestParams<B = unknown> {
   body?: B;
   method?: "post" | "get" | "delete" | "put";
   isAuthenticated?: boolean;
-  params?: string | Record<string, string>;
+  params?: string | Record<string, string | number>;
 }
 
 const handleAPI = async <T, B = unknown>({

@@ -35,7 +35,7 @@ export interface ISeller {
   }
   
   export interface IPickupAddress {
-    id: number
+    id?: number
     name: string
     locality: string
     address: string

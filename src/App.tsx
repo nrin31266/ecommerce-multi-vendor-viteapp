@@ -12,7 +12,7 @@ import Review from "./customer/pages/Review/Review";
 import Cart from "./customer/pages/Cart/Cart";
 import Checkout from "./customer/pages/Checkout/Checkout";
 import Account from "./customer/pages/Account/Account";
-import { Route, Router, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Router, Routes, useLocation, useNavigate } from "react-router-dom";
 import Profile from "./customer/pages/Account/components/Profile/Profile";
 import Orders from "./customer/pages/Account/components/Orders/Orders";
 import Address from "./customer/pages/Account/components/Address/Address";
@@ -40,27 +40,26 @@ import { useAppDispatch, useAppSelector } from "./states/store";
 import { fetchSellerProfile } from "./states/seller/sellerSlide";
 import Auth from "./customer/pages/Auth/Auth";
 import { fetchUserProfile } from "./states/authSlide";
+import PaymentSuccess from "./customer/pages/AfterPayment/PaymentSuccess/PaymentSuccess";
 function App() {
   const dispatch = useAppDispatch();
   const seller = useAppSelector(store => store.seller);
   const auth = useAppSelector(store => store.auth);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     dispatch(fetchSellerProfile());
-  }, [auth.jwt]);
-
-  useEffect(() => {
-    if (seller.profile) {
-      // navigate("/seller");
-    }
-  }, [seller.profile]);
-
+  }, [auth.jwt, location.pathname]);
 
 
   useEffect(() => {
     dispatch(fetchUserProfile());
-  }, [auth.jwt]);
+  }, [auth.jwt, location.pathname]);
+
+  if(location.pathname === "/" && seller.profile){
+    return <Navigate to={"/seller"}/>
+  }
 
   return (
     <div className="dark">
@@ -73,6 +72,7 @@ function App() {
           <Route path="/reviews/:productId" element={<Review/>}/>
           <Route path="/cart" element={<Cart/>}/>
           <Route path="/checkout" element={<Checkout/>}/>
+          <Route path="/payment-success/:orderId" element={<PaymentSuccess/>}/>
           <Route path="/account" element={<Account/>}>
             <Route path="" element={<Profile/>}/>
             <Route path="orders" element={<Orders/>}/>

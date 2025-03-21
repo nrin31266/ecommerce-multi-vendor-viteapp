@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import handleAPI from "../../configurations/handleAPI";
+import { logout } from "../authSlide";
 
 
 export const fetchSellerProfile = createAsyncThunk<any>(
@@ -50,6 +51,8 @@ const sellerSlide = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
+
+      builder.addCase(logout.fulfilled, () => initState)
   },
 })
 

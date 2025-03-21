@@ -1,0 +1,28 @@
+.css-19opgx6-MuiFormControlLabel-root {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.model{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 0.3rem;
+  padding: 16px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: min(500px, 98%);
+}
+
+/* const style  = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  width: 500,
+  borderRadius: "4px",
+}; */

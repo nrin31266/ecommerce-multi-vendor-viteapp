@@ -18,14 +18,14 @@ const Cart = () => {
   }, []);
 
   return (
-    <div className="pt-10 px-5 sm:px-10 md:px-60 min-h-screen">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="cartItemSection lg:col-span-2 space-y-3">
+    <div className="pt-10 px-5 sm:px-10 md:px-20 min-h-screen">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div className="cartItemSection lg:col-span-7 space-y-3">
           {!cart.cart?.cartItems && cart.cart?.cartItems.length === 0  ? <div><p>No items in cart</p></div>: cart.cart?.cartItems.map((item, index) => (
             <CartItem cartItem={item} key={index}/>
           ))}
         </div>
-        <div className="col-span-1 text-sm space-y-3 ">
+        <div className="lg:col-span-5 text-sm space-y-3 ">
           <div className="space-y-3">
             <div className="border rounded-md px-5 py-3 space-y-5 border-gray-200">
               <div className="flex- items-center gap-3">

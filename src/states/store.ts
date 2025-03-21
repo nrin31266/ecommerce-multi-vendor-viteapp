@@ -8,6 +8,7 @@ import productSlide from './customer/productSlide';
 import themeModeSlide from './system/themeModeSlide';
 import authSlide from './authSlide';
 import cartSlide from './customer/cartSlide';
+import orderSlide from './customer/orderSlide';
 
 
 const rootReducer = combineReducers({
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   product: productSlide,
   themeMode: themeModeSlide,
   auth: authSlide,
-  cart: cartSlide
+  cart: cartSlide,
+  order: orderSlide
 });
 
 
