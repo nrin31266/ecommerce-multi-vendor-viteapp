@@ -35,7 +35,7 @@ export const addItemToCart = createAsyncThunk<ICartItem, IAddItemRequest>(
     try {
       const data = await handleAPI<ICartItem>({
         endpoint: "/api/cart/add",
-        method: "post",
+        method: "put",
         body: rq,
         isAuthenticated: true,
       });

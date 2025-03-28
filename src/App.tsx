@@ -41,6 +41,7 @@ import { fetchSellerProfile } from "./states/seller/sellerSlide";
 import Auth from "./customer/pages/Auth/Auth";
 import { fetchUserProfile } from "./states/authSlide";
 import PaymentSuccess from "./customer/pages/AfterPayment/PaymentSuccess/PaymentSuccess";
+import OrderDetails from "./customer/pages/Account/components/OrderDetails/OrderDetails";
 function App() {
   const dispatch = useAppDispatch();
   const seller = useAppSelector(store => store.seller);
@@ -78,7 +79,7 @@ function App() {
             <Route path="orders" element={<Orders/>}/>
             <Route path="addresses" element={<Address/>}/>
             <Route path="saved-cards" element={<div>Saved Cards</div>}/>
-            <Route path="order/:orderId/:orderItemId"/>
+            <Route path="order/:orderId/:orderItemId" element={<OrderDetails/>}/>
           </Route>
           <Route path="/authentication" element={<Auth/>}/>
           <Route path="/become-seller" element={<BecomeSeller/>}/>

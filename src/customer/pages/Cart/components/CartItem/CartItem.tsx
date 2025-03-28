@@ -8,6 +8,7 @@ import { updateCartItem } from "../../../../../states/customer/cartSlide";
 
 interface ICartItemProps {
   cartItem: ICartItem;
+
 }
 
 const CartItem = ({ cartItem }: ICartItemProps) => {
@@ -36,7 +37,7 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
           </p>
           <p className="text-gray-400 text-xs">
             <strong>Sold by: </strong>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate
+            {cartItem.product.seller?.businessDetails.businessName}
           </p>
           <p className="text-sm">7 days replacement available</p>
           <p className="text-gray-500 text-sm">
@@ -61,7 +62,7 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
           </Button>
         </div>
         <div>
-          <p className="text-gray-700 font-medium">₫100000</p>
+          <p className="text-gray-700 font-medium">{cartItem.sellingPrice}</p>
         </div>
       </div>
       <div className="absolute right-1 top-1">

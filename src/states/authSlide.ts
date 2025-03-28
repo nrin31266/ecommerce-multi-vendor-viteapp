@@ -153,7 +153,7 @@ const authSlide = createSlice({
         state.jwt = action.payload.jwt;
         state.loggedIn = true;
         state.error = "";
-        state.successfullyMessage = "Successfully logged in";
+        state.successfullyMessage = "";
       })
       .addCase(signing.rejected, (state, action) => {
         state.loading = false;

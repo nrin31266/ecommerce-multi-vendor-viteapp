@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchProductById } from "../../../states/customer/productSlide";
 import { useAppDispatch, useAppSelector } from "../../../states/store";
+import { addItemToCart } from "../../../states/customer/cartSlide";
 
 const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
@@ -119,6 +120,9 @@ const ProductDetail = () => {
           </div>
           <div className="mt-12 flex items-center gap-5">
             <Button
+            onClick={() => {
+              dispatch(addItemToCart({productId: product?.id!, quantity: quantity, size: "M"}));
+            }}
               className="w-full"
               variant="contained"
               startIcon={<AddShoppingCart />}

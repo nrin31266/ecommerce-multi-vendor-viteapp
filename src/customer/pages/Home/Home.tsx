@@ -14,11 +14,11 @@ const Home = () => {
         <ElectricCategories />
         <CategoryGrid />
         <section className="pt-20">
-          <Title level="4">TODAY'S DEAL</Title>
+          <Title>TODAY'S DEAL</Title>
           <Deal />
         </section>
         <section className="pt-20">
-          <Title level="4">Shop By Category</Title>
+          <Title>Shop By Category</Title>
           <ShopByCategory />
         </section>
         <section className="lg:px-20  pt-20 relative h-full w-full">
