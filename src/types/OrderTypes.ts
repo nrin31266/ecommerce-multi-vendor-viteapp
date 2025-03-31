@@ -12,8 +12,8 @@ export interface IOrder {
   shippingAddress: IPickupAddress;
   paymentDetails: any;
   totalMrpPrice: number;
-  totalSellingPrice?: number; // Optional field
-  discount?: number; // Optional field
+  totalSellingPrice: number; 
+  discount: number; 
   orderStatus: EOrderStatus;
   totalItem: number;
   deliverDate: string;

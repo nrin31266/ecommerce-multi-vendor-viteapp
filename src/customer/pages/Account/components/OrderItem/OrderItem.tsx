@@ -12,7 +12,7 @@ interface IOrderItemProps {
 const OrderItem = ({item, order}:IOrderItemProps) => {
   const navigate = useNavigate();
   return (
-    <div onClick={()=> navigate(`/account/order/${order.id}/${item.id}`)} className="text-sm bg-white p-5 space-y-4 border rounded-md cursor-pointer border-gray-200">
+    <div onClick={()=> navigate(`/account/order/${order.id}/${item.id}`)} className="text-sm bg-white p-5 space-y-4 cursor-pointer not-last:border-b border-gray-200">
       <div className="flex items-center gap-5">
         <div>
           <Avatar sizes="small" sx={{ bgcolor: amber[100] }}>

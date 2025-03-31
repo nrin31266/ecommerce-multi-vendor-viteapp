@@ -42,6 +42,7 @@ import Auth from "./customer/pages/Auth/Auth";
 import { fetchUserProfile } from "./states/authSlide";
 import PaymentSuccess from "./customer/pages/AfterPayment/PaymentSuccess/PaymentSuccess";
 import OrderDetails from "./customer/pages/Account/components/OrderDetails/OrderDetails";
+import Wishlist from "./customer/pages/Wishlist/Wishlist";
 function App() {
   const dispatch = useAppDispatch();
   const seller = useAppSelector(store => store.seller);
@@ -72,6 +73,7 @@ function App() {
           <Route path="/product-details/:productId" element={<ProductDetail/>}/>
           <Route path="/reviews/:productId" element={<Review/>}/>
           <Route path="/cart" element={<Cart/>}/>
+          <Route path="/wishlist" element={<Wishlist/>}/>
           <Route path="/checkout" element={<Checkout/>}/>
           <Route path="/payment-success/:orderId" element={<PaymentSuccess/>}/>
           <Route path="/account" element={<Account/>}>

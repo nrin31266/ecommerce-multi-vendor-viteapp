@@ -28,7 +28,7 @@ const Account = () => {
   };
 
   return (
-    <div className="lg:px-60 px-5 min-h-screen mt-10">
+    <div className="lg:px-40 px-5 min-h-screen mt-10">
       <div>
         <h1 className="text-xl font-bold pb-5">Name is here</h1>
         <Divider />

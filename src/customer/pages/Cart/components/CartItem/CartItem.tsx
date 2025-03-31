@@ -4,7 +4,7 @@ import { red } from "@mui/material/colors";
 import React, { useState } from "react";
 import { ICartItem } from "./../../../../../types/CartTypes";
 import { useAppDispatch } from "../../../../../states/store";
-import { updateCartItem } from "../../../../../states/customer/cartSlide";
+import { deleteCartItem, updateCartItem } from "../../../../../states/customer/cartSlide";
 
 interface ICartItemProps {
   cartItem: ICartItem;
@@ -66,7 +66,7 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
         </div>
       </div>
       <div className="absolute right-1 top-1">
-        <IconButton>
+        <IconButton onClick={()=> dispatch(deleteCartItem(cartItem.id))}>
           <Close className="text-red-600" />
         </IconButton>
       </div>

@@ -8,7 +8,7 @@ interface IOrderComponentProps {
 
 const OrderComponent = ({order}: IOrderComponentProps) => {
   return (
-    <div className='space-y-5 border-2 border-gray-200 rounded-md p-6'>
+    <div className='space-y-1 border-1 border-gray-200 rounded-md'>
       {
         order.orderItems.map((item, index)=><OrderItem item={item} order={order} key={index}/>)
       }
