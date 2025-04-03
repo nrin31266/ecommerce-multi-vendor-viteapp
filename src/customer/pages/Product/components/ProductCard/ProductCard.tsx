@@ -9,6 +9,8 @@ import { teal } from "@mui/material/colors";
 import { IProduct } from "../../../../../types/ProductTypes";
 import { useNavigate } from "react-router-dom";
 import classes from './ProductCard.module.css';
+import { useAppDispatch } from "../../../../../states/store";
+import { addOrRemoveProductToWishlist } from "../../../../../states/customer/wishlistSlide";
 
 interface Props {
   product: IProduct;
@@ -20,7 +22,7 @@ const ProductCard = ({ product }: Props) => {
   const [currentImage, setCurrentImage] = useState(0);
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
-
+  const dispatch = useAppDispatch();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
 
@@ -71,7 +73,10 @@ const ProductCard = ({ product }: Props) => {
         {isHovered && (
           <div className="indicator absolute left-1/2 translate-x-[-50%] bottom-[16px] flex flex-col items-center space-y-2 ">
             <div className="flex gap-3">
-              <Button variant="contained" color="secondary">
+              <Button onClick={(e)=>{
+                e.stopPropagation();
+                dispatch(addOrRemoveProductToWishlist({productId: product.id}))
+              }} variant="contained" color="secondary">
                 <Favorite sx={{ color: "var(--primary-color)" }} />
               </Button>
               <Button color="secondary" variant="contained">
