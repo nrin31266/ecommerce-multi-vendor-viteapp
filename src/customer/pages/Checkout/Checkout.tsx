@@ -19,31 +19,27 @@ import { useDispatch } from "react-redux";
 import { IPickupAddress } from "../../../types/SellerTypes";
 import { createOrder } from "../../../states/customer/orderSlide";
 import { useAppDispatch, useAppSelector } from "../../../states/store";
+import { useNavigate } from "react-router-dom";
 
 const paymentGateways = [
-  {
-    value: "RAZORPAY",
-    image:
-      "https://cdn.iconscout.com/icon/free/png-512/free-razorpay-logo-icon-download-in-svg-png-gif-file-formats--payment-gateway-brand-logos-icons-1399875.png?f=webp&w=256",
-    label: "Razorpay",
-  },
   {
     value: "STRIPE",
     image:
       "https://logos-world.net/wp-content/uploads/2021/03/Stripe-Symbol.png",
     label: "Stripe",
   },
-  {
-    value: "PAYPAL",
-    image:
-      "https://static.vecteezy.com/system/resources/previews/009/469/637/original/paypal-payment-icon-editorial-logo-free-vector.jpg",
-    label: "Paypal",
-  },
+
   {
     value: "VNPAY",
     image: "https://assets.topdev.vn/images/2020/08/25/VNPAY-Logo-yGapP.png",
     label: "VNPay",
   },
+  {
+    value: "CASH_ON_DELIVERY",
+    image : "https://www.marketing91.com/wp-content/uploads/2022/03/Cash-on-Delivery.jpg",
+    label: "Cash on delivery"
+
+  }
 ];
 const defaultAddress: IPickupAddress={
   address: "28, NB",
@@ -59,8 +55,9 @@ pinCode:""
 const Checkout = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<IPickupAddress | null>(
-    
+
   );
+  const navigate = useNavigate()
   const order = useAppSelector(store=>store.order)
   const [paymentGateway, setPaymentGateway] = useState(
     paymentGateways[0].value
@@ -83,6 +80,7 @@ const Checkout = () => {
       createOrder({
         address: newAddress ?? selectedAddress!,
         paymentGateway: paymentGateway,
+        navigate: navigate
       })
     );
   };

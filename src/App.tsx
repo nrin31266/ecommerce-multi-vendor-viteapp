@@ -52,12 +52,12 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchSellerProfile());
-  }, [auth.jwt, location.pathname]);
+  }, [auth.jwt]);
 
 
   useEffect(() => {
     dispatch(fetchUserProfile());
-  }, [auth.jwt, location.pathname]);
+  }, [auth.jwt]);
 
   if(location.pathname === "/" && seller.profile){
     return <Navigate to={"/seller"}/>
@@ -87,7 +87,7 @@ function App() {
           <Route path="/become-seller" element={<BecomeSeller/>}/>
           <Route path="/seller" element={<SellerDashboard/>}>
             <Route path="" element={<Dashboard/>}/>
-            <Route path="orders" element={<OrdersSeller/>}/>
+            <Route path="orders/:orderStatus" element={<OrdersSeller/>}/>
             <Route path="products" element={<Products/>}/>
             <Route path="add-product" element={<AddProduct/>}/>
             <Route path="payment" element={<Payment/>}/>

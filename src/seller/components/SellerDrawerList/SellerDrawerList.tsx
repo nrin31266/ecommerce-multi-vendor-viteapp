@@ -11,6 +11,7 @@ import {
 } from "@mui/icons-material";
 import React from "react";
 import DrawerList, { MenuItem } from "../../../components/DrawerList/DrawerList";
+import { EOrderStatus } from "../../../types/OrderTypes";
 
 const menu: MenuItem[] = [
   {
@@ -21,7 +22,7 @@ const menu: MenuItem[] = [
   },
   {
     name: "Orders",
-    path: "/seller/orders",
+    path: `/seller/orders/${EOrderStatus.PLACED}`,
     icon: <ShoppingBag className="text-[var(--primary-color)]" />,
     activeIcon: <ShoppingBag className="text-white" />,
   },

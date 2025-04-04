@@ -10,7 +10,7 @@ import authSlide from './authSlide';
 import cartSlide from './customer/cartSlide';
 import orderSlide from './customer/orderSlide';
 import wishlistSlide from './customer/wishlistSlide';
-
+import sellerOrderSlide from './seller/sellerOrderSlide';
 
 const rootReducer = combineReducers({
   seller: sellerSlide,
@@ -20,7 +20,8 @@ const rootReducer = combineReducers({
   auth: authSlide,
   cart: cartSlide,
   order: orderSlide,
-  wishlist: wishlistSlide
+  wishlist: wishlistSlide,
+  sellerOrder: sellerOrderSlide
 });
 
 

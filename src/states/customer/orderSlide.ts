@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IOrder, IOrderItem } from "../../types/OrderTypes";
 import handleAPI from "../../configurations/handleAPI";
 import { IPickupAddress } from "../../types/SellerTypes";
+import { NavigateFunction } from "react-router-dom";
 
 export interface OrderState {
   orders: IOrder[];
@@ -78,10 +79,10 @@ export const fetchOrderItemById = createAsyncThunk<IOrderItem, { id: number }>(
 
 export const createOrder = createAsyncThunk<
   any,
-  { address: IPickupAddress; paymentGateway: string }
+  { address: IPickupAddress; paymentGateway: string, navigate: NavigateFunction }
 >(
   "/orders/createOrder",
-  async ({ address, paymentGateway }, { rejectWithValue }) => {
+  async ({ address, paymentGateway, navigate }, { rejectWithValue }) => {
     try {
       const data = await handleAPI<any>({
         endpoint: "/api/orders",
@@ -92,10 +93,16 @@ export const createOrder = createAsyncThunk<
       });
       console.log("User created order data:", data);
 
+      
+
       if (data.payment_link_url) {
         window.location.href = data.payment_link_url;
       }
 
+
+      if(paymentGateway === "CASH_ON_DELIVERY"){
+        navigate("/payment-success/cod")
+      }
       return data;
     } catch (error) {
       return rejectWithValue(

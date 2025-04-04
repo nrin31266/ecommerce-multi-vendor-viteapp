@@ -92,7 +92,10 @@ const ProductTable = () => {
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.color}</StyledTableCell>
                 <StyledTableCell align="right">
-                  {<Button>in_stock</Button>}
+                  <div>
+                  <Button>in_stock: {row.quantity}</Button>
+                  </div>
+                  
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {
