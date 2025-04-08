@@ -1,4 +1,4 @@
-import { Add, Close, ImageSearch } from "@mui/icons-material";
+import { Add, Close, Delete, ImageSearch } from "@mui/icons-material";
 import {
   Button,
   FormControl,
@@ -7,6 +7,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Switch,
   TextareaAutosize,
   TextField,
 } from "@mui/material";
@@ -16,7 +17,6 @@ import { useFormik, validateYupSchema } from "formik";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { colors } from "../../../data/filter/colors";
 import { mainCategories } from "../../../data/category/mainCategory";
-import { uploadImage } from "../../../utils/Firebase/uploadFile";
 import { useAppDispatch, useAppSelector } from "../../../states/store";
 import { createProduct } from "../../../states/seller/sellerProductSlide";
 
@@ -29,7 +29,7 @@ import { womenLevelThree } from "../../../data/category/womenLevelThree";
 import { homeFurnitureLevelThree } from "../../../data/category/homeFurnitureLevelThree";
 import { electronicsLevelThree } from "../../../data/category/electronicsLevelThree";
 import { ICategory } from "../../../types/ProductTypes";
-
+const label = { inputProps: { "aria-label": "Single Product?" } };
 const categoriesLevelTwo: { [key: string]: ICategory[] } = {
   men: menLevelTwo,
   women: womenLevelTwo,
@@ -43,48 +43,58 @@ const categoriesLevelThree: { [key: string]: ICategory[] } = {
   home_furniture: homeFurnitureLevelThree,
   electronics: electronicsLevelThree,
 };
+export interface ICreateProductReq {
+  title: string;
+  description: string;
+  images: string[];
+  category1: string;
+  category2: string;
+  category3: string;
+  optionsTypes: string[];
+  optionKey: null | string;
+  isSubProduct: boolean;
+  quantity: number;
+  mrpPrice: number;
+  sellingPrice: number;
+}
 const AddProduct = () => {
   const [imageSelected, setImageSelected] = useState<File[]>([]);
 
   const dispatch = useAppDispatch();
-  const sellerProduct = useAppSelector(store => store.sellerProduct);
+  const sellerProduct = useAppSelector((store) => store.sellerProduct);
   const handleSelectImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setImageSelected((prev) => [...e.target.files!, ...prev]); 
+      setImageSelected((prev) => [...prev, ...e.target.files!]);
     }
   };
-  
 
   const handleRemoveImage = (index: number) => {
     setImageSelected(imageSelected.filter((_, i) => i !== index));
   };
 
-  const formik = useFormik({
+  const formik = useFormik<ICreateProductReq>({
     initialValues: {
       title: "",
       description: "",
-      mrpPrice: "",
-      sellingPrice: "",
-      quantity: "",
-      color: "",
       images: [],
       category1: "",
       category2: "",
       category3: "",
-      sizes: "",
+      optionsTypes: ["Color"],
+      optionKey: "",
+      isSubProduct: false,
+      quantity: 0,
+      mrpPrice: 0,
+      sellingPrice: 0,
     },
     onSubmit: async (values) => {
-
-
+      console.log(values);
       await dispatch(
-        createProduct({ request: values, imageFiles: imageSelected.reverse() })
+        createProduct({ request: values, imageFiles: imageSelected })
       );
     },
     validationSchema: null,
   });
-
-
-
 
   return (
     <div>
@@ -149,40 +159,8 @@ const AddProduct = () => {
                 }
               />
             </div>
-            <div className="col-span-3">
-              <TextField
-                type="number"
-                required
-                fullWidth
-                name="mrpPrice"
-                label="Mrp Price"
-                value={formik.values.mrpPrice}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.mrpPrice && Boolean(formik.errors.mrpPrice)
-                }
-                helperText={formik.touched.mrpPrice && formik.errors.mrpPrice}
-              />
-            </div>
-            <div className="col-span-3">
-              <TextField
-                type="number"
-                required
-                fullWidth
-                name="sellingPrice"
-                label="Selling Price"
-                value={formik.values.sellingPrice}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.sellingPrice &&
-                  Boolean(formik.errors.sellingPrice)
-                }
-                helperText={
-                  formik.touched.sellingPrice && formik.errors.sellingPrice
-                }
-              />
-            </div>
-            <div className="col-span-3">
+
+            {/* <div className="col-span-3">
               <FormControl fullWidth required>
                 <InputLabel id="color">Color</InputLabel>
                 <Select
@@ -227,7 +205,7 @@ const AddProduct = () => {
                   formik.touched.sizes && formik.errors.sizes
                 }
               />
-            </div>
+            </div> */}
             <div className="col-span-4">
               <FormControl fullWidth required>
                 <InputLabel id="category1">Category</InputLabel>
@@ -307,9 +285,160 @@ const AddProduct = () => {
               </FormControl>
             </div>
           </div>
+          <div className="mt-5">
+            <span>Single Product? </span>
+            <Switch
+              name="isSubProduct"
+              {...label}
+              value={formik.values}
+              onChange={(e) => {
+                formik.handleChange(e);
+              }}
+            />
+          </div>
+          <div className="grid gap-5 grid-cols-12 mt-4">
+            {formik.values.isSubProduct ? (
+              <>
+                <div className="col-span-12">
+                  <TextField
+                    type="number"
+                    required
+                    fullWidth
+                    name="mrpPrice"
+                    label="Mrp Price"
+                    value={formik.values.mrpPrice}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.mrpPrice && Boolean(formik.errors.mrpPrice)
+                    }
+                    helperText={
+                      formik.touched.mrpPrice && formik.errors.mrpPrice
+                    }
+                  />
+                </div>
+                <div className="col-span-12">
+                  <TextField
+                    type="number"
+                    required
+                    fullWidth
+                    name="sellingPrice"
+                    label="Selling Price"
+                    value={formik.values.sellingPrice}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.sellingPrice &&
+                      Boolean(formik.errors.sellingPrice)
+                    }
+                    helperText={
+                      formik.touched.sellingPrice && formik.errors.sellingPrice
+                    }
+                  />
+                </div>
+                <div className="col-span-12">
+                  <TextField
+                    type="number"
+                    required
+                    fullWidth
+                    name="quantity"
+                    label="Quantity"
+                    value={formik.values.quantity}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.quantity && Boolean(formik.errors.quantity)
+                    }
+                    helperText={
+                      formik.touched.quantity && formik.errors.quantity
+                    }
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="col-span-12 space-y-3">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-semibold">Options Types</h2>
+                  <div className="flex flex-wrap gap-4">
+                    <FormControl sx={{minWidth: "150px"}} >
+                      <InputLabel id="optionKey">Option Key</InputLabel>
+                      <Select
+                        name="optionKey"
+                        labelId="optionKey"
+                        id="optionKey"
+                        value={formik.values.optionKey}
+                        label="Option Key"
+                        onChange={(e) => {
+                          formik.handleChange(e);
+                        }}
+                      >
+                        <MenuItem value={""}>
+                          <em>None</em>
+                        </MenuItem>
+                        {formik.values.optionsTypes.map((optionType, index) => (
+                          <MenuItem value={optionType} key={index}>
+                            {optionType}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <div>
+                    <Button
+                      variant="outlined"
+                      startIcon={<Add />}
+                      onClick={() => {
+                        formik.setFieldValue("optionsTypes", [
+                          ...formik.values.optionsTypes,
+                          "",
+                        ]);
+                      }}
+                    >
+                      Thêm
+                    </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {formik.values.optionsTypes.map((item, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <TextField
+                      required
+                      fullWidth
+                      label={`Option ${index + 1}`}
+                      name={`optionsTypes[${index}]`}
+                      value={formik.values.optionsTypes[index]}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.optionsTypes &&
+                        Boolean(formik.errors.optionsTypes?.[index])
+                      }
+                      helperText={
+                        formik.touched.optionsTypes &&
+                        formik.errors.optionsTypes?.[index]
+                      }
+                    />
+                    <IconButton
+                      color="error"
+                      onClick={() => {
+                        if (formik.values.optionsTypes.length <= 1) return;
+                        const newOptions = [...formik.values.optionsTypes];
+                        newOptions.splice(index, 1);
+                        formik.setFieldValue("optionsTypes", newOptions);
+                      }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <div className="mt-10">
-            <Button disabled={sellerProduct.loading} type="submit" variant="contained" fullWidth size="large">
-              {sellerProduct.loading? "Adding Product..." : "Add Product"}
+            <Button
+              disabled={sellerProduct.loading}
+              type="submit"
+              variant="contained"
+              fullWidth
+              size="large"
+            >
+              {sellerProduct.loading ? "Adding Product..." : "Add Product"}
             </Button>
           </div>
         </div>

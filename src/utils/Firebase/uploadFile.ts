@@ -14,7 +14,7 @@ export const uploadImage = async (file: File): Promise<string> => {
     }
 
     // 1️⃣ Tạo đường dẫn lưu trữ file trong Firebase Storage
-    const fileRef = ref(storage, `ecommerce_project1/images/${Date.now()}-${file.name}`);
+    const fileRef = ref(storage, `images/${Date.now()}-${file.name}`);
 
     // 2️⃣ Bắt đầu upload file
     const uploadTask = uploadBytesResumable(fileRef, file);

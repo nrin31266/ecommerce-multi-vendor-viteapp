@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IProduct } from "../../types/ProductTypes";
 import handleAPI from "../../configurations/handleAPI";
 import { uploadImage } from "../../utils/Firebase/uploadFile";
+import { ICreateProductReq } from "../../seller/pages/AddProduct/AddProduct";
 
 export const fetchSellerProducts = createAsyncThunk<IProduct[]>(
   "/sellerProduct/fetchSellerProducts",
@@ -20,7 +21,7 @@ export const fetchSellerProducts = createAsyncThunk<IProduct[]>(
   }
 );
 
-export const createProduct = createAsyncThunk<IProduct, { request: any, imageFiles?: File[] }>(
+export const createProduct = createAsyncThunk<IProduct, { request: ICreateProductReq, imageFiles?: File[] }>(
   "/sellerProduct/createProduct",
   async ({ request, imageFiles }, { rejectWithValue }) => {
     try {

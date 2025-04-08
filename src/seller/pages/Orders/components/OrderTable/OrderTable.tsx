@@ -32,6 +32,7 @@ import {
   SignalWifiStatusbarConnectedNoInternet4Rounded,
 } from "@mui/icons-material";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { DateUtils } from "../../../../../utils/DateTime/dateUtils";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -187,6 +188,7 @@ const OrderTable = () => {
               <StyledTableCell>Order Id</StyledTableCell>
               <StyledTableCell>Products</StyledTableCell>
               <StyledTableCell>Payment Method</StyledTableCell>
+              <StyledTableCell>Order Date</StyledTableCell>
               <StyledTableCell align="right">Shipping Address</StyledTableCell>
               <StyledTableCell align="right">Order Status</StyledTableCell>
               <StyledTableCell align="right">Update</StyledTableCell>
@@ -226,6 +228,9 @@ const OrderTable = () => {
                 </StyledTableCell>
                 <StyledTableCell>
                   {order.paymentDetails.paymentMethod}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {DateUtils.timeAgo(new Date(order.orderDate))}
                 </StyledTableCell>
                 <StyledTableCell>
                   <div>
