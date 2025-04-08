@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -8,9 +8,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useAppDispatch, useAppSelector } from "../../../../../states/store";
-import { deleteProduct, fetchSellerProducts } from "../../../../../states/seller/sellerProductSlide";
-import { Button, IconButton } from "@mui/material";
-import { Delete, Edit, Remove } from "@mui/icons-material";
+import {
+  deleteProduct,
+  fetchSellerProducts,
+} from "../../../../../states/seller/sellerProductSlide";
+import { Button, Divider, IconButton } from "@mui/material";
+import { Add, Delete, Edit, Remove } from "@mui/icons-material";
+import AddEditSubProductModel from "../AddEditSubProductModel/AddEditSubProductModel";
+import { IProduct } from "../../../../../types/ProductTypes";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,42 +57,83 @@ const rows = [
 const ProductTable = () => {
   const dispatch = useAppDispatch();
   const sellerProduct = useAppSelector((state) => state.sellerProduct);
+  const [isVisibleAddEditSubModel, setIsVisibleAddEditSubModel] =
+    useState(false);
+  const [productSelected, setProductSelected] = useState<IProduct>();
 
   useEffect(() => {
     dispatch(fetchSellerProducts());
   }, []);
   return (
     <div>
-      <TableContainer  component={Paper}>
-        <Table  sx={{ minWidth: 700 }} aria-label="customized table">
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell>Images</StyledTableCell>
               <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell align="right">MRP</StyledTableCell>
+              <StyledTableCell align="right">Sub product</StyledTableCell>
               <StyledTableCell align="right">Selling Pr</StyledTableCell>
               <StyledTableCell align="right">Color</StyledTableCell>
               <StyledTableCell align="right">Update Stock</StyledTableCell>
               <StyledTableCell align="right">Update</StyledTableCell>
             </TableRow>
           </TableHead>
-          <TableBody >
-            {sellerProduct.product.map((row) => (
-              <StyledTableRow key={row.id}>
+          <TableBody>
+            {sellerProduct.product.map((item) => (
+              <StyledTableRow key={item.id}>
                 <StyledTableCell
                   component="th"
                   scope="row"
                   className="w-[300px]"
                 >
                   <div className="flex flex-nowrap gap-1 w-full overflow-x-auto overflow-y-hidden">
-                    {row.images.map((image) => (
+                    {item.images.map((image) => (
                       <img className="w-20 rounded-md " src={image} alt="" />
                     ))}
                   </div>
                 </StyledTableCell>
-                <StyledTableCell>{row.title}</StyledTableCell>
-                <StyledTableCell align="right">{row.mrpPrice}</StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell>{item.title}</StyledTableCell>
+                <StyledTableCell width={400}>
+                  {item.isSubProduct ? (
+                    <div>
+                      <h1 className="font-bold text-[var(--primary-color)]">
+                        Single Product
+                      </h1>
+                      <p>
+                        <b>Selling Price: </b>
+                        {item.subProducts[0].sellingPrice}
+                      </p>
+                      <p>
+                        <b>MRP Price: </b>
+                        {item.subProducts[0].mrpPrice}
+                      </p>
+                      <p>
+                        <b>Quantity: </b>
+                        {item.subProducts[0].quantity}
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-center">
+                        <h1 className="font-bold text-[var(--primary-color)]">
+                          MultiP{" "}
+                        </h1>
+                        <IconButton
+                          onClick={() => {
+                            setProductSelected(item);
+                            setIsVisibleAddEditSubModel(true);
+                          }}
+                        >
+                          <Add />
+                        </IconButton>
+                        ({item.subProducts.length}{" "}
+                        {item.subProducts.length > 1 ? "items" : "item"})
+                      </div>
+                    </div>
+                  )}
+                </StyledTableCell>
+                {/* <StyledTableCell align="right">
                   {row.sellingPrice}
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.color}</StyledTableCell>
@@ -96,16 +142,19 @@ const ProductTable = () => {
                   <Button>in_stock: {row.quantity}</Button>
                   </div>
                   
-                </StyledTableCell>
+                </StyledTableCell> */}
                 <StyledTableCell align="right">
                   {
                     <>
                       <IconButton color="primary">
                         <Edit />
                       </IconButton>
-                      <IconButton onClick={()=>{
-                        dispatch(deleteProduct({id:row.id}))
-                      }} color="error">
+                      <IconButton
+                        onClick={() => {
+                          dispatch(deleteProduct({ id: item.id }));
+                        }}
+                        color="error"
+                      >
                         <Delete />
                       </IconButton>
                     </>
@@ -116,6 +165,17 @@ const ProductTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {productSelected && (
+        <AddEditSubProductModel
+          product={productSelected}
+          isVisible={isVisibleAddEditSubModel}
+          onClose={() => {
+            setIsVisibleAddEditSubModel(false)
+            setProductSelected(undefined)
+          }}
+        />
+      )}
     </div>
   );
 };

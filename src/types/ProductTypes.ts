@@ -1,19 +1,41 @@
 import { ISeller } from "./SellerTypes";
 
 export interface IProduct {
-  id: number;
-  title: string;
-  description: string;
-  mrpPrice: number;
-  sellingPrice: number;
-  quantity: number;
-  color: string;
-  images: string[];
-  category: ICategory;
-  sizes: string;
-  discountPercentage: number;
-  createdAt: Date;
-  seller?: ISeller;
+  id: number
+  title: string
+  description: string
+  minMrpPrice: number
+  maxMrpPrice: number
+  discountPercentage: number
+  minSellingPrice: number
+  maxSellingPrice: number
+  totalSubProduct: number
+  totalSold: number
+  totalOrder: number
+  isSubProduct: boolean
+  images: string[]
+  numberRating: number
+  category: ICategory
+  seller: ISeller
+  createdAt: string
+  optionsTypes: IOptionsType[]
+  optionKey: string
+  subProducts: ISubProduct[]
+}
+
+export interface IOptionsType {
+  id: number
+  value: string
+}
+
+export interface ISubProduct {
+  id: number
+  quantity: number
+  mrpPrice: number
+  sellingPrice: number
+  discountPercentage: number
+  images: string[]
+  options: any[]
 }
 
 export interface ICategory {

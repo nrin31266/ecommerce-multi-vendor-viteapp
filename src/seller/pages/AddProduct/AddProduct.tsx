@@ -58,10 +58,12 @@ export interface ICreateProductReq {
   sellingPrice: number;
 }
 const AddProduct = () => {
-  const [imageSelected, setImageSelected] = useState<File[]>([]);
+  
 
   const dispatch = useAppDispatch();
   const sellerProduct = useAppSelector((store) => store.sellerProduct);
+
+  const [imageSelected, setImageSelected] = useState<File[]>([]);
   const handleSelectImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setImageSelected((prev) => [...prev, ...e.target.files!]);

@@ -1,19 +1,19 @@
 import { EUserRole } from "./UserTypes"
 
 export interface ISeller {
-    id: number
-    sellerName: string
-    mobile: string
-    email: string
-    password: string
-    businessDetails: IBusinessDetails
-    bankDetails: IBankDetails
-    role: EUserRole
-    accountStatus: string
-    pickupAddress: IPickupAddress
-    gstin: any
-    emailVerified: boolean
-    taxCode:string
+  id: number
+  sellerName: string
+  mobile: string
+  email: string
+  password: string
+  businessDetails: IBusinessDetails
+  bankDetails: IBankDetails
+  role: string
+  accountStatus: string
+  taxCode: string
+  pickupAddress: IPickupAddress
+  gstin: string
+  emailVerified: boolean
   }
 
 
@@ -35,15 +35,14 @@ export interface ISeller {
   }
   
   export interface IPickupAddress {
-    id?: number
+    id: number
     name: string
-    locality: string
-    address: string
-    city: string
-    state: string
-    pinCode: string
-    mobile: string
-    zipCode: string
+    phoneNumber: any
+    street: any
+    ward: any
+    district: any
+    province: any
+    postalCode: any
   }
 
   export interface ISellerReport {
