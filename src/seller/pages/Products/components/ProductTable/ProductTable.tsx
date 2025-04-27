@@ -13,9 +13,18 @@ import {
   fetchSellerProducts,
 } from "../../../../../states/seller/sellerProductSlide";
 import { Button, Divider, IconButton } from "@mui/material";
-import { Add, Delete, Edit, Remove } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  Edit,
+  ExpandLess,
+  ExpandMore,
+  Remove,
+} from "@mui/icons-material";
 import AddEditSubProductModel from "../AddEditSubProductModel/AddEditSubProductModel";
 import { IProduct } from "../../../../../types/ProductTypes";
+import SubProductItem from "../SubProductIem/SubProductItem";
+import { CurrencyUtils } from "../../../../../utils/Currency/CurrencyUtils";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -60,6 +69,11 @@ const ProductTable = () => {
   const [isVisibleAddEditSubModel, setIsVisibleAddEditSubModel] =
     useState(false);
   const [productSelected, setProductSelected] = useState<IProduct>();
+  const [moreSubProducts, setMoreSubProducts] = useState(
+    new Map<number, boolean>(
+      sellerProduct.product.map((item) => [item.id, false])
+    )
+  );
 
   useEffect(() => {
     dispatch(fetchSellerProducts());
@@ -67,25 +81,24 @@ const ProductTable = () => {
   return (
     <div>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <Table aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell>Images</StyledTableCell>
               <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell align="right">Sub product</StyledTableCell>
-              <StyledTableCell align="right">Selling Pr</StyledTableCell>
-              <StyledTableCell align="right">Color</StyledTableCell>
-              <StyledTableCell align="right">Update Stock</StyledTableCell>
-              <StyledTableCell align="right">Update</StyledTableCell>
+              <StyledTableCell>Sub product</StyledTableCell>
+
+              <StyledTableCell>Category</StyledTableCell>
+
+              <StyledTableCell>Actions</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {sellerProduct.product.map((item) => (
               <StyledTableRow key={item.id}>
                 <StyledTableCell
-                  component="th"
-                  scope="row"
-                  className="w-[300px]"
+                  width={600}
+                  sx={{ verticalAlign: 'top' }}
                 >
                   <div className="flex flex-nowrap gap-1 w-full overflow-x-auto overflow-y-hidden">
                     {item.images.map((image) => (
@@ -93,8 +106,12 @@ const ProductTable = () => {
                     ))}
                   </div>
                 </StyledTableCell>
-                <StyledTableCell>{item.title}</StyledTableCell>
-                <StyledTableCell width={400}>
+                <StyledTableCell sx={{ verticalAlign: 'top' }} width={400}>
+                  <div className="overflow-ellipsis line-clamp-4">
+                    {item.title}
+                  </div>
+                </StyledTableCell>
+                <StyledTableCell sx={{ verticalAlign: 'top' }} width={700}>
                   {item.isSubProduct ? (
                     <div>
                       <h1 className="font-bold text-[var(--primary-color)]">
@@ -102,11 +119,11 @@ const ProductTable = () => {
                       </h1>
                       <p>
                         <b>Selling Price: </b>
-                        {item.subProducts[0].sellingPrice}
+                        {CurrencyUtils.formatVNDCurrency(item.subProducts[0].sellingPrice)}
                       </p>
                       <p>
                         <b>MRP Price: </b>
-                        {item.subProducts[0].mrpPrice}
+                        {CurrencyUtils.formatVNDCurrency(item.subProducts[0].mrpPrice)}
                       </p>
                       <p>
                         <b>Quantity: </b>
@@ -119,31 +136,68 @@ const ProductTable = () => {
                         <h1 className="font-bold text-[var(--primary-color)]">
                           MultiP{" "}
                         </h1>
-                        <IconButton
-                          onClick={() => {
-                            setProductSelected(item);
-                            setIsVisibleAddEditSubModel(true);
-                          }}
-                        >
-                          <Add />
-                        </IconButton>
                         ({item.subProducts.length}{" "}
                         {item.subProducts.length > 1 ? "items" : "item"})
+                        <div className="ml-auto">
+                          <IconButton
+                            onClick={() => {
+                              setProductSelected(item);
+                              setIsVisibleAddEditSubModel(true);
+                            }}
+                          >
+                            <Add />
+                          </IconButton>
+                          {item.subProducts.length > 1 && (
+                            <IconButton
+                              onClick={() => {
+                                const updatedMap = new Map(moreSubProducts); // Tạo bản sao của Map để tránh thay đổi trực tiếp
+                                updatedMap.set(
+                                  item.id,
+                                  !updatedMap.get(item.id)
+                                ); // Cập nhật giá trị
+                                setMoreSubProducts(updatedMap); // Cập nhật state với Map đã thay đổi
+                              }}
+                            >
+                              {moreSubProducts.get(item.id) ? (
+                                <ExpandLess />
+                              ) : (
+                                <ExpandMore />
+                              )}
+                            </IconButton>
+                          )}
+                        </div>
                       </div>
+                      {item.subProducts && item.subProducts.length > 0 && (
+                        <>
+                          <Divider />
+                          <div className="mb-2"></div>
+                          {!moreSubProducts.get(item.id) ? (
+                            <SubProductItem
+                              item={item.subProducts[0]}
+                              product={item}
+                            />
+                          ) : (
+                            moreSubProducts.get(item.id) && (
+                              <div className="space-y-5">
+                                {item.subProducts.map((subProduct) => (
+                                  <SubProductItem
+                                    key={subProduct.id}
+                                    item={subProduct}
+                                    product={item}
+                                  />
+                                ))}
+                              </div>
+                            )
+                          )}
+                        </>
+                      )}
                     </div>
                   )}
-                </StyledTableCell>
-                {/* <StyledTableCell align="right">
-                  {row.sellingPrice}
-                </StyledTableCell>
-                <StyledTableCell align="right">{row.color}</StyledTableCell>
-                <StyledTableCell align="right">
-                  <div>
-                  <Button>in_stock: {row.quantity}</Button>
-                  </div>
-                  
-                </StyledTableCell> */}
-                <StyledTableCell align="right">
+                </StyledTableCell >
+                  <StyledTableCell sx={{ verticalAlign: 'top' }} width={400}>
+                    <p className="font-bold text-xl text-orange-400">{item.category.name}</p>
+                  </StyledTableCell>
+                <StyledTableCell align="right" sx={{ verticalAlign: 'top' }} width={100}>
                   {
                     <>
                       <IconButton color="primary">
@@ -171,8 +225,8 @@ const ProductTable = () => {
           product={productSelected}
           isVisible={isVisibleAddEditSubModel}
           onClose={() => {
-            setIsVisibleAddEditSubModel(false)
-            setProductSelected(undefined)
+            setIsVisibleAddEditSubModel(false);
+            setProductSelected(undefined);
           }}
         />
       )}

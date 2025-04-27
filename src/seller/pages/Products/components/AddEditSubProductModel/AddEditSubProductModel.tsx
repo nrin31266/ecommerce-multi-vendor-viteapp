@@ -2,12 +2,15 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { IProduct } from "../../../../../types/ProductTypes";
+import { ICreateSubProductReq, IProduct } from "../../../../../types/ProductTypes";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageCard from "../../../AddProduct/components/ImageCard/ImageCard";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { TextField } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../../../../states/store";
+
+import { addSubProduct } from "../../../../../states/seller/sellerProductSlide";
 const style = {
   position: "absolute",
   top: "50%",
@@ -27,13 +30,7 @@ interface IAddEditSubProductModelProps {
   product: IProduct;
 }
 
-export interface ICreateSubProductReq {
-  images: string[];
-  quantity: number;
-  mrpPrice: number;
-  sellingPrice: number;
-  options: Record<string, string>; 
-}
+
 
 const AddEditSubProductModel = ({
   isVisible,
@@ -50,21 +47,33 @@ const AddEditSubProductModel = ({
   const handleRemoveImage = (index: number) => {
     setImageSelected(imageSelected.filter((_, i) => i !== index));
   };
-
+  const sellerProductSate= useAppSelector((store) => store.sellerProduct);
   const handleClose = () => {
     onClose();
   };
+  const dispatch = useAppDispatch();
+
+  const productOptions = new Map<string, string>();
+  useEffect(() => {
+      product.optionsTypes.forEach((optionType) => {
+        productOptions.set(optionType.value, "");
+      })
+  },[])
 
   const formik = useFormik<ICreateSubProductReq>({
     initialValues: {
       images: [],
-      quantity: 0,
-      mrpPrice: 0,
-      sellingPrice: 0,
-      options: {},
+      quantity: 100,
+      mrpPrice: product.maxMrpPrice??0,
+      sellingPrice: product.minSellingPrice??0,
+      options: productOptions,
     },
     onSubmit: async (values) => {
-      console.log(values);
+      if(imageSelected.length < 1) {
+        return;
+      }
+      await dispatch(addSubProduct({ id: product.id, rq: values, imageFiles: imageSelected }));
+      handleClose();
     },
     validationSchema: null,
   });
@@ -165,7 +174,7 @@ const AddEditSubProductModel = ({
                   className="mb-3"
                   label={item.value}
                   name={`options.${item.value}`}
-                  value={formik.values.options[item.value]!}
+                  value={formik.values.options.get(item.value)!}
                   onChange={(e) => {
                     formik.setFieldValue(
                       `options.${item.value}`,
@@ -176,7 +185,7 @@ const AddEditSubProductModel = ({
               </div>
             ))}
           </div>
-          <Button type="submit" fullWidth variant="contained" size="large">
+          <Button loading={sellerProductSate.isCreateOrUpdateSubproductLoading} disabled={sellerProductSate.isCreateOrUpdateSubproductLoading} type="submit" fullWidth variant="contained" size="large">
             Add
           </Button>
         </form>

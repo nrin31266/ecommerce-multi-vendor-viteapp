@@ -1,4 +1,5 @@
 import { ISeller } from "./SellerTypes";
+import { ICreateProductReq } from './../seller/pages/AddProduct/AddProduct';
 
 export interface IProduct {
   id: number
@@ -26,6 +27,19 @@ export interface IProduct {
 export interface IOptionsType {
   id: number
   value: string
+}
+
+export interface ICreateSubProductReq {
+  mrpPrice: number
+  sellingPrice: number
+  quantity: number
+  images: string[]
+  options: Map<string, string>
+}
+
+export interface IOptions {
+  Size: string
+  Color: string
 }
 
 export interface ISubProduct {

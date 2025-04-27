@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IProduct } from "../../types/ProductTypes";
+import { ICreateSubProductReq, IProduct, ISubProduct } from "../../types/ProductTypes";
 import handleAPI from "../../configurations/handleAPI";
 import { uploadImage } from "../../utils/Firebase/uploadFile";
 import { ICreateProductReq } from "../../seller/pages/AddProduct/AddProduct";
@@ -64,17 +64,44 @@ export const deleteProduct = createAsyncThunk<void, { id: number }>(
     }
   }
 );
+export const addSubProduct = createAsyncThunk<ISubProduct, { id: number, rq : ICreateSubProductReq, imageFiles?: File[] }>(
+  "/sellerProduct/addSubProduct",
+  async ({ id, rq, imageFiles }, { rejectWithValue }) => {
+    try {
+      if (imageFiles) {
+        const uploadedImages = await Promise.all(
+          imageFiles.map((file) => uploadImage(file))
+        );
+
+        rq.images = uploadedImages;
+      }
+      const data = await handleAPI<ISubProduct>({
+        endpoint: `/api/sellers/products/sub/${id}`,
+        method: "post",
+        isAuthenticated: true,
+        body: rq
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+)
 
 interface SellerProductState {
   product: IProduct[];
   loading: boolean;
   error: string;
+  isCreateOrUpdateSubproductLoading: boolean
 }
 
 const initState: SellerProductState = {
   product: [],
   loading: false,
   error: "",
+  isCreateOrUpdateSubproductLoading: false
 };
 
 const sellerProductSlice = createSlice({
@@ -122,6 +149,24 @@ const sellerProductSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
+
+    builder
+      .addCase(addSubProduct.pending, (state) => {
+        state.isCreateOrUpdateSubproductLoading = true;
+      })
+      .addCase(addSubProduct.fulfilled, (state, action) => {
+        state.isCreateOrUpdateSubproductLoading = false;
+        state.product = state.product.map((product) => {
+          if (product.id === action.meta.arg.id) {
+            return { ...product, subProducts: [...product.subProducts, action.payload] };
+          }
+          return product;
+        });
+      })
+      .addCase(addSubProduct.rejected, (state, action) => {
+        state.isCreateOrUpdateSubproductLoading = false;
+        state.error = action.payload as string;
+    })
   },
 });
 
