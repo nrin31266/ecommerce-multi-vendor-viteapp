@@ -10,7 +10,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../../../states/store";
 
-import { addSubProduct } from "../../../../../states/seller/sellerProductSlide";
+import { addSubProduct, updateSubProduct } from "../../../../../states/seller/sellerProductSlide";
 const style = {
   position: "absolute",
   top: "50%",
@@ -72,11 +72,26 @@ const AddEditSubProductModel = ({
       options: productOptions,
     },
     onSubmit: async (values) => {
-      if(imageSelected.length < 1) {
-        return;
+      if(updateItem) {
+        if(imageSelected.length + imageUrls.length < 1) {
+          return;
+        }
+        values.images = imageUrls;
+        await dispatch(updateSubProduct({ id: updateItem.id, rq: values, imageFiles: imageSelected, productId: product.id })).unwrap().then(() => {
+          handleClose();
+        });
+
+      }else{
+        if(imageSelected.length < 1) {
+          return;
+        }
+        await dispatch(addSubProduct({ id: product.id, rq: values, imageFiles: imageSelected })).
+        unwrap().then(() => {
+          handleClose();
+        });
+
       }
-      await dispatch(addSubProduct({ id: product.id, rq: values, imageFiles: imageSelected }));
-      handleClose();
+     
     },
     validationSchema: null,
   });

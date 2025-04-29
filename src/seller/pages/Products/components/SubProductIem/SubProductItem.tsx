@@ -38,7 +38,7 @@ const SubProductItem = ({
       <div className="col-span-7">
         <div className="flex gap-2">
           {item.options.map((item) => (
-            <p className="font-semibold text-md text-gray-600">
+            <p key={item.optionValue} className="font-semibold text-md text-gray-600">
               {item.optionType.value}: {item.optionValue}
             </p>
           ))}

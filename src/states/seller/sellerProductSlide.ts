@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ICreateSubProductReq, IProduct, ISubProduct } from "../../types/ProductTypes";
+import {
+  ICreateSubProductReq,
+  IProduct,
+  ISubProduct,
+  IUpdateSubProductReq,
+} from "../../types/ProductTypes";
 import handleAPI from "../../configurations/handleAPI";
 import { uploadImage } from "../../utils/Firebase/uploadFile";
 import { ICreateProductReq } from "../../seller/pages/AddProduct/AddProduct";
@@ -21,7 +26,10 @@ export const fetchSellerProducts = createAsyncThunk<IProduct[]>(
   }
 );
 
-export const createProduct = createAsyncThunk<IProduct, { request: ICreateProductReq, imageFiles?: File[] }>(
+export const createProduct = createAsyncThunk<
+  IProduct,
+  { request: ICreateProductReq; imageFiles?: File[] }
+>(
   "/sellerProduct/createProduct",
   async ({ request, imageFiles }, { rejectWithValue }) => {
     try {
@@ -32,7 +40,6 @@ export const createProduct = createAsyncThunk<IProduct, { request: ICreateProduc
 
         request.images = uploadedImages;
       }
-
 
       return await handleAPI<IProduct>({
         endpoint: "/api/sellers/products",
@@ -64,7 +71,10 @@ export const deleteProduct = createAsyncThunk<void, { id: number }>(
     }
   }
 );
-export const addSubProduct = createAsyncThunk<ISubProduct, { id: number, rq : ICreateSubProductReq, imageFiles?: File[] }>(
+export const addSubProduct = createAsyncThunk<
+  ISubProduct,
+  { id: number; rq: ICreateSubProductReq; imageFiles?: File[] }
+>(
   "/sellerProduct/addSubProduct",
   async ({ id, rq, imageFiles }, { rejectWithValue }) => {
     try {
@@ -79,7 +89,7 @@ export const addSubProduct = createAsyncThunk<ISubProduct, { id: number, rq : IC
         endpoint: `/api/sellers/products/sub/${id}`,
         method: "post",
         isAuthenticated: true,
-        body: rq
+        body: rq,
       });
       return data;
     } catch (error) {
@@ -88,20 +98,47 @@ export const addSubProduct = createAsyncThunk<ISubProduct, { id: number, rq : IC
       );
     }
   }
-)
+);
+export const updateSubProduct = createAsyncThunk<
+  ISubProduct,
+  { id: number; rq: IUpdateSubProductReq; imageFiles?: File[], productId: number }
+>(
+  "/sellerProduct/updateSubProduct",
+  async ({ id, rq, imageFiles, productId }, { rejectWithValue }) => {
+    try {
+      if (imageFiles) {
+        const uploadedImages = await Promise.all(
+          imageFiles.map((file) => uploadImage(file))
+        );
+        rq.images = [...rq.images, ...uploadedImages];
+      }
+      const data = await handleAPI<ISubProduct>({
+        endpoint: `/api/sellers/products/sub/${id}`,
+        method: "put",
+        isAuthenticated: true,
+        body: rq,
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+);
 
 interface SellerProductState {
   product: IProduct[];
   loading: boolean;
   error: string;
-  isCreateOrUpdateSubproductLoading: boolean
+  isCreateOrUpdateSubproductLoading: boolean;
 }
 
 const initState: SellerProductState = {
   product: [],
   loading: false,
   error: "",
-  isCreateOrUpdateSubproductLoading: false
+  isCreateOrUpdateSubproductLoading: false,
 };
 
 const sellerProductSlice = createSlice({
@@ -158,7 +195,10 @@ const sellerProductSlice = createSlice({
         state.isCreateOrUpdateSubproductLoading = false;
         state.product = state.product.map((product) => {
           if (product.id === action.meta.arg.id) {
-            return { ...product, subProducts: [...product.subProducts, action.payload] };
+            return {
+              ...product,
+              subProducts: [...product.subProducts, action.payload],
+            };
           }
           return product;
         });
@@ -166,7 +206,29 @@ const sellerProductSlice = createSlice({
       .addCase(addSubProduct.rejected, (state, action) => {
         state.isCreateOrUpdateSubproductLoading = false;
         state.error = action.payload as string;
-    })
+      });
+    builder.addCase(updateSubProduct.pending, (state) => {
+      state.isCreateOrUpdateSubproductLoading = true;
+    }).addCase(updateSubProduct.fulfilled, (state, action) => {
+      state.isCreateOrUpdateSubproductLoading = false;
+      state.product = state.product.map((product) => {
+        if (product.id === action.meta.arg.productId) {
+          return {
+            ...product,
+            subProducts: product.subProducts.map((subProduct) => {
+              if (subProduct.id === action.payload.id) {
+                return action.payload;
+              }
+              return subProduct;
+            }),
+          };
+        }
+        return product;
+      });
+    }).addCase(updateSubProduct.rejected, (state, action) => {
+      state.isCreateOrUpdateSubproductLoading = false;
+      state.error = action.payload as string;
+    });
   },
 });
 

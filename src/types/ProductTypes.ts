@@ -36,6 +36,13 @@ export interface ICreateSubProductReq {
   images: string[]
   options: Map<string, string>
 }
+export interface IUpdateSubProductReq {
+  mrpPrice: number
+  sellingPrice: number
+  quantity: number
+  images: string[]
+  options: Map<string, string>
+}
 
 export interface IOptions {
   Size: string

@@ -1,21 +1,27 @@
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "./firebaseConfig";
 import Resizer from "react-image-file-resizer";
-const resizeFile = (file: File): Promise<File> =>{
+const resizeFile = (file: File): Promise<File> => {
+  const MAX_SIZE = 200 * 1024; // 200 KB
+
+  // Nếu ảnh nhỏ hơn 200KB thì không cần resize
+  if (file.size <= MAX_SIZE) {
+    return Promise.resolve(file);
+  }
+
   return new Promise<File>((resolve) => {
     Resizer.imageFileResizer(
       file,
       1080,
       720,
-      "JPEG",
-      85,
+      "WEBP", // Định dạng nhẹ hơn JPEG
+      80,     // Giảm chất lượng để tối ưu size
       0,
       (resizedFile) => resolve(resizedFile as File),
       "file"
     );
   });
-}
-
+};
   
 
 export const uploadImage = async (file: File): Promise<string> => {
