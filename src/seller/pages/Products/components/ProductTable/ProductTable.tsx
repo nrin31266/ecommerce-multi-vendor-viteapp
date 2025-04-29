@@ -10,6 +10,7 @@ import Paper from "@mui/material/Paper";
 import { useAppDispatch, useAppSelector } from "../../../../../states/store";
 import {
   deleteProduct,
+  deleteSubProduct,
   fetchSellerProducts,
 } from "../../../../../states/seller/sellerProductSlide";
 import { Button, Divider, IconButton } from "@mui/material";
@@ -171,6 +172,9 @@ const ProductTable = () => {
                           <div className="mb-2"></div>
                           {!moreSubProducts.get(item.id) ? (
                             <SubProductItem
+                              onRemove={() => {
+                                dispatch(deleteSubProduct({ id: item.subProducts[0].id, productId: item.id }));
+                              }}
                               onUpdate={() => {
                                 onUpdateSubProduct(item, item.subProducts[0]);
                               }}
@@ -183,6 +187,9 @@ const ProductTable = () => {
                               <div className="space-y-5">
                                 {item.subProducts.map((subProduct) => (
                                   <SubProductItem
+                                    onRemove={() => {
+                                      dispatch(deleteSubProduct({ id: subProduct.id, productId: item.id }));
+                                    }}
                                     onUpdate={() => {
                                       onUpdateSubProduct(item, subProduct);
                                     }}

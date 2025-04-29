@@ -127,6 +127,23 @@ export const updateSubProduct = createAsyncThunk<
   }
 );
 
+export const deleteSubProduct = createAsyncThunk<void, { id: number, productId: number }>(
+  "/sellerProduct/deleteSubProduct",
+  async ({ id, productId }, { rejectWithValue }) => {
+    try {
+      await handleAPI<ISubProduct>({
+        endpoint: `/api/sellers/products/sub/${productId}/delete/${id}`,
+        method: "delete",
+        isAuthenticated: true,
+      });
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+)
+
 interface SellerProductState {
   product: IProduct[];
   loading: boolean;
@@ -227,6 +244,26 @@ const sellerProductSlice = createSlice({
       });
     }).addCase(updateSubProduct.rejected, (state, action) => {
       state.isCreateOrUpdateSubproductLoading = false;
+      state.error = action.payload as string;
+    });
+
+    builder.addCase(deleteSubProduct.pending, (state) => {
+
+    }).addCase(deleteSubProduct.fulfilled, (state, action) => {
+      
+      state.product = state.product.map((product) => {
+        if (product.id === action.meta.arg.productId) {
+          return {
+            ...product,
+            subProducts: product.subProducts.filter(
+              (subProduct) => subProduct.id !== action.meta.arg.id
+            ),
+          };
+        }
+        return product;
+      });
+    }).addCase(deleteSubProduct.rejected, (state, action) => {
+      
       state.error = action.payload as string;
     });
   },

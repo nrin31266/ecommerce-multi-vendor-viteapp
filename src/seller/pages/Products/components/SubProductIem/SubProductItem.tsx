@@ -20,11 +20,13 @@ import { Delete, Edit, Remove } from "@mui/icons-material";
 const SubProductItem = ({
   item,
   product,
-  onUpdate
+  onUpdate,
+  onRemove
 }: {
   item: ISubProduct;
   product: IProduct;
   onUpdate: () => void;
+  onRemove: () => void;
 }) => {
   return (
     <div className="border border-gray-200 p-2 rounded-md grid grid-cols-12 gap-2">
@@ -61,7 +63,7 @@ const SubProductItem = ({
             <Edit onClick={onUpdate} color="primary"/>
         </IconButton>
         <IconButton>
-            <Delete color="error"/>
+            <Delete onClick={onRemove} color="error"/>
         </IconButton>
       </div>
     </div>
