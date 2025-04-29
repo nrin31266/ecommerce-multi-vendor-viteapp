@@ -1,7 +1,7 @@
 import { Close } from "@mui/icons-material";
 import React, { useState } from "react";
 
-const ImageCard = ({item, onRemove}: {item: File, onRemove: () => void}) => {
+const ImageCard = ({item, onRemove}: {item: File | string, onRemove: () => void}) => {
     const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -15,7 +15,11 @@ const ImageCard = ({item, onRemove}: {item: File, onRemove: () => void}) => {
       }}
     >
       <img
-        src={URL.createObjectURL(item)}
+        src={
+          typeof item === "string"
+            ? item
+            : URL.createObjectURL(item)
+        }
         alt=""
         className="w-full h-full object-cover"
       />

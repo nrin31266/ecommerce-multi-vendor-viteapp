@@ -29,6 +29,7 @@ import { womenLevelThree } from "../../../data/category/womenLevelThree";
 import { homeFurnitureLevelThree } from "../../../data/category/homeFurnitureLevelThree";
 import { electronicsLevelThree } from "../../../data/category/electronicsLevelThree";
 import { ICategory } from "../../../types/ProductTypes";
+import { useNavigate } from "react-router-dom";
 const label = { inputProps: { "aria-label": "Single Product?" } };
 const categoriesLevelTwo: { [key: string]: ICategory[] } = {
   men: menLevelTwo,
@@ -73,7 +74,7 @@ const AddProduct = () => {
   const handleRemoveImage = (index: number) => {
     setImageSelected(imageSelected.filter((_, i) => i !== index));
   };
-
+  const navigate = useNavigate();
   const formik = useFormik<ICreateProductReq>({
     initialValues: {
       title: "",
@@ -94,6 +95,7 @@ const AddProduct = () => {
       await dispatch(
         createProduct({ request: values, imageFiles: imageSelected })
       );
+      navigate("/seller/products");
     },
     validationSchema: null,
   });

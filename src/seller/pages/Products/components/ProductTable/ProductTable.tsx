@@ -22,7 +22,7 @@ import {
   Remove,
 } from "@mui/icons-material";
 import AddEditSubProductModel from "../AddEditSubProductModel/AddEditSubProductModel";
-import { IProduct } from "../../../../../types/ProductTypes";
+import { IProduct, ISubProduct } from "../../../../../types/ProductTypes";
 import SubProductItem from "../SubProductIem/SubProductItem";
 import { CurrencyUtils } from "../../../../../utils/Currency/CurrencyUtils";
 
@@ -46,34 +46,32 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
-}
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+
 const ProductTable = () => {
   const dispatch = useAppDispatch();
   const sellerProduct = useAppSelector((state) => state.sellerProduct);
   const [isVisibleAddEditSubModel, setIsVisibleAddEditSubModel] =
     useState(false);
-  const [productSelected, setProductSelected] = useState<IProduct>();
+  const [productSelected, setProductSelected] = useState<IProduct | null>(null);
   const [moreSubProducts, setMoreSubProducts] = useState(
     new Map<number, boolean>(
       sellerProduct.product.map((item) => [item.id, false])
     )
   );
+  const [currentSubProduct, setCurrentSubProduct] = useState<ISubProduct | null>(null);
+
+  const onUpdateSubProduct = (product: IProduct, subProduct: ISubProduct) => {
+    setIsVisibleAddEditSubModel(true);
+    setCurrentSubProduct(subProduct);
+    setProductSelected(product);
+  }
+
+  const onCloseSubProductModel = () => {
+    setIsVisibleAddEditSubModel(false);
+    setCurrentSubProduct(null);
+    setProductSelected(null);
+  }
 
   useEffect(() => {
     dispatch(fetchSellerProducts());
@@ -102,7 +100,7 @@ const ProductTable = () => {
                 >
                   <div className="flex flex-nowrap gap-1 w-full overflow-x-auto overflow-y-hidden">
                     {item.images.map((image) => (
-                      <img className="w-20 rounded-md " src={image} alt="" />
+                      <img className="w-20 h-24 rounded-md object-cover " src={image} alt="" />
                     ))}
                   </div>
                 </StyledTableCell>
@@ -173,6 +171,9 @@ const ProductTable = () => {
                           <div className="mb-2"></div>
                           {!moreSubProducts.get(item.id) ? (
                             <SubProductItem
+                              onUpdate={() => {
+                                onUpdateSubProduct(item, item.subProducts[0]);
+                              }}
                               item={item.subProducts[0]}
                               product={item}
                             />
@@ -181,6 +182,9 @@ const ProductTable = () => {
                               <div className="space-y-5">
                                 {item.subProducts.map((subProduct) => (
                                   <SubProductItem
+                                    onUpdate={() => {
+                                      onUpdateSubProduct(item, subProduct);
+                                    }}
                                     key={subProduct.id}
                                     item={subProduct}
                                     product={item}
@@ -225,9 +229,9 @@ const ProductTable = () => {
           product={productSelected}
           isVisible={isVisibleAddEditSubModel}
           onClose={() => {
-            setIsVisibleAddEditSubModel(false);
-            setProductSelected(undefined);
+            onCloseSubProductModel();
           }}
+          updateItem={currentSubProduct}
         />
       )}
     </div>

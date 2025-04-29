@@ -74,6 +74,12 @@ export const electronicsLevelThree = [
     level: 3,
     parentCategory: "electronics_laptops_computers",
   },
+  {
+    name: "Computer Mouse",
+    categoryId: "computer_mouse",
+    level: 3,
+    parentCategory: "electronics_laptops_computers",
+  },
 
   // Level 3 categories for "TVs & Home Entertainment"
   {

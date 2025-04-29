@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { ICreateSubProductReq, IProduct } from "../../../../../types/ProductTypes";
+import { ICreateSubProductReq, IProduct, ISubProduct } from "../../../../../types/ProductTypes";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import ImageCard from "../../../AddProduct/components/ImageCard/ImageCard";
@@ -28,6 +28,7 @@ interface IAddEditSubProductModelProps {
   isVisible: boolean;
   onClose: () => void;
   product: IProduct;
+  updateItem: ISubProduct | null;
 }
 
 
@@ -36,6 +37,7 @@ const AddEditSubProductModel = ({
   isVisible,
   onClose,
   product,
+  updateItem
 }: IAddEditSubProductModelProps) => {
   const [imageSelected, setImageSelected] = useState<File[]>([]);
   const handleSelectImages = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +62,7 @@ const AddEditSubProductModel = ({
       })
   },[])
 
+
   const formik = useFormik<ICreateSubProductReq>({
     initialValues: {
       images: [],
@@ -77,6 +80,33 @@ const AddEditSubProductModel = ({
     },
     validationSchema: null,
   });
+  const [imageUrls, setImageUrls] = useState<string[]>([]); // ảnh cũ dạng URL
+  useEffect(() => {
+    if (updateItem) {
+      console.log("Update")
+      setImageUrls(updateItem.images ?? []); // giả sử updateItem.images là string[]
+      setImageSelected([]); // clear file khi vào edit
+
+      const convertedOptions = new Map<string, string>();
+      updateItem.options.forEach(option => {
+        convertedOptions.set(option.optionType.value, option.optionValue);
+      });
+  
+      formik.setValues({
+        images: [], // vì ảnh là file mới upload
+        quantity: updateItem.quantity,
+        mrpPrice: updateItem.mrpPrice,
+        sellingPrice: updateItem.sellingPrice,
+        options: convertedOptions,
+      });
+  
+      // Nếu muốn hiển thị ảnh cũ (từ URL), cần xử lý riêng (optional)
+      // setImagePreviewUrls(updateItem.images);  // nếu bạn có
+    }else{
+      setImageUrls([]);
+    }
+    
+  }, [updateItem]);
 
   return (
     <Modal
@@ -87,7 +117,7 @@ const AddEditSubProductModel = ({
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
-          <span className="font-bold">Add</span> Sub Product To{" "}
+          <span className="font-bold text-[var(--primary-color)]">{updateItem ? "Edit" : "Add"} </span> Sub Product To{" "}
           {product.title.length > 20
             ? product.title.slice(0, 20) + "..."
             : product.title}
@@ -104,6 +134,18 @@ const AddEditSubProductModel = ({
         />
         <form className="mt-5" onSubmit={formik.handleSubmit}>
           <div className="flex gap-2 flex-wrap">
+            {
+              imageUrls.length > 0 &&
+              imageUrls.map((item, index) => (
+                <ImageCard
+                  onRemove={() => {
+                    setImageUrls(imageUrls.filter((_, i) => i !== index));
+                  }}
+                  item={item}
+                  key={index}
+                />
+              ))
+            }
             {imageSelected.length > 0 &&
               imageSelected.map((item, index) => (
                 <ImageCard
@@ -186,7 +228,9 @@ const AddEditSubProductModel = ({
             ))}
           </div>
           <Button loading={sellerProductSate.isCreateOrUpdateSubproductLoading} disabled={sellerProductSate.isCreateOrUpdateSubproductLoading} type="submit" fullWidth variant="contained" size="large">
-            Add
+            {
+              updateItem ? "Update" : "Create"
+            }
           </Button>
         </form>
       </Box>

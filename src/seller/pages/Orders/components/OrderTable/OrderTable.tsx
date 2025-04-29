@@ -220,7 +220,7 @@ const OrderTable = () => {
                         <div className="flex flex-col justify-between">
                           <h1>{item.product.title}</h1>
                           <h1>{item.sellingPrice}</h1>
-                          <h1>{item.product.color}</h1>
+                          <h1>{item.product.category.name}</h1>
                         </div>
                       </div>
                     ))}
@@ -235,8 +235,8 @@ const OrderTable = () => {
                 <StyledTableCell>
                   <div>
                     <h1>{order.shippingAddress.name}</h1>
-                    <h1>{order.shippingAddress.city}</h1>
-                    <h1>{order.shippingAddress.mobile}</h1>
+                    <h1>{order.shippingAddress.province}</h1>
+                    <h1>{order.shippingAddress.district}</h1>
                   </div>
                 </StyledTableCell>
                 <StyledTableCell>

@@ -1,43 +1,43 @@
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "./firebaseConfig";
+import Resizer from "react-image-file-resizer";
+const resizeFile = (file: File): Promise<File> =>{
+  return new Promise<File>((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      1080,
+      720,
+      "JPEG",
+      85,
+      0,
+      (resizedFile) => resolve(resizedFile as File),
+      "file"
+    );
+  });
+}
 
-/**
- * Upload file lên Firebase Storage
- * @param file - File cần upload
- * @returns URL của file sau khi upload
- */
+  
+
 export const uploadImage = async (file: File): Promise<string> => {
+  if (!file) {
+    throw new Error("No file selected");
+  }
+
+  const resizedFile = await resizeFile(file);
+
   return new Promise((resolve, reject) => {
-    if (!file) {
-      reject("No file selected");
-      return;
-    }
-
-    // 1️⃣ Tạo đường dẫn lưu trữ file trong Firebase Storage
     const fileRef = ref(storage, `images/${Date.now()}-${file.name}`);
+    const uploadTask = uploadBytesResumable(fileRef, resizedFile);
 
-    // 2️⃣ Bắt đầu upload file
-    const uploadTask = uploadBytesResumable(fileRef, file);
-
-    // 3️⃣ Lắng nghe sự kiện upload
     uploadTask.on(
       "state_changed",
       (snapshot) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log(`Upload is ${progress.toFixed(2)}% done`);
-        switch (snapshot.state) {
-          case 'paused':
-            console.log('Upload is paused');
-            break;
-          case 'running':
-            console.log('Upload is running');
-            break;
-        }
       },
-      (error) => reject(error), // 4️⃣ Bắt lỗi nếu upload thất bại
+      (error) => reject(error),
       async () => {
-        // 5️⃣ Lấy URL sau khi upload thành công
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
         resolve(downloadURL);
       }
