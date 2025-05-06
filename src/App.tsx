@@ -39,24 +39,31 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./states/store";
 import { fetchSellerProfile } from "./states/seller/sellerSlide";
 import Auth from "./customer/pages/Auth/Auth";
-import { fetchUserProfile } from "./states/authSlide";
+import { fetchUserProfile, restoreAuthFromStorage } from "./states/authSlide";
 import PaymentSuccess from "./customer/pages/AfterPayment/PaymentSuccess/PaymentSuccess";
 import OrderDetails from "./customer/pages/Account/components/OrderDetails/OrderDetails";
 import Wishlist from "./customer/pages/Wishlist/Wishlist";
+import { useDispatch } from "react-redux";
 function App() {
   const dispatch = useAppDispatch();
+  const rootDispatch = useDispatch();
   const seller = useAppSelector(store => store.seller);
   const auth = useAppSelector(store => store.auth);
   const navigate = useNavigate();
   const location = useLocation();
 
+  
   useEffect(() => {
-    dispatch(fetchSellerProfile());
-  }, [auth.jwt]);
-
+   rootDispatch(restoreAuthFromStorage());
+   console.log("Initial app")
+  }, []);
 
   useEffect(() => {
-    dispatch(fetchUserProfile());
+    if(auth.role === "ROLE_SELLER"){
+      dispatch(fetchSellerProfile());
+    }else if(auth.role === "ROLE_CUSTOMER"){
+      dispatch(fetchUserProfile());
+    }
   }, [auth.jwt]);
 
   if(location.pathname === "/" && seller.profile){
@@ -87,7 +94,7 @@ function App() {
           <Route path="/become-seller" element={<BecomeSeller/>}/>
           <Route path="/seller" element={<SellerDashboard/>}>
             <Route path="" element={<Dashboard/>}/>
-            <Route path="orders/:orderStatus" element={<OrdersSeller/>}/>
+            <Route path="orders/:tabIndex" element={<OrdersSeller/>}/>
             <Route path="products" element={<Products/>}/>
             <Route path="add-product" element={<AddProduct/>}/>
             <Route path="payment" element={<Payment/>}/>

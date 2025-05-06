@@ -1,38 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { useAppDispatch, useAppSelector } from "../../../../../states/store";
 import {
-  fetchSellerOrders,
-  updateOrderStatus,
-} from "../../../../../states/seller/sellerOrderSlide";
-import { EOrderStatus } from "../../../../../types/OrderTypes";
-import {
-  Backdrop,
+  AppBar,
   Box,
   Button,
-  CircularProgress,
-  FormControl,
-  IconButton,
-  InputLabel,
-  Menu,
-  MenuItem,
-  Select,
+  Paper,
+  Tab,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  Tabs,
+  Typography,
 } from "@mui/material";
-import classes from "./OrderTable.module.css";
-import {
-  ChangeCircle,
-  ChangeCircleOutlined,
-  SignalWifiStatusbarConnectedNoInternet4Rounded,
-} from "@mui/icons-material";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { styled, useTheme } from "@mui/material/styles";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../../../states/store";
+import { getSellerOrdersByStatus, sellerApproveOrder, sellerRejectOrder, sellerUpdateOrderStatus } from "../../../../../states/seller/sellerOrderSlide";
+import { ESellerOrderStatus } from "../../../../../types/OrderTypes";
 import { DateUtils } from "../../../../../utils/DateTime/dateUtils";
+import { CurrencyUtils } from "../../../../../utils/Currency/CurrencyUtils";
+import { TableBar } from "@mui/icons-material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -54,258 +43,291 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
+interface TabPanelProps {
+  children?: React.ReactNode;
+  dir?: string;
+  index: number;
+  value: number;
+}
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
 }
 
-interface IOrderStatusAction {
-  value: EOrderStatus;
-  colorHex: string;
-  label: string;
+function a11yProps(index: number) {
+  return {
+    id: `full-width-tab-${index}`,
+    "aria-controls": `full-width-tabpanel-${index}`,
+  };
 }
 
-const orderStatusActions: IOrderStatusAction[] = [
-  {
-    colorHex: "#FFA500", // Cam - Đang chờ xử lý
-    value: EOrderStatus.PENDING,
-    label: "Pending",
-  },
-  {
-    colorHex: "#4CAF50", // Xanh lá - Đã đặt hàng
-    value: EOrderStatus.PLACED,
-    label: "Placed",
-  },
-  {
-    colorHex: "#2196F3", // Xanh dương - Đã xác nhận
-    value: EOrderStatus.CONFIRMED,
-    label: "Confirmed",
-  },
-  {
-    colorHex: "#9C27B0", // Tím - Đang vận chuyển
-    value: EOrderStatus.SHIPPED,
-    label: "Shipped",
-  },
-  {
-    colorHex: "#009688", // Teal - Đã giao hàng
-    value: EOrderStatus.DELIVERED,
-    label: "Delivered",
-  },
-  {
-    colorHex: "#F44336", // Đỏ - Đã hủy
-    value: EOrderStatus.CANCELLED,
-    label: "Cancelled",
-  },
+const mathSellerOrderStatus = (tabIndex: number): ESellerOrderStatus | null => {
+  switch (tabIndex) {
+    case 0:
+      return ESellerOrderStatus.PENDING_PAYMENT;
+    case 1:
+      return ESellerOrderStatus.PENDING;
+    case 2:
+      return ESellerOrderStatus.CONFIRMED;
+    case 3:
+      return ESellerOrderStatus.SHIPPING;
+    case 4:
+      return ESellerOrderStatus.DELIVERED;
+    case 5:
+      return ESellerOrderStatus.COMPLETED;
+    case 6:
+      return ESellerOrderStatus.CANCELLED;
+    case 7:
+      return ESellerOrderStatus.REFUNDED;
+    default:
+      return null;
+  }
+};
+const orderTabs = [
+  { label: "Pending Payment", status: ESellerOrderStatus.PENDING_PAYMENT },
+  { label: "Pending", status: ESellerOrderStatus.PENDING },
+  { label: "Confirmed", status: ESellerOrderStatus.CONFIRMED },
+  { label: "Shipping", status: ESellerOrderStatus.SHIPPING },
+  { label: "Delivered", status: ESellerOrderStatus.DELIVERED },
+  { label: "Completed", status: ESellerOrderStatus.COMPLETED },
+  { label: "Cancelled", status: ESellerOrderStatus.CANCELLED },
+  { label: "Refunded", status: ESellerOrderStatus.REFUNDED },
 ];
 
 const OrderTable = () => {
-  const { orderStatus } = useParams();
-  const [orderStatusAction, setOrderStatusAction] = useState(
-    orderStatus as EOrderStatus
-  );
-  const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
-  // Tạo Map từ mảng
-  const orderStatusMap = new Map<EOrderStatus, IOrderStatusAction>(
-    orderStatusActions.map((action) => [action.value, action])
-  );
-  // Thay vì dùng 1 state, dùng một object để lưu anchorEl của từng row
-  const [anchorElMap, setAnchorElMap] = useState<
-    Record<number, HTMLElement | null>
-  >({});
-
- 
-  useEffect(() => {
-    dispatch(fetchSellerOrders({orderStatus: orderStatus as EOrderStatus}));
-  }, [searchParams, orderStatus]);
-
-  const handleClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    orderId: number
-  ) => {
-    setAnchorElMap((prev) => ({ ...prev, [orderId]: event.currentTarget }));
-  };
-
-  const handleClose = (orderId: number) => {
-    setAnchorElMap((prev) => ({ ...prev, [orderId]: null }));
-  };
+  const { tabIndex } = useParams();
+  const theme = useTheme();
   const dispatch = useAppDispatch();
-  const sellerOrder = useAppSelector((store) => store.sellerOrder);
+  const sellerOrder = useAppSelector((state) => state.sellerOrder);
 
-  const handleUpdateOrderStatus = (
-    orderId: number,
-    orderStatus: EOrderStatus
-  ) => {
-    dispatch(updateOrderStatus({ orderId: orderId, orderStatus: orderStatus }));
+  const initialIndex = Number(tabIndex);
+  const [value, setValue] = React.useState(initialIndex);
+  const hasInitialized = React.useRef(false);
+
+  // Chỉ chạy 1 lần khi mount để lấy data từ tabIndex trên URL
+  useEffect(() => {
+    if (!hasInitialized.current) {
+      const status = mathSellerOrderStatus(initialIndex);
+      if (status) {
+        dispatch(getSellerOrdersByStatus(status));
+      }
+      hasInitialized.current = true;
+    }
+  }, [dispatch, initialIndex]); // có dispatch ở đây để khỏi bị ESLint warning
+
+  // Khi user chọn tab khác => gọi API theo tab đó
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+    const status = mathSellerOrderStatus(newValue);
+    if (status) {
+      dispatch(getSellerOrdersByStatus(status));
+    }
   };
 
   return (
     <div>
-      <div className="flex justify-between">
-        <div className="flex flex-wrap gap-4">
-          <h1 className="font-bold mb-5 text-2xl">Orders by: </h1>
-          <FormControl className="w-max">
-            <InputLabel id="demo-simple-select-label">Order Status</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={orderStatusAction}
-              label="Account Status"
-              onChange={(e) => {
-                setOrderStatusAction(e.target.value as EOrderStatus);
-                navigate(`/seller/orders/${e.target.value}`);
-              }}
-            >
-              {orderStatusActions.map((item) => (
-                <MenuItem
-                  style={{ color: orderStatusMap.get(item.value)?.colorHex }}
-                  value={item.value}
-                >
-                  {item.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-        <div></div>
-      </div>
-
-      <TableContainer
-        sx={{
-          position: "relative",
-          minHeight: 200,
-        }}
-        component={Paper}
-      >
-        <Table  sx={{ minWidth: 700, opacity: sellerOrder.loading ? 0.6 : 1  }} aria-label="customized table">
+      <Box sx={{ bgcolor: "background.paper", width: "100%" }}>
+        <AppBar position="static">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            indicatorColor="secondary"
+            textColor="inherit"
+            variant="fullWidth"
+            aria-label="full width tabs example"
+          >
+            {orderTabs.map((tab, index) => (
+              <Tab key={index} label={tab.label} {...a11yProps(index)} />
+            ))}
+          </Tabs>
+        </AppBar>
+        {orderTabs.map((tab, index) => (
+          <TabPanel
+            key={index}
+            value={value}
+            index={index}
+            dir={theme.direction}
+          >
+            {tab.label}
+          </TabPanel>
+        ))}
+      </Box>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Order Id</StyledTableCell>
-              <StyledTableCell>Products</StyledTableCell>
-              <StyledTableCell>Payment Method</StyledTableCell>
-              <StyledTableCell>Order Date</StyledTableCell>
-              <StyledTableCell align="right">Shipping Address</StyledTableCell>
-              <StyledTableCell align="right">Order Status</StyledTableCell>
-              <StyledTableCell align="right">Update</StyledTableCell>
+              <TableCell>Id</TableCell>
+              <TableCell>Order date</TableCell>
+              <TableCell>Customer info</TableCell>
+              <TableCell>Payment method</TableCell>
+              <TableCell>Details</TableCell>
+              {(value === 1 || value === 2 || value === 3) && (
+                <TableCell>Action</TableCell>
+              )}
+              {value === 6 && <TableCell>Cancelled reason</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
-            {sellerOrder.orders.map((order) => (
-              <StyledTableRow key={order.id}>
-                <StyledTableCell>{order.id}</StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  <div className="flex flex-col space-y-2 ">
-                    <h1>
-                      {order.orderItems.length}
-                      {order.orderItems.length === 1 ? " item" : " items"}
-                    </h1>
-                    {order.orderItems.map((item, i) => (
-                      <div
-                        key={i}
-                        className="flex flex-wrap not-last:border-b-1 border-[var(--primary-color)]"
-                      >
-                        <div className="flex flex-nowrap">
-                          <h1>{"x "+item.quantity}</h1>
+            {sellerOrder.sellerOrder.map((sellerOrder) => (
+              <TableRow
+                key={sellerOrder.id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell>{sellerOrder.id}</TableCell>
+                <TableCell>
+                  <div>
+                    <div>
+                      Create:{" "}
+                      {DateUtils.timeAgo(new Date(sellerOrder.createdDate))}
+                    </div>
+                    {sellerOrder.updatedDate && (
+                      <div>
+                        Update:{" "}
+                        {DateUtils.timeAgo(new Date(sellerOrder.updatedDate))}
+                      </div>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    Name: {sellerOrder.shippingAddress.name}, Phone:{" "}
+                    {sellerOrder.shippingAddress.phoneNumber}
+                  </div>
+
+                  <div>
+                    Address: {sellerOrder.shippingAddress.street},{" "}
+                    {sellerOrder.shippingAddress.ward},{" "}
+                    {sellerOrder.shippingAddress.district},{" "}
+                    {sellerOrder.shippingAddress.province}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div>Method: {sellerOrder.paymentMethod}</div>
+                  <div>Status: {sellerOrder.status}</div>
+                  {sellerOrder.paymentDetails.paymentDate && (
+                    <div>
+                      Payment date:{" "}
+                      {DateUtils.timeAgo(
+                        new Date(sellerOrder.paymentDetails.paymentDate)
+                      )}
+                    </div>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {sellerOrder.orderItems.map((item) => (
+                    <div>
+                      <div key={item.id} className="flex items-center gap-2">
                         <img
-                          className="w-20"
-                          src={item.product.images[0]}
+                          src={item.subProduct.images[0]}
                           alt=""
+                          className="w-[50px] h-[50px] "
                         />
-                        </div>
-                        <div className="flex flex-col justify-between">
-                          <h1>{item.product.title}</h1>
-                          <h1>{item.sellingPrice}</h1>
-                          <h1>{item.product.category.name}</h1>
+                        <div>
+                          <div>
+                            pi {item.product.id}, si: {item.subProduct.id}
+                          </div>
+                          <div className="overflow-ellipsis w-[320px] line-clamp-1">
+                            {item.product.title}
+                          </div>
+                          <div>
+                            Quantity: {item.quantity}, Price:{" "}
+                            {CurrencyUtils.formatVNDCurrency(item.sellingPrice)}
+                          </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  {order.paymentDetails.paymentMethod}
-                </StyledTableCell>
-                <StyledTableCell>
-                  {DateUtils.timeAgo(new Date(order.orderDate))}
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div>
-                    <h1>{order.shippingAddress.name}</h1>
-                    <h1>{order.shippingAddress.province}</h1>
-                    <h1>{order.shippingAddress.district}</h1>
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <div
-                    className="px-5 py-3 w-max rounded-md"
-                    style={{
-                      border: `1px solid ${
-                        orderStatusMap.get(order.orderStatus)?.colorHex
-                      }`,
-                      color: orderStatusMap.get(order.orderStatus)?.colorHex,
-                    }}
-                  >
-                    {orderStatusMap.get(order.orderStatus)?.label}
-                  </div>
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  <div>
-                    <Button onClick={(e) => handleClick(e, order.id)}>
-                      Actions
-                    </Button>
-                    <Menu
-                      anchorEl={anchorElMap[order.id]}
-                      open={Boolean(anchorElMap[order.id])}
-                      onClose={() => handleClose(order.id)}
-                    >
-                     {
-                      !(orderStatus === EOrderStatus.CANCELLED || orderStatus=== EOrderStatus.PENDING) ?  orderStatusActions.map((item) =>{
-                        if(item.value === orderStatus || item.value=== EOrderStatus.PENDING){
-                          return null;
-                        }else{
-                          return <MenuItem style={{ color: orderStatusMap.get(item.value)?.colorHex }}
+                    </div>
+                  ))}
+                </TableCell>
+                {(value === 1 || value === 2 || value === 3) && (
+                  <TableCell>
+                    {sellerOrder.status === ESellerOrderStatus.PENDING && (
+                      <div className="flex gap-2 flex-col">
+                        <Button
+                          variant="contained"
+                          color="info"
                           onClick={() => {
-                            handleUpdateOrderStatus(order.id, item.value);
-                            handleClose(order.id);
+                            dispatch(
+                              sellerApproveOrder(sellerOrder.id)
+                            );
                           }}
-                          key={item.value}
                         >
-                          <h1>{item.label}</h1>
-                        </MenuItem>;
-                        }
-                      }) : <MenuItem>No Action</MenuItem>
-                     }
-                    </Menu>
-                  </div>
-                </StyledTableCell>
-                {/* <StyledTableCell align="right">{row.protein}</StyledTableCell> */}
-              </StyledTableRow>
+                          Approve
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => {
+                            dispatch(
+                              sellerRejectOrder(sellerOrder.id)
+                            );
+                          }}
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    )}
+                    {(sellerOrder.status === ESellerOrderStatus.CONFIRMED) && (
+                      <div className="flex gap-2 flex-col">
+                        <Button
+                          variant="outlined"
+                          color="info"
+                          onClick={() => {
+                            dispatch(
+                              sellerUpdateOrderStatus({
+                                sellerOrderId: sellerOrder.id,
+                                status: ESellerOrderStatus.SHIPPING,})
+                            );
+                          }}
+                        >
+                          Shipping
+                        </Button>
+                      </div>
+                    )}
+                    {(sellerOrder.status === ESellerOrderStatus.SHIPPING) && (
+                      <div className="flex gap-2 flex-col">
+                        <Button
+                          variant="outlined"
+                          color="info"
+                          onClick={() => {
+                            dispatch(
+                              sellerUpdateOrderStatus({
+                                sellerOrderId: sellerOrder.id,
+                                status: ESellerOrderStatus.DELIVERED,})
+                            );
+                          }}
+                        >
+                          Delivered
+                        </Button>
+                      </div>
+                    )}
+                  </TableCell>
+                )}
+                {value === 6 && (
+                  <TableCell>
+                    {sellerOrder.cancelReason
+                      ? sellerOrder.cancelReason
+                      : "No reason"}
+                  </TableCell>
+                )}
+              </TableRow>
             ))}
           </TableBody>
         </Table>
-        {sellerOrder.loading && (
-    <Box
-      sx={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-        backdropFilter: 'blur(2px)', // Hiệu ứng mờ nhẹ
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        pointerEvents: 'auto' // ← Chặn mọi thao tác
-      }}
-    >
-      <CircularProgress />
-    </Box>
-  )}
       </TableContainer>
     </div>
   );

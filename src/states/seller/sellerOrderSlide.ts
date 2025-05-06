@@ -1,91 +1,162 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { EOrderStatus, IOrder } from "../../types/OrderTypes";
 import handleAPI from "../../configurations/handleAPI";
+import { ESellerOrderStatus, ISellerOrder } from "../../types/OrderTypes";
 
 interface ISellerOrderState {
-  orders: IOrder[];
+  sellerOrder: ISellerOrder[];
   loading: boolean;
-  error: null | string;
+  error: string | null;
+  actionLoading: boolean;
 }
 
 const initialState: ISellerOrderState = {
-  orders: [],
+  sellerOrder: [],
   loading: false,
   error: null,
+  actionLoading: false,
 };
 
-export const fetchSellerOrders = createAsyncThunk<IOrder[], {orderStatus: EOrderStatus}>(
-  "sellerOrder/fetchSellerOrders",
-  async ({orderStatus}, { rejectWithValue }) => {
+export const getSellerOrdersByStatus = createAsyncThunk(
+  "sellerOrder/getSellerOrdersByStatus",
+  async (orderStatus: ESellerOrderStatus, { rejectWithValue }) => {
     try {
-      const data = await handleAPI<IOrder[]>({
+      const response = await handleAPI<ISellerOrder[]>({
+        endpoint: `/api/seller/orders`,
         isAuthenticated: true,
-        endpoint: `/api/seller/orders/${orderStatus}`,
+        params: {
+          status: orderStatus,
+        },
       });
-
-      console.log("Fetch seller orders: " + data);
-
-      return data;
+      return response;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : "Unknown Error"
+        error instanceof Error ? error.message : "Unknown error"
       );
     }
   }
 );
 
-export const updateOrderStatus = createAsyncThunk<IOrder, {orderId: number, orderStatus: EOrderStatus}>(
-    "sellerOrder/updateOrderStatus", async ({orderId, orderStatus}, {rejectWithValue})=>{
-        try {
-            const data = await handleAPI<IOrder>({
-                endpoint: `/api/seller/orders/${orderId}/status/${orderStatus}`,
-                method: "put", 
-                isAuthenticated: true
-            })
-            console.log("Update order status: ", data)
-            return data;
-        } catch (error) {
-            return rejectWithValue(error instanceof Error ? error.message : "Unknown Error");
-        }
+export const sellerApproveOrder = createAsyncThunk(
+  "sellerOrder/sellerApproveOrder",
+  async (orderId: number, { rejectWithValue }) => {
+    try {
+      const response = await handleAPI<ISellerOrder>({
+        endpoint: `/api/seller/orders/seller-order/approve/${orderId}`,
+        method: "put",
+        isAuthenticated: true,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
     }
-)
+  }
+);
 
+export const sellerRejectOrder = createAsyncThunk(
+  "sellerOrder/sellerRejectOrder",
+  async (orderId: number, { rejectWithValue }) => {
+    try {
+      const response = await handleAPI<ISellerOrder>({
+        endpoint: `/api/seller/orders/seller-order/reject/${orderId}`,
+        method: "put",
+        isAuthenticated: true,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+);
+
+// /seller-order/{sellerOrderId}/status/{status}
+export const sellerUpdateOrderStatus = createAsyncThunk(
+  "sellerOrder/sellerUpdateOrderStatus",
+  async (
+    {
+      sellerOrderId,
+      status,
+    }: { sellerOrderId: number; status: ESellerOrderStatus },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await handleAPI<ISellerOrder>({
+        endpoint: `/api/seller/orders/seller-order/${sellerOrderId}/status/${status}`,
+        method: "put",
+        isAuthenticated: true,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+);
 
 const sellerOrderSlide = createSlice({
-    initialState: initialState,
-    name: "sellerOrder",
-    reducers: {},
-    extraReducers: (builder)=>{
-        builder
-        .addCase(fetchSellerOrders.pending, (state)=>{
-            state.error = null;
-            state.loading= true;
-        })
-        .addCase(fetchSellerOrders.fulfilled, (state, action)=>{
-            state.error = null;
-            state.loading = false;
-            state.orders = action.payload
-        })
-        .addCase(fetchSellerOrders.rejected, (state, action)=>{
-            state.error = action.payload  as string
-            state.loading = false
-        })
+  initialState: initialState,
+  name: "sellerOrder",
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getSellerOrdersByStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getSellerOrdersByStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.sellerOrder = action.payload;
+      })
+      .addCase(getSellerOrdersByStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
 
-        builder.addCase(updateOrderStatus.pending, (state)=>{
-            // state.loading = true,
-            state.error = null;
-        })
-        .addCase(updateOrderStatus.fulfilled, (state, action)=>{
-            state.loading = false;
-            
-            state.orders = state.orders.filter((order)=>order.id !== action.payload.id)
-        }).addCase(updateOrderStatus.rejected , (state, action)=>{
-            state.loading = false;
-            state.error = action.payload as string
-        })
+    builder
+      .addCase(sellerApproveOrder.pending, (state) => {
+        state.actionLoading = true;
+      })
+      .addCase(sellerApproveOrder.fulfilled, (state, action) => {
+        state.actionLoading = false;
+        state.sellerOrder = state.sellerOrder.filter(
+          (sellerOrder) => sellerOrder.id !== action.payload.id
+        );
+      })
+      .addCase(sellerApproveOrder.rejected, (state, action) => {
+        state.actionLoading = false;
+        state.error = action.payload as string;
+      });
 
+    builder
+      .addCase(sellerRejectOrder.pending, (state) => {
+        state.actionLoading = true;
+      })
+      .addCase(sellerRejectOrder.fulfilled, (state, action) => {
+        state.actionLoading = false;
+        state.sellerOrder = state.sellerOrder.filter(
+          (sellerOrder) => sellerOrder.id !== action.payload.id
+        );
+      })
+      .addCase(sellerRejectOrder.rejected, (state, action) => {
+        state.actionLoading = false;
+        state.error = action.payload as string;
+      });
+      builder.addCase(sellerUpdateOrderStatus.pending, (state) => {
+        state.actionLoading = true;
+      })
+      .addCase(sellerUpdateOrderStatus.fulfilled, (state, action) => {
+        state.actionLoading = false;
+        state.sellerOrder = state.sellerOrder.filter(
+          (sellerOrder) => sellerOrder.id !== action.payload.id)
+      })
+      .addCase(sellerUpdateOrderStatus.rejected, (state, action) => {
+        state.actionLoading = false;
+        state.error = action.payload as string;
+      });
+  },
+});
 
-    }
-})
-
-export default sellerOrderSlide.reducer
+export default sellerOrderSlide.reducer;

@@ -52,13 +52,15 @@ export const signing = createAsyncThunk(
       });
 
       localStorage.setItem("jwt", data.jwt);
-      if (role === EUserRole.ROLE_CUSTOMER) {
-        navigate("/");
-      } else if (role === EUserRole.ROLE_SELLER) {
-        navigate("/seller");
-      } else if (role === EUserRole.ROLE_ADMIN) {
-        navigate("/admin");
-      }
+      localStorage.setItem("role", role);
+      navigate("/");
+      // if (role === EUserRole.ROLE_CUSTOMER) {
+      //   navigate("/");
+      // } else if (role === EUserRole.ROLE_SELLER) {
+      //   navigate("/seller");
+      // } else if (role === EUserRole.ROLE_ADMIN) {
+      //   navigate("/admin");
+      // }
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -80,7 +82,7 @@ export const signup = createAsyncThunk<
     });
 
     localStorage.setItem("jwt", data.jwt);
-
+    localStorage.setItem("role", EUserRole.ROLE_CUSTOMER);
     return data;
   } catch (error) {
     return rejectWithValue(
@@ -93,6 +95,7 @@ export const logout = createAsyncThunk(
   "/auth/logout",
   async ({ navigate }: { navigate: NavigateFunction }) => {
     localStorage.removeItem("jwt");
+    localStorage.removeItem("role");
     navigate("/");
   }
 );
@@ -140,13 +143,24 @@ const initState: AuthStateProps = {
 const authSlide = createSlice({
   name: "auth",
   initialState: initState,
-  reducers: {},
+  reducers: {
+    restoreAuthFromStorage: (state) => {
+      const jwt = localStorage.getItem("jwt");
+      const role = localStorage.getItem("role") as EUserRole | null;
+      if (jwt && role) {
+        state.jwt = jwt;
+        state.role = role;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signing.pending, (state) => {
         state.loading = true;
         state.error = "";
         state.successfullyMessage = "";
+        state.jwt = "";
+        state.role = null;
       })
       .addCase(signing.fulfilled, (state, action) => {
         state.loading = false;
@@ -154,6 +168,7 @@ const authSlide = createSlice({
         state.loggedIn = true;
         state.error = "";
         state.successfullyMessage = "";
+        state.role = action.meta.arg.role;
       })
       .addCase(signing.rejected, (state, action) => {
         state.loading = false;
@@ -183,3 +198,4 @@ const authSlide = createSlice({
 });
 
 export default authSlide.reducer;
+export const { restoreAuthFromStorage } = authSlide.actions;
