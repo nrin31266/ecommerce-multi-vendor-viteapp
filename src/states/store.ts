@@ -11,6 +11,7 @@ import cartSlide from './customer/cartSlide';
 import orderSlide from './customer/orderSlide';
 import wishlistSlide from './customer/wishlistSlide';
 import sellerOrderSlide from './seller/sellerOrderSlide';
+import homeCategorySlide from './admin/homeCategorySlide';
 
 const rootReducer = combineReducers({
   seller: sellerSlide,
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   cart: cartSlide,
   order: orderSlide,
   wishlist: wishlistSlide,
-  sellerOrder: sellerOrderSlide
+  sellerOrder: sellerOrderSlide,
+  homeCategory: homeCategorySlide,
 });
 
 

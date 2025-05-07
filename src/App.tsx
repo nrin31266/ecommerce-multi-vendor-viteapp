@@ -44,6 +44,7 @@ import PaymentSuccess from "./customer/pages/AfterPayment/PaymentSuccess/Payment
 import OrderDetails from "./customer/pages/Account/components/OrderDetails/OrderDetails";
 import Wishlist from "./customer/pages/Wishlist/Wishlist";
 import { useDispatch } from "react-redux";
+import { EUserRole } from "./types/UserTypes";
 function App() {
   const dispatch = useAppDispatch();
   const rootDispatch = useDispatch();
@@ -61,13 +62,15 @@ function App() {
   useEffect(() => {
     if(auth.role === "ROLE_SELLER"){
       dispatch(fetchSellerProfile());
-    }else if(auth.role === "ROLE_CUSTOMER"){
+    }else if(auth.role === "ROLE_CUSTOMER" || auth.role === "ROLE_ADMIN"){
       dispatch(fetchUserProfile());
     }
   }, [auth.jwt]);
 
   if(location.pathname === "/" && seller.profile){
     return <Navigate to={"/seller"}/>
+  }else if(location.pathname === "/" && auth.user && auth.role === EUserRole.ROLE_ADMIN){
+    return <Navigate to={"/admin"}/>
   }
 
   return (
@@ -105,7 +108,7 @@ function App() {
             <Route path="" element={<Sellers/>}/>
             <Route path="coupon" element={<Coupon/>}/>
             <Route path="add-new-coupon" element={<AddNewCoupon/>}/>
-            <Route path="home-grid" element={<HomeCategory/>}/>
+            <Route path="home-category/:tabIndex" element={<HomeCategory/>}/>
             <Route path="electronics-category" element={<ElectronicsCategory/>}/>
             <Route path="shop-by-category" element={<ShopByCategory/>}/>
             <Route path="deals" element={<Deals/>}/>

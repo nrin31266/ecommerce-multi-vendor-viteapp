@@ -35,7 +35,7 @@ const menu: MenuItem[] = [
   },
   {
     name: "Home Category",
-    path: "/admin/home-grid",
+    path: "/admin/home-category/0",
     icon: <Home className="text-[var(--primary-color)]" />,
     activeIcon: <Home className="text-white" />,
   },

@@ -40,7 +40,7 @@ export const signing = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const data = await handleAPI<{ jwt: string }>({
+      const data = await handleAPI<{ jwt: string, role: EUserRole }>({
         endpoint: `/${
           role === EUserRole.ROLE_SELLER ? "sellers" : "auth"
         }/signing`,
@@ -52,7 +52,7 @@ export const signing = createAsyncThunk(
       });
 
       localStorage.setItem("jwt", data.jwt);
-      localStorage.setItem("role", role);
+      localStorage.setItem("role", data.role);
       navigate("/");
       // if (role === EUserRole.ROLE_CUSTOMER) {
       //   navigate("/");
