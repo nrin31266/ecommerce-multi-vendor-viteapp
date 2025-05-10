@@ -7,9 +7,7 @@ export interface IHomeCategory {
     id: number;
     name: string;
     image: string;
-    category1: string;
-    category2: string;
-    categoryId: string;
+    categoryIds: string;
     homeCategorySection: EHomeCategorySection;
   }
 
@@ -23,12 +21,14 @@ interface IHomeCategorySlideState {
     data: IHomeCategory[];
     loading: boolean;
     error: string | null;
+    currentEHomeCategory: EHomeCategorySection;
 }
 
 const initialState: IHomeCategorySlideState = {
     data: [],
     loading: false,
     error: null,
+    currentEHomeCategory: EHomeCategorySection.ELECTRIC_CATEGORY,
 };
 
 export const fetchHomeCategory = createAsyncThunk<IHomeCategory[], {section : EHomeCategorySection | null}>(
@@ -129,6 +129,7 @@ const homeCategorySlide =  createSlice({
                 state.error = null;
             })
             .addCase(fetchHomeCategory.fulfilled, (state, action) => {
+                state.currentEHomeCategory = action.meta.arg.section as EHomeCategorySection;
                 state.loading = false;
                 state.data = action.payload;
             })
@@ -142,7 +143,7 @@ const homeCategorySlide =  createSlice({
             })
             .addCase(addHomeCategory.fulfilled, (state, action) => {
                 state.loading = false;
-                if (action.payload.homeCategorySection == action.meta.arg.rq.homeCategorySection) {
+                if (action.payload.homeCategorySection == state.currentEHomeCategory) {
                     state.data.push(action.payload);
                 }
             })
@@ -156,7 +157,7 @@ const homeCategorySlide =  createSlice({
             })
             .addCase(updateHomeCategory.fulfilled, (state, action) => {
                 state.loading = false;
-                if (action.payload.homeCategorySection == action.meta.arg.rq.homeCategorySection) {
+                if (action.payload.homeCategorySection == state.currentEHomeCategory) {
                     // Find the index of the item to update
                     const index = state.data.findIndex((item) => item.id === action.payload.id);
                     if (index !== -1) {

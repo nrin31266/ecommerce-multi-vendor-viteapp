@@ -45,6 +45,7 @@ import OrderDetails from "./customer/pages/Account/components/OrderDetails/Order
 import Wishlist from "./customer/pages/Wishlist/Wishlist";
 import { useDispatch } from "react-redux";
 import { EUserRole } from "./types/UserTypes";
+import Banner from "./admin/pages/Banner/Banner";
 function App() {
   const dispatch = useAppDispatch();
   const rootDispatch = useDispatch();
@@ -109,7 +110,7 @@ function App() {
             <Route path="coupon" element={<Coupon/>}/>
             <Route path="add-new-coupon" element={<AddNewCoupon/>}/>
             <Route path="home-category/:tabIndex" element={<HomeCategory/>}/>
-            <Route path="electronics-category" element={<ElectronicsCategory/>}/>
+            <Route path="banner" element={<Banner/>}/>
             <Route path="shop-by-category" element={<ShopByCategory/>}/>
             <Route path="deals" element={<Deals/>}/>
             <Route path="account" element={<AdminAccount/>}/>

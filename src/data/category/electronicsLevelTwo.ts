@@ -35,4 +35,5 @@ export const electronicsLevelTwo = [
     level: 2,
     parentCategory: "electronics",
   },
+ 
 ];

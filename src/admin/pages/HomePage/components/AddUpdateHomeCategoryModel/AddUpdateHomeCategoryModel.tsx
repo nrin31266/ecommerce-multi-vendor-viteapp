@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from "react";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import {
-  addHomeCategory,
-  EHomeCategorySection,
-  IHomeCategory,
-  updateHomeCategory,
-} from "../../../../../states/admin/homeCategorySlide";
-import { useAppDispatch, useAppSelector } from "../../../../../states/store";
-import { useFormik, validateYupSchema } from "formik";
-import {
+  Autocomplete,
   Box,
   Button,
   FormControl,
@@ -17,19 +10,18 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import ImageCard from "../../../../../seller/pages/AddProduct/components/ImageCard/ImageCard";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import Modal from "@mui/material/Modal";
-import { menLevelTwo } from "../../../../../data/category/menLevelTwo";
-import { womenLevelTwo } from "../../../../../data/category/womenLevelTwo";
-import { homeFurnitureLevelTwo } from "../../../../../data/category/homeFurnitureLevelTwo";
-import { electronicsLevelTwo } from "../../../../../data/category/electronicsLevelTwo";
+import { useFormik } from "formik";
+import React, { useEffect, useState } from "react";
+import ImageCard from "../../../../../seller/pages/AddProduct/components/ImageCard/ImageCard";
+import {
+  addHomeCategory,
+  EHomeCategorySection,
+  IHomeCategory,
+  updateHomeCategory
+} from "../../../../../states/admin/homeCategorySlide";
+import { useAppDispatch, useAppSelector } from "../../../../../states/store";
 import { ICategory } from "../../../../../types/ProductTypes";
-import { menLevelThree } from "../../../../../data/category/menCategoryLevelThree";
-import { womenLevelThree } from "../../../../../data/category/womenLevelThree";
-import { homeFurnitureLevelThree } from "../../../../../data/category/homeFurnitureLevelThree";
-import { electronicsLevelThree } from "../../../../../data/category/electronicsLevelThree";
-import { mainCategories } from "../../../../../data/category/mainCategory";
 const style = {
   position: "absolute",
   top: "50%",
@@ -43,20 +35,6 @@ const style = {
   borderRadius: "4px",
 };
 
-const categoriesLevelTwo: { [key: string]: ICategory[] } = {
-  men: menLevelTwo,
-  women: womenLevelTwo,
-  home_furniture: homeFurnitureLevelTwo,
-  electronics: electronicsLevelTwo,
-};
-
-const categoriesLevelThree: { [key: string]: ICategory[] } = {
-  men: menLevelThree,
-  women: womenLevelThree,
-  home_furniture: homeFurnitureLevelThree,
-  electronics: electronicsLevelThree,
-};
-
 interface IAddUpdateHomeCategoryModelProps {
   isVisible: boolean;
   onClose: () => void;
@@ -66,10 +44,8 @@ interface IAddUpdateHomeCategoryModelProps {
 export interface IHomeCategoryRequest {
   name: string;
   image: string;
-  categoryId: string;
-  homeCategorySection: EHomeCategorySection;
-  category1: string;
-  category2: string;
+  homeCategorySection: EHomeCategorySection | "";
+  categoryIds: string[];
 }
 const homeCategories = [
   {
@@ -98,6 +74,7 @@ const AddUpdateHomeCategoryModel = ({
   const [imageSelected, setImageSelected] = useState<File | null>();
   const [imageUrl, setImageUrl] = useState<string | null>(); // ảnh cũ dạng URL
   const homeCategory = useAppSelector((state) => state.homeCategory);
+  const categoryState = useAppSelector((state) => state.adminCategory);
   const handleSelectImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setImageSelected(e.target.files[0]);
@@ -110,8 +87,8 @@ const AddUpdateHomeCategoryModel = ({
 
   const handleClose = () => {
     setImageSelected(null);
-      setImageUrl("");
-      formik.resetForm(); 
+    setImageUrl("");
+    formik.resetForm();
     onClose();
   };
   const dispatch = useAppDispatch();
@@ -120,19 +97,27 @@ const AddUpdateHomeCategoryModel = ({
     initialValues: {
       name: "",
       image: "",
-      categoryId: "",
-      homeCategorySection: updateItem
-        ? updateItem.homeCategorySection
-        : EHomeCategorySection.ELECTRIC_CATEGORY,
-      category1: "",
-      category2: "",
+      homeCategorySection: "",
+      categoryIds: [],
     },
     onSubmit: async (values) => {
       console.log(values);
-      if(updateItem){
-        await dispatch(updateHomeCategory({id: updateItem.id, rq: values, imageFile: imageSelected}))
-      }else{
-        await dispatch(addHomeCategory({rq: values, imageFile: imageSelected}))
+      if (updateItem) {
+        if(imageUrl){
+          values.image = imageUrl;
+        }
+        await dispatch(
+        
+          updateHomeCategory({
+            id: updateItem.id,
+            rq: values,
+            imageFile: imageSelected,
+          })
+        );
+      } else {
+        await dispatch(
+          addHomeCategory({ rq: values, imageFile: imageSelected })
+        );
       }
       handleClose();
     },
@@ -144,13 +129,21 @@ const AddUpdateHomeCategoryModel = ({
       setImageSelected(null);
       setImageUrl(updateItem.image);
       formik.setFieldValue("name", updateItem.name);
-      formik.setFieldValue("homeCategorySection", updateItem.homeCategorySection);
-      formik.setFieldValue("categoryId", updateItem.categoryId);
-      formik.setFieldValue("category1", updateItem.category1);
-      formik.setFieldValue("category2", updateItem.category2);
-    } 
+      formik.setFieldValue(
+        "homeCategorySection",
+        updateItem.homeCategorySection
+      );
+      formik.setFieldValue(
+        "categoryIds",
+        updateItem.categoryIds.split(",") // Tách chuỗi thành mảng
+      );
+      
+    }
   }, [updateItem]);
-  
+
+
+
+
 
   return (
     <Modal
@@ -235,82 +228,45 @@ const AddUpdateHomeCategoryModel = ({
               </FormControl>
             </div>
             <div className="col-span-12">
-              <FormControl fullWidth required>
-                <InputLabel id="category1">Category</InputLabel>
-                <Select
-                  name="category1"
-                  labelId="category1"
-                  id="category1"
-                  value={formik.values.category1}
-                  label="Category"
-                  onChange={(e) => {
-                    formik.handleChange(e);
-                  }}
-                >
-                  <MenuItem value={""}>
-                    <em>None</em>
-                  </MenuItem>
-                  {mainCategories.map((category, index) => (
-                    <MenuItem value={category.categoryId} key={index}>
-                      {category.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-            <div className="col-span-12">
-              <FormControl fullWidth required>
-                <InputLabel id="category2">Second Category</InputLabel>
-                <Select
-                  name="category2"
-                  labelId="category2"
-                  id="category2"
-                  value={formik.values.category2}
-                  label="Second Category"
-                  onChange={formik.handleChange}
-                >
-                  <MenuItem value={""}>
-                    <em>None</em>
-                  </MenuItem>
-                  {categoriesLevelTwo[formik.values.category1]?.map(
-                    (category, index) => (
-                      <MenuItem value={category.categoryId} key={index}>
-                        {category.name}
-                      </MenuItem>
+              
+                <Autocomplete
+                  disabled={categoryState.loading}
+                  multiple
+                  options={categoryState.data?.three??[]}
+                  getOptionLabel={(option) => option.name}
+                  value={categoryState.data?.three.filter((category: ICategory) =>
+                    formik.values.categoryIds.includes(category.categoryId)
+                  )}
+                  onChange={(event, newValue) =>
+                    formik.setFieldValue(
+                      "categoryIds",
+                      newValue.map((item: ICategory) => item.categoryId)
                     )
+                  }
+                  filterOptions={(options, { inputValue }) => {
+                    const lowerInput = inputValue.toLowerCase();
+                    return options.filter(
+                      (option) =>
+                        option.name.toLowerCase().includes(lowerInput) ||
+                        option.parentCategory.toLowerCase().includes(lowerInput)
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                    
+                      {...params}
+                      label="Select multi categories"
+                      placeholder="Search categories..."
+                    />
                   )}
-                </Select>
-              </FormControl>
-            </div>
-            <div className="col-span-12">
-              <FormControl fullWidth required>
-                <InputLabel id="categoryId">Third Category</InputLabel>
-                <Select
-                  name="categoryId"
-                  labelId="categoryId"
-                  id="categoryId"
-                  value={formik.values.categoryId}
-                  label="Third Category"
-                  onChange={formik.handleChange}
-                >
-                  <MenuItem value={""}>
-                    <em>None</em>
-                  </MenuItem>
-                  {categoriesLevelThree[formik.values.category1]?.map(
-                    (category, index) => {
-                      if (
-                        formik.values.category2 &&
-                        category.parentCategory === formik.values.category2
-                      )
-                        return (
-                          <MenuItem value={category.categoryId} key={index}>
-                            {category.name}
-                          </MenuItem>
-                        );
-                    }
+                  renderOption={(props, option: ICategory) => (
+                    <li {...props} key={option.categoryId}>
+                      {option.name}{" "}
+                      <span className="text-gray-500">({option.parentCategory})</span>
+                    </li>
                   )}
-                </Select>
-              </FormControl>
+                  
+                />
             </div>
           </div>
           <Button

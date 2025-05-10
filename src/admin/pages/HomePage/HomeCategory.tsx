@@ -26,6 +26,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../states/store";
 import AddUpdateHomeCategoryModel from "./components/AddUpdateHomeCategoryModel/AddUpdateHomeCategoryModel";
+import { getAllCategories } from "../../../states/admin/categorySlide";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -125,6 +126,7 @@ const HomeCategory = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const homeCategory = useAppSelector((state) => state.homeCategory);
+  const categoryState = useAppSelector((state) => state.adminCategory);
   const [isOpenAddUpdateHCModel, setIsOpenAddUpdateHCModel] = useState(false);
   const [homeCategorySelected, setHomeCategorySelected] =
     useState<IHomeCategory | null>(null);
@@ -135,6 +137,8 @@ const HomeCategory = () => {
   // Chỉ chạy 1 lần khi mount để lấy data từ tabIndex trên URL
   useEffect(() => {
     if (!hasInitialized.current) {
+      dispatch(getAllCategories());
+
       const section = mathHomeCategorySection(initialIndex);
       if (section) {
         dispatch(fetchHomeCategory({ section }));
@@ -188,66 +192,65 @@ const HomeCategory = () => {
           Add
         </Button>
         <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell>Image</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Category id</TableCell>
-              <TableCell>Section</TableCell>
-  
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {homeCategory.data.map((item) => (
-              <TableRow
-                key={item.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-            
-                <StyledTableCell component="th" scope="row">
-                  {item.id}
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-20 h-24 object-contain"
-                  />
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {item.name}
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {item.categoryId}
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {item.homeCategorySection}
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  <IconButton
-                    onClick={() => {
-                      setHomeCategorySelected(item);
-                      setIsOpenAddUpdateHCModel(true);
-                    }}
-                  >
-                    <Edit color="primary" />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                     dispatch(deleteHomeCategory(item.id));
-                    }}
-                  >
-                    <Delete color="error" />
-                  </IconButton>
-                </StyledTableCell>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Id</TableCell>
+                <TableCell>Image</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Category id</TableCell>
+                <TableCell>Section</TableCell>
+
+                <TableCell>Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {homeCategory.data.map((item) => (
+                <TableRow
+                  key={item.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <StyledTableCell component="th" scope="row">
+                    {item.id}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-20 h-24 object-contain"
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    {item.name}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    {item.categoryIds}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    {item.homeCategorySection}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    <IconButton
+                      onClick={() => {
+                        setHomeCategorySelected(item);
+                        setIsOpenAddUpdateHCModel(true);
+                      }}
+                    >
+                      <Edit color="primary" />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        dispatch(deleteHomeCategory(item.id));
+                      }}
+                    >
+                      <Delete color="error" />
+                    </IconButton>
+                  </StyledTableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
       <AddUpdateHomeCategoryModel
         isVisible={isOpenAddUpdateHCModel}

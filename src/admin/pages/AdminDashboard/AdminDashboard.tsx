@@ -40,8 +40,8 @@ const menu: MenuItem[] = [
     activeIcon: <Home className="text-white" />,
   },
   {
-    name: "Electronics Category",
-    path: "/admin/electronics-category",
+    name: "Banner",
+    path: "/admin/banner",
     icon: <ElectricBolt className="text-[var(--primary-color)]" />,
     activeIcon: <ElectricBolt className="text-white" />,
   },

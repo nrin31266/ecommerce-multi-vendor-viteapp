@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 export class DateUtils {
   public static timeAgo(date: Date) {
     const now = new Date();
@@ -14,4 +15,18 @@ export class DateUtils {
     if (interval > 1) return `${interval} minutes ago`;
     return `${Math.floor(seconds)} seconds ago`;
   }
+
+  
+  public static convertVNTime(isoString: string) {
+    const date = DateTime.fromISO(isoString, { zone: 'Asia/Ho_Chi_Minh' })
+  .toFormat('yyyy-MM-dd HH:mm');
+
+
+    return date;
+  }
+
+
+
+ 
 }
+

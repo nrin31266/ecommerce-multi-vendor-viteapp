@@ -225,6 +225,24 @@ export const homeFurnitureLevelThree = [
       categoryId: "home_outdoor_garden_hammocks",
       level: 3,
       parentCategory: "home_outdoor_garden",
-    }
+    },
+    {
+      name: "Fiction",
+      categoryId: "fiction",
+      level: 3,
+      parentCategory: "books",
+    },
+    {
+      name: "Non-fiction",
+      categoryId: "non_fiction",
+      level: 3,
+      parentCategory: "books",
+    },
+    {
+      name: "Manga",
+      categoryId: "manga",
+      level: 3,
+      parentCategory: "books",
+    },
   ];
   

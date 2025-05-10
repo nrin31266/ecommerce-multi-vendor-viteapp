@@ -35,4 +35,10 @@ export const homeFurnitureLevelTwo = [
     level: 2,
     parentCategory: "home_furniture",
   },
+  {
+    name: "Books",  // Thêm sách vào trong Home & Furniture
+    categoryId: "books",
+    level: 2,
+    parentCategory: "home_furniture",
+  }
 ];
