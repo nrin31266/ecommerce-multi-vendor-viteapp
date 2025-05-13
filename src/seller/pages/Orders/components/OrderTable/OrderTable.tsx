@@ -218,13 +218,11 @@ const OrderTable = () => {
                 </TableCell>
                 <TableCell>
                   <div>Method: {sellerOrder.paymentMethod}</div>
-                  <div>Status: {sellerOrder.status}</div>
+                  <div>Status: {sellerOrder.paymentDetails.paymentStatus}</div>
                   {sellerOrder.paymentDetails.paymentDate && (
                     <div>
                       Payment date:{" "}
-                      {DateUtils.timeAgo(
-                        new Date(sellerOrder.paymentDetails.paymentDate)
-                      )}
+                      {sellerOrder.paymentDetails.paymentDate}
                     </div>
                   )}
                 </TableCell>

@@ -46,6 +46,8 @@ import Wishlist from "./customer/pages/Wishlist/Wishlist";
 import { useDispatch } from "react-redux";
 import { EUserRole } from "./types/UserTypes";
 import Banner from "./admin/pages/Banner/Banner";
+import AdminNavbar from "./admin/components/NavBar/AdminNavBar";
+import SellerNavBar from "./seller/components/NavBar/SellerNavBar";
 function App() {
   const dispatch = useAppDispatch();
   const rootDispatch = useDispatch();
@@ -77,7 +79,9 @@ function App() {
   return (
     <div className="dark">
       <ThemeProvider theme={customTheme}>
-        <Navbar/>
+        {
+          auth.role === EUserRole.ROLE_ADMIN ?  <AdminNavbar/> : auth.role === EUserRole.ROLE_SELLER ? <SellerNavBar/> : <Navbar/>
+        }
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/products/:categoryId" element={<Product/>}/>

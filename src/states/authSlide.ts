@@ -54,13 +54,13 @@ export const signing = createAsyncThunk(
       localStorage.setItem("jwt", data.jwt);
       localStorage.setItem("role", data.role);
       navigate("/");
-      // if (role === EUserRole.ROLE_CUSTOMER) {
-      //   navigate("/");
-      // } else if (role === EUserRole.ROLE_SELLER) {
-      //   navigate("/seller");
-      // } else if (role === EUserRole.ROLE_ADMIN) {
-      //   navigate("/admin");
-      // }
+      if (data.role === EUserRole.ROLE_CUSTOMER) {
+        navigate("/");
+      } else if (data.role === EUserRole.ROLE_SELLER) {
+        navigate("/seller");
+      } else if (data.role === EUserRole.ROLE_ADMIN) {
+        navigate("/admin");
+      }
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -168,7 +168,7 @@ const authSlide = createSlice({
         state.loggedIn = true;
         state.error = "";
         state.successfullyMessage = "";
-        state.role = action.meta.arg.role;
+        state.role = action.payload.role;
       })
       .addCase(signing.rejected, (state, action) => {
         state.loading = false;

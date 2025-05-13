@@ -101,7 +101,7 @@ const ProductTable = () => {
                 >
                   <div className="flex flex-nowrap gap-1 w-full overflow-x-auto overflow-y-hidden">
                     {item.images.map((image) => (
-                      <img key={image} className="w-20 h-24 rounded-md object-cover " src={image} alt="" />
+                      <img key={image} className="w-20 h-24 rounded-md object-contain " src={image} alt="" />
                     ))}
                   </div>
                 </StyledTableCell>

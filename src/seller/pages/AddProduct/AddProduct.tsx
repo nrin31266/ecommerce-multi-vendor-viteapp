@@ -94,7 +94,7 @@ const AddProduct = () => {
       console.log(values);
       await dispatch(
         createProduct({ request: values, imageFiles: imageSelected })
-      );
+      ).unwrap();
       navigate("/seller/products");
     },
     validationSchema: null,
