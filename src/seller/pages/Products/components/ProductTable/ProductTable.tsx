@@ -12,6 +12,7 @@ import {
   deleteProduct,
   deleteSubProduct,
   fetchSellerProducts,
+  setCurrentProduct,
 } from "../../../../../states/seller/sellerProductSlide";
 import { Button, Divider, IconButton } from "@mui/material";
 import {
@@ -26,6 +27,7 @@ import AddEditSubProductModel from "../AddEditSubProductModel/AddEditSubProductM
 import { IProduct, ISubProduct } from "../../../../../types/ProductTypes";
 import SubProductItem from "../SubProductIem/SubProductItem";
 import { CurrencyUtils } from "../../../../../utils/Currency/CurrencyUtils";
+import { useNavigate } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -51,6 +53,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const ProductTable = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const sellerProduct = useAppSelector((state) => state.sellerProduct);
   const [isVisibleAddEditSubModel, setIsVisibleAddEditSubModel] =
     useState(false);
@@ -212,17 +215,22 @@ const ProductTable = () => {
                 <StyledTableCell align="right" sx={{ verticalAlign: 'top' }} width={100}>
                   {
                     <>
-                      <IconButton color="primary">
+                      <IconButton onClick={
+                        () => {
+                          dispatch(setCurrentProduct(item));
+                          navigate(`/seller/add-product/${item.id}`);
+                        }
+                      } color="primary">
                         <Edit />
                       </IconButton>
-                      <IconButton
+                      {/* <IconButton
                         onClick={() => {
                           dispatch(deleteProduct({ id: item.id }));
                         }}
                         color="error"
                       >
                         <Delete />
-                      </IconButton>
+                      </IconButton> */}
                     </>
                   }
                 </StyledTableCell>

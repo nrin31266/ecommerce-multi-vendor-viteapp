@@ -62,9 +62,9 @@ const SubProductItem = ({
       <IconButton>
             <Edit onClick={onUpdate} color="primary"/>
         </IconButton>
-        <IconButton>
+        {/* <IconButton>
             <Delete onClick={onRemove} color="error"/>
-        </IconButton>
+        </IconButton> */}
       </div>
     </div>
   );

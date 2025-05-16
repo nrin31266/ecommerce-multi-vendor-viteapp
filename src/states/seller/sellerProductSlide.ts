@@ -54,6 +54,36 @@ export const createProduct = createAsyncThunk<
     }
   }
 );
+export const updateProduct = createAsyncThunk<
+  IProduct,
+  {
+    id: number;
+    request: ICreateProductReq;
+    imageFiles?: File[];
+  }
+>(
+  "/sellerProduct/updateProduct",
+  async ({ id, request, imageFiles }, { rejectWithValue }) => {
+    try {
+      if (imageFiles) {
+        const uploadedImages = await Promise.all(
+          imageFiles.map((file) => uploadImage(file))
+        );
+        request.images = request.images.concat(uploadedImages);
+      }
+      return await handleAPI<IProduct>({
+        endpoint: `/api/sellers/products/${id}`,
+        method: "put",
+        body: request,
+        isAuthenticated: true,
+      });
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+);
 
 export const deleteProduct = createAsyncThunk<void, { id: number }>(
   "/sellerProduct/deleteProduct",
@@ -101,7 +131,12 @@ export const addSubProduct = createAsyncThunk<
 );
 export const updateSubProduct = createAsyncThunk<
   ISubProduct,
-  { id: number; rq: IUpdateSubProductReq; imageFiles?: File[], productId: number }
+  {
+    id: number;
+    rq: IUpdateSubProductReq;
+    imageFiles?: File[];
+    productId: number;
+  }
 >(
   "/sellerProduct/updateSubProduct",
   async ({ id, rq, imageFiles, productId }, { rejectWithValue }) => {
@@ -127,7 +162,10 @@ export const updateSubProduct = createAsyncThunk<
   }
 );
 
-export const deleteSubProduct = createAsyncThunk<void, { id: number, productId: number }>(
+export const deleteSubProduct = createAsyncThunk<
+  void,
+  { id: number; productId: number }
+>(
   "/sellerProduct/deleteSubProduct",
   async ({ id, productId }, { rejectWithValue }) => {
     try {
@@ -142,13 +180,14 @@ export const deleteSubProduct = createAsyncThunk<void, { id: number, productId: 
       );
     }
   }
-)
+);
 
 interface SellerProductState {
   product: IProduct[];
   loading: boolean;
   error: string;
   isCreateOrUpdateSubproductLoading: boolean;
+  currentProduct?: IProduct;
 }
 
 const initState: SellerProductState = {
@@ -156,12 +195,20 @@ const initState: SellerProductState = {
   loading: false,
   error: "",
   isCreateOrUpdateSubproductLoading: false,
+  currentProduct: undefined,
 };
 
 const sellerProductSlice = createSlice({
   name: "sellerProduct",
   initialState: initState,
-  reducers: {},
+  reducers: {
+    setCurrentProduct: (state, action) => {
+      state.currentProduct = action.payload;
+    },
+    clearCurrentProduct: (state) => {
+      state.currentProduct = undefined;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchSellerProducts.pending, (state) => {
@@ -224,49 +271,71 @@ const sellerProductSlice = createSlice({
         state.isCreateOrUpdateSubproductLoading = false;
         state.error = action.payload as string;
       });
-    builder.addCase(updateSubProduct.pending, (state) => {
-      state.isCreateOrUpdateSubproductLoading = true;
-    }).addCase(updateSubProduct.fulfilled, (state, action) => {
-      state.isCreateOrUpdateSubproductLoading = false;
-      state.product = state.product.map((product) => {
-        if (product.id === action.meta.arg.productId) {
-          return {
-            ...product,
-            subProducts: product.subProducts.map((subProduct) => {
-              if (subProduct.id === action.payload.id) {
-                return action.payload;
-              }
-              return subProduct;
-            }),
-          };
-        }
-        return product;
-      });
-    }).addCase(updateSubProduct.rejected, (state, action) => {
-      state.isCreateOrUpdateSubproductLoading = false;
-      state.error = action.payload as string;
-    });
 
-    builder.addCase(deleteSubProduct.pending, (state) => {
+      builder.addCase(updateProduct.pending, (state) => {
+        state.isCreateOrUpdateSubproductLoading = true;
 
-    }).addCase(deleteSubProduct.fulfilled, (state, action) => {
-      
-      state.product = state.product.map((product) => {
-        if (product.id === action.meta.arg.productId) {
-          return {
-            ...product,
-            subProducts: product.subProducts.filter(
-              (subProduct) => subProduct.id !== action.meta.arg.id
-            ),
-          };
-        }
-        return product;
+      }).addCase(updateProduct.fulfilled, (state, action) => {
+        state.isCreateOrUpdateSubproductLoading = false;
+        state.product = state.product.map((product) => {
+          if (product.id === action.payload.id) {
+            return action.payload;
+          }
+          return product;
+        });
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.isCreateOrUpdateSubproductLoading = false;
+        state.error = action.payload as string;
       });
-    }).addCase(deleteSubProduct.rejected, (state, action) => {
+    builder
+      .addCase(updateSubProduct.pending, (state) => {
+        state.isCreateOrUpdateSubproductLoading = true;
+      })
+      .addCase(updateSubProduct.fulfilled, (state, action) => {
+        state.isCreateOrUpdateSubproductLoading = false;
+        state.product = state.product.map((product) => {
+          if (product.id === action.meta.arg.productId) {
+            return {
+              ...product,
+              subProducts: product.subProducts.map((subProduct) => {
+                if (subProduct.id === action.payload.id) {
+                  return action.payload;
+                }
+                return subProduct;
+              }),
+            };
+          }
+          return product;
+        });
+      })
+      .addCase(updateSubProduct.rejected, (state, action) => {
+        state.isCreateOrUpdateSubproductLoading = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(deleteSubProduct.pending, (state) => {})
+      .addCase(deleteSubProduct.fulfilled, (state, action) => {
+        state.product = state.product.map((product) => {
+          if (product.id === action.meta.arg.productId) {
+            return {
+              ...product,
+              subProducts: product.subProducts.filter(
+                (subProduct) => subProduct.id !== action.meta.arg.id
+              ),
+            };
+          }
+          return product;
+        });
+      })
+      .addCase(deleteSubProduct.rejected, (state, action) => {
+        state.error = action.payload as string;
+      });
       
-      state.error = action.payload as string;
-    });
   },
 });
 
 export default sellerProductSlice.reducer;
+export const { setCurrentProduct, clearCurrentProduct } =
+  sellerProductSlice.actions;

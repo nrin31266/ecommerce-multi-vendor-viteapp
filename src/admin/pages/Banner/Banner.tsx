@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../states/store";
-import { fetchBanner, IBanner } from "../../../states/admin/bannerSlide";
+import { deleteBanner, fetchBanner, IBanner } from "../../../states/admin/bannerSlide";
 import { Add } from "@mui/icons-material";
 import AddUpdateBannerModel from "./components/AddUpdateBannerModel/AddUpdateBannerModel";
 import { DateUtils } from "../../../utils/DateTime/dateUtils";
@@ -137,7 +137,7 @@ const Banner = () => {
                   </Button>
                   <Button
                     onClick={() => {
-                      // dispatch(deleteHomeCategory(item.id));
+                      dispatch(deleteBanner(item.id));
                     }}
                     color="error"
                   >

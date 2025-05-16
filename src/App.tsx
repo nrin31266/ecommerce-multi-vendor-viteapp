@@ -25,7 +25,7 @@ import AddProduct from "./seller/pages/AddProduct/AddProduct";
 import Payment from "./seller/pages/Payment/Payment";
 import Transaction from "./seller/pages/Transaction/Transaction";
 import AccountSeller from './seller/pages/Account/Account';
-import AdminDashboard from "./admin/pages/AdminDashboard/AdminDashboard";
+
 import Sellers from "./admin/pages/Sellers/Sellers";
 import Coupon from "./admin/pages/Coupon/Coupon";
 import AddNewCoupon from "./admin/pages/AddNewCoupon/AddNewCoupon";
@@ -48,6 +48,8 @@ import { EUserRole } from "./types/UserTypes";
 import Banner from "./admin/pages/Banner/Banner";
 import AdminNavbar from "./admin/components/NavBar/AdminNavBar";
 import SellerNavBar from "./seller/components/NavBar/SellerNavBar";
+import MainAdmin from "./admin/pages/MainAdmin/MainAdmin";
+import AdminDashboard from "./admin/pages/Dashboard/AdminDashboard";
 function App() {
   const dispatch = useAppDispatch();
   const rootDispatch = useDispatch();
@@ -80,7 +82,7 @@ function App() {
     <div className="dark">
       <ThemeProvider theme={customTheme}>
         {
-          auth.role === EUserRole.ROLE_ADMIN ?  <AdminNavbar/> : auth.role === EUserRole.ROLE_SELLER ? <SellerNavBar/> : <Navbar/>
+          (auth.role === EUserRole.ROLE_ADMIN && auth.user)  ?  <AdminNavbar/> : (auth.role === EUserRole.ROLE_SELLER && seller.profile) ? <SellerNavBar/> : <Navbar/>
         }
         <Routes>
           <Route path="/" element={<Home/>}/>
@@ -104,14 +106,14 @@ function App() {
             <Route path="" element={<Dashboard/>}/>
             <Route path="orders/:tabIndex" element={<OrdersSeller/>}/>
             <Route path="products" element={<Products/>}/>
-            <Route path="add-product" element={<AddProduct/>}/>
+            <Route path="add-product/:productId" element={<AddProduct/>}/>
             <Route path="payment" element={<Payment/>}/>
             <Route path="transaction" element={<Transaction />}/>
             <Route path="account" element={<AccountSeller/>}/>
           </Route>
-          <Route path="/admin" element={<AdminDashboard/>}>
-            <Route path="" element={<Sellers/>}/>
-            <Route path="coupon" element={<Coupon/>}/>
+          <Route path="/admin" element={<MainAdmin/>}>
+            <Route path="" element={<AdminDashboard/>}/>
+            <Route path="seller" element={<Sellers/>}/>
             <Route path="add-new-coupon" element={<AddNewCoupon/>}/>
             <Route path="home-category/:tabIndex" element={<HomeCategory/>}/>
             <Route path="banner" element={<Banner/>}/>

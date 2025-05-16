@@ -11,14 +11,14 @@ import {
   TextareaAutosize,
   TextField,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ImageCard from "./components/ImageCard/ImageCard";
 import { useFormik, validateYupSchema } from "formik";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { colors } from "../../../data/filter/colors";
 import { mainCategories } from "../../../data/category/mainCategory";
 import { useAppDispatch, useAppSelector } from "../../../states/store";
-import { createProduct } from "../../../states/seller/sellerProductSlide";
+import { clearCurrentProduct, createProduct, updateProduct } from "../../../states/seller/sellerProductSlide";
 
 import { menLevelTwo } from "../../../data/category/menLevelTwo";
 import { womenLevelTwo } from "../../../data/category/womenLevelTwo";
@@ -28,8 +28,11 @@ import { menLevelThree } from "../../../data/category/menCategoryLevelThree";
 import { womenLevelThree } from "../../../data/category/womenLevelThree";
 import { homeFurnitureLevelThree } from "../../../data/category/homeFurnitureLevelThree";
 import { electronicsLevelThree } from "../../../data/category/electronicsLevelThree";
-import { ICategory } from "../../../types/ProductTypes";
-import { useNavigate } from "react-router-dom";
+import { ICategory, ISubProduct } from "../../../types/ProductTypes";
+import { useNavigate, useParams } from "react-router-dom";
+import sellerProductSlice from './../../../states/seller/sellerProductSlide';
+import { getAllCategories } from "../../../states/admin/categorySlide";
+import { current } from "@reduxjs/toolkit";
 const label = { inputProps: { "aria-label": "Single Product?" } };
 const categoriesLevelTwo: { [key: string]: ICategory[] } = {
   men: menLevelTwo,
@@ -59,12 +62,16 @@ export interface ICreateProductReq {
   sellingPrice: number;
 }
 const AddProduct = () => {
-  
+  const {productId} = useParams();
 
   const dispatch = useAppDispatch();
   const sellerProduct = useAppSelector((store) => store.sellerProduct);
-
+  const sellerProductState = useAppSelector((store) => store.sellerProduct);
+  const categoryState = useAppSelector((store) => store.adminCategory);
   const [imageSelected, setImageSelected] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const hasInitSetForm = useRef(false);
+  
   const handleSelectImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setImageSelected((prev) => [...prev, ...e.target.files!]);
@@ -74,6 +81,57 @@ const AddProduct = () => {
   const handleRemoveImage = (index: number) => {
     setImageSelected(imageSelected.filter((_, i) => i !== index));
   };
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
+
+useEffect(() => {
+  // Khi productId đã có (khác -1), và dữ liệu category đã sẵn sàng
+  if (
+    productId &&
+    productId !== "-1" &&
+    sellerProductState.currentProduct &&
+    categoryState.data !== null &&
+    categoryState.data.two.length > 0 // <- Kiểm tra chắc chắn có data
+    && !hasInitSetForm.current
+  ) {
+    console.log("currentProduct", sellerProductState.currentProduct);
+    const currentProduct = sellerProductState.currentProduct!!;
+    setImageUrls(currentProduct.images??[]);
+    setImageSelected([]);
+
+    formik.setFieldValue("title", currentProduct.title);
+    formik.setFieldValue("description", currentProduct.description);
+    formik.setFieldValue("category3", currentProduct.category.categoryId);
+    formik.setFieldValue("category2", currentProduct.category.parentCategory);
+
+    const findCategory2 = categoryState.data.two.find(
+      (item) => item.categoryId === currentProduct.category.parentCategory
+    );
+
+    if (findCategory2) {
+      formik.setFieldValue("category1", findCategory2.parentCategory);
+    }
+    const isSubProduct = !!currentProduct.isSubProduct
+    formik.setFieldValue("isSubProduct", isSubProduct);
+    if(isSubProduct){
+      const subProduct: ISubProduct = currentProduct.subProducts[0];
+      formik.setFieldValue("quantity", subProduct.quantity);
+      formik.setFieldValue("mrpPrice", subProduct.mrpPrice);
+      formik.setFieldValue("sellingPrice", subProduct.sellingPrice);
+    }else{
+      formik.setFieldValue("optionKey", currentProduct.optionKey);
+      const optionsTypes = currentProduct.optionsTypes.map((item) => item.value);
+      formik.setFieldValue("optionsTypes", optionsTypes);
+    }
+    hasInitSetForm.current = true;
+  } else if (productId === "-1") {
+    dispatch(clearCurrentProduct());
+    formik.resetForm();
+  }
+}, [productId, categoryState.data, sellerProductState.currentProduct, dispatch]);
+
+
   const navigate = useNavigate();
   const formik = useFormik<ICreateProductReq>({
     initialValues: {
@@ -85,16 +143,26 @@ const AddProduct = () => {
       category3: "",
       optionsTypes: ["Color"],
       optionKey: "",
-      isSubProduct: false,
+      isSubProduct: true,
       quantity: 0,
       mrpPrice: 0,
       sellingPrice: 0,
     },
     onSubmit: async (values) => {
       console.log(values);
-      await dispatch(
-        createProduct({ request: values, imageFiles: imageSelected })
-      ).unwrap();
+      if(sellerProductState.currentProduct){
+        values.images = imageUrls;
+        await dispatch(
+          updateProduct({
+            id: sellerProductState.currentProduct.id,
+            imageFiles: imageSelected,
+            request: values,})
+        ).unwrap();
+      }else{
+        await dispatch(
+          createProduct({ request: values, imageFiles: imageSelected })
+        ).unwrap();
+      }
       navigate("/seller/products");
     },
     validationSchema: null,
@@ -115,6 +183,16 @@ const AddProduct = () => {
             }}
           />
           <div className="flex gap-2 flex-wrap">
+            {imageUrls.length > 0 &&
+              imageUrls.map((item, index) => (
+                <ImageCard
+                  onRemove={() => {
+                    setImageUrls(imageUrls.filter((_, i) => i !== index));
+                  }}
+                  item={item}
+                  key={index}
+                />
+              ))}
             {imageSelected.length > 0 &&
               imageSelected.map((item, index) => (
                 <ImageCard
@@ -123,6 +201,7 @@ const AddProduct = () => {
                   key={index}
                 />
               ))}
+
             <label htmlFor="fileInput">
               <div className="flex gap-2 items-center justify-center w-24 h-24 border border-dashed border-gray-400 rounded-md cursor-pointer">
                 <div>
@@ -164,52 +243,7 @@ const AddProduct = () => {
               />
             </div>
 
-            {/* <div className="col-span-3">
-              <FormControl fullWidth required>
-                <InputLabel id="color">Color</InputLabel>
-                <Select
-                  name="color"
-                  labelId="color"
-                  id="color"
-                  value={formik.values.color}
-                  label="Color"
-                  onChange={formik.handleChange}
-                >
-                  <MenuItem value={""}>
-                    <em>None</em>
-                  </MenuItem>
-                  {colors.map((color, index) => (
-                    <MenuItem value={color.hex} key={index}>
-                      <div className="flex gap-3 items-center">
-                        <span>{color.name}</span>
-                        <div
-                          className="w-5 h-5 rounded-full"
-                          style={{ backgroundColor: color.hex }}
-                        ></div>
-                      </div>
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-            <div className="col-span-3">
-            <TextField
-                type="text"
-                required
-                fullWidth
-                name="sizes"
-                label="Sizes"
-                value={formik.values.sizes}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.sizes &&
-                  Boolean(formik.errors.sizes)
-                }
-                helperText={
-                  formik.touched.sizes && formik.errors.sizes
-                }
-              />
-            </div> */}
+           
             <div className="col-span-4">
               <FormControl fullWidth required>
                 <InputLabel id="category1">Category</InputLabel>
@@ -226,7 +260,7 @@ const AddProduct = () => {
                   <MenuItem value={""}>
                     <em>None</em>
                   </MenuItem>
-                  {mainCategories.map((category, index) => (
+                  {categoryState.data?.one.map((category, index) => (
                     <MenuItem value={category.categoryId} key={index}>
                       {category.name}
                     </MenuItem>
@@ -248,7 +282,7 @@ const AddProduct = () => {
                   <MenuItem value={""}>
                     <em>None</em>
                   </MenuItem>
-                  {categoriesLevelTwo[formik.values.category1]?.map(
+                  {categoryState.data?.m2[formik.values.category1]?.map(
                     (category, index) => (
                       <MenuItem value={category.categoryId} key={index}>
                         {category.name}
@@ -272,7 +306,7 @@ const AddProduct = () => {
                   <MenuItem value={""}>
                     <em>None</em>
                   </MenuItem>
-                  {categoriesLevelThree[formik.values.category1]?.map(
+                  {categoryState.data?.m3bym1[formik.values.category1]?.map(
                     (category, index) => {
                       if (
                         formik.values.category2 &&
@@ -293,11 +327,11 @@ const AddProduct = () => {
             <span>Single Product? </span>
             <Switch
               name="isSubProduct"
-              {...label}
-              value={formik.values}
+              checked={formik.values.isSubProduct}
               onChange={(e) => {
                 formik.handleChange(e);
               }}
+              disabled={sellerProductState.currentProduct? true : false}
             />
           </div>
           <div className="grid gap-5 grid-cols-12 mt-4">
@@ -393,6 +427,7 @@ const AddProduct = () => {
                           "",
                         ]);
                       }}
+                      disabled= {sellerProductState.currentProduct? true : false}
                     >
                       Thêm
                     </Button>
@@ -426,6 +461,7 @@ const AddProduct = () => {
                         newOptions.splice(index, 1);
                         formik.setFieldValue("optionsTypes", newOptions);
                       }}
+                      disabled= {sellerProductState.currentProduct? true : false}
                     >
                       <Delete />
                     </IconButton>
@@ -436,13 +472,14 @@ const AddProduct = () => {
           </div>
           <div className="mt-10">
             <Button
-              disabled={sellerProduct.loading}
+              disabled={sellerProduct.isCreateOrUpdateSubproductLoading}
+              loading={sellerProduct.isCreateOrUpdateSubproductLoading}
               type="submit"
               variant="contained"
               fullWidth
               size="large"
             >
-              {sellerProduct.loading ? "Adding Product..." : "Add Product"}
+              {sellerProduct.currentProduct ? "Update" : "Create"}
             </Button>
           </div>
         </div>

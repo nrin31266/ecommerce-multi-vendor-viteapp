@@ -46,7 +46,7 @@ const DrawerList = ({ menu1, menu2, toggleDrawer }: Props) => {
 
                   if(item.name === "Logout"){
                     dispatch(logout({navigate}));
-                  }else{
+                  }else if(item.path !== location.pathname){
                     navigate(item.path)
                   }
                   

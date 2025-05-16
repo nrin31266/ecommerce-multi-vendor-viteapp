@@ -32,7 +32,7 @@ const menu: MenuItem[] = [
   },
   {
     name: "Add Product",
-    path: "/seller/add-product",
+    path: "/seller/add-product/-1",
     icon: <Add className="text-[var(--primary-color)]" />,
     activeIcon: <Add className="text-white" />,
   },
@@ -42,12 +42,7 @@ const menu: MenuItem[] = [
     icon: <AccountBalanceWallet className="text-[var(--primary-color)]" />,
     activeIcon: <AccountBalanceWallet className="text-white" />,
   },
-  {
-    name: "Transaction",
-    path: "/seller/transaction",
-    icon: <Receipt className="text-[var(--primary-color)]" />,
-    activeIcon: <Receipt className="text-white" />,
-  },
+
 ];
 
 const menu2 : MenuItem[] = [

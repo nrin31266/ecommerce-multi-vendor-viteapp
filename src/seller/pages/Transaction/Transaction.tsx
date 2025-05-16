@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,6 +7,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../states/store";
+import { initializeApp } from 'firebase/app';
+
+import { DateUtils } from "../../../utils/DateTime/dateUtils";
+import { CurrencyUtils } from "../../../utils/Currency/CurrencyUtils";
+import { ITransaction } from "../../../states/seller/sellerTransactionSlide";
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -48,27 +55,45 @@ const rows = [
 ];
 
 const Transaction = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const sellerTransactionState = useAppSelector((state) => state.sellerTransaction);
+
+
+
   return (
     <div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
+              <StyledTableCell>Id</StyledTableCell>
               <StyledTableCell>Date</StyledTableCell>
-              <StyledTableCell>Customer Details</StyledTableCell>
-              <StyledTableCell align="right">Order</StyledTableCell>
+              <StyledTableCell>Order id for seller</StyledTableCell>
               <StyledTableCell align="right">Amount</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name}>
+            {sellerTransactionState.transactions.map((row : ITransaction) => (
+              <StyledTableRow key={row.id}>
                 <StyledTableCell component="th" scope="row">
-                  {row.name}
+                  {row.id}
                 </StyledTableCell>
-                <StyledTableCell>{row.calories}</StyledTableCell>
-                <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                <StyledTableCell align="right">{row.carbs}</StyledTableCell>
+                <StyledTableCell component="th" scope="row">
+                 <div>
+                   {DateUtils.convertVNTime(row.date)}
+                 </div>
+                </StyledTableCell>
+                <StyledTableCell component="th" scope="row">
+                  {row.sellerOrder.id}
+                </StyledTableCell>
+               
+                <StyledTableCell align="right">
+                 <div>
+                   {CurrencyUtils.formatVNDCurrency(row.sellerOrder.totalPrice)}
+                 </div>
+                </StyledTableCell>
+               
               </StyledTableRow>
             ))}
           </TableBody>

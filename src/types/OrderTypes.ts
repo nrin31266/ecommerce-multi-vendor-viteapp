@@ -8,6 +8,7 @@ export interface ISellerOrder {
   totalPrice: number;
   discountShipping: number;
   discountShop: number;
+  shippingCost: number;
   discountPlatform: number;
   finalPrice: number;
   orderItems: IOrderItem[];

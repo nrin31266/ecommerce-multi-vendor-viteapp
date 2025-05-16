@@ -12,6 +12,7 @@ import {
   IntegrationInstructions,
   LocalOffer,
   Logout,
+  Store,
 } from "@mui/icons-material";
 
 const menu: MenuItem[] = [
@@ -21,17 +22,11 @@ const menu: MenuItem[] = [
     icon: <Dashboard className="text-[var(--primary-color)]" />,
     activeIcon: <Dashboard className="text-white" />,
   },
-  {
-    name: "Coupon",
-    path: "/admin/coupon",
-    icon: <IntegrationInstructions className="text-[var(--primary-color)]" />,
-    activeIcon: <IntegrationInstructions className="text-white" />,
-  },
-  {
-    name: "Add New Coupon",
-    path: "/admin/add-new-coupon",
-    icon: <Add className="text-[var(--primary-color)]" />,
-    activeIcon: <Add className="text-white" />,
+{
+    name: "Seller",
+    path: "/admin/seller",
+    icon: <Store className="text-[var(--primary-color)]" />,
+    activeIcon: <Store className="text-white" />,
   },
   {
     name: "Home Category",
@@ -45,18 +40,7 @@ const menu: MenuItem[] = [
     icon: <ElectricBolt className="text-[var(--primary-color)]" />,
     activeIcon: <ElectricBolt className="text-white" />,
   },
-  {
-    name: "Shop By Category",
-    path: "/admin/shop-by-category",
-    icon: <Category className="text-[var(--primary-color)]" />,
-    activeIcon: <Category className="text-white" />,
-  },
-  {
-    name: "Deals",
-    path: "/admin/deals",
-    icon: <LocalOffer className="text-[var(--primary-color)]" />,
-    activeIcon: <LocalOffer className="text-white" />,
-  },
+
 ];
 
 const menu2: MenuItem[] = [
@@ -74,7 +58,7 @@ const menu2: MenuItem[] = [
   },
 ];
 
-const AdminDashboard = () => {
+const MainAdmin = () => {
   const handleToggleDrawer = () => {};
   return (
     <div>
@@ -94,4 +78,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default MainAdmin;
