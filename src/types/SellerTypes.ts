@@ -9,13 +9,21 @@ export interface ISeller {
   businessDetails: IBusinessDetails
   bankDetails: IBankDetails
   role: string
-  accountStatus: string
+  accountStatus: EAccountStatus
   taxCode: string
   pickupAddress: IPickupAddress
   gstin: string
-  emailVerified: boolean
+  acceptTerms?: boolean
   }
 
+export enum EAccountStatus {
+   PENDING_VERIFICATION,
+    ACTIVE,
+    SUSPENDED,
+    DEACTIVATED,
+    BANNED,
+    CLOSED,
+  }
 
   
   export interface IBusinessDetails {

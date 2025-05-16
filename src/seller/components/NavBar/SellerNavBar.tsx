@@ -20,13 +20,14 @@ import classes from "./Navbar.module.css";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useAppSelector } from "../../../states/store";
+import { EAccountStatus } from "../../../types/SellerTypes";
 
 const SellerNavBar = () => {
   const them = useTheme();
   const isLarge = useMediaQuery(them.breakpoints.up("lg"));
   const navigate = useNavigate();
   const auth = useAppSelector((store) => store.auth);
-  const seller = useAppSelector((store) => store.seller);
+  const sellerState = useAppSelector((store) => store.seller);
   
   return (
     <div className={classes.root}>
@@ -49,7 +50,7 @@ const SellerNavBar = () => {
           </div>
 
           <div className="flex items-center gap-1 lg:gap-6 ">
-          
+            
           </div>
         </div>
       </Box>

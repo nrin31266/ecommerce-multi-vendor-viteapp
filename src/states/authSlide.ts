@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import handleAPI from "../configurations/handleAPI";
 import { EUserRole, IUser } from "../types/UserTypes";
 import { NavigateFunction, NavigateProps } from "react-router-dom";
+import { ISeller } from "../types/SellerTypes";
+import { BecomeSellerFormValue } from "../customer/pages/BecomeSeller/components/SellerAccoutForm/SellerAccountForm";
 
 export const sendLoginSignupOtp = createAsyncThunk(
   "/sellers/sendLoginSignupOtp",
@@ -14,6 +16,26 @@ export const sendLoginSignupOtp = createAsyncThunk(
         endpoint: "/auth/send-login-signup-otp",
         method: "post",
         body: { email, role },
+      });
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    }
+  }
+);
+
+export const createSeller = createAsyncThunk<ISeller, {rq: BecomeSellerFormValue}>(
+  "/sellers/createSeller",
+  async (
+    { rq },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await handleAPI({
+        endpoint: "/sellers",
+        method: "post",
+        body: rq,
       });
     } catch (error) {
       return rejectWithValue(
@@ -57,7 +79,7 @@ export const signing = createAsyncThunk(
       if (data.role === EUserRole.ROLE_CUSTOMER) {
         navigate("/");
       } else if (data.role === EUserRole.ROLE_SELLER) {
-        navigate("/seller");
+        navigate("/seller/account");
       } else if (data.role === EUserRole.ROLE_ADMIN) {
         navigate("/admin");
       }
@@ -73,7 +95,7 @@ export const signing = createAsyncThunk(
 export const signup = createAsyncThunk<
   any,
   { email: string; fullName: string; otp: string }
->("/auth/signing", async ({ email, fullName, otp }, { rejectWithValue }) => {
+>("/auth/signup", async ({ email, fullName, otp }, { rejectWithValue }) => {
   try {
     const data = await handleAPI<{ jwt: string }>({
       endpoint: `/auth/signup`,
@@ -128,6 +150,7 @@ interface AuthStateProps {
   user: IUser | null;
   successfullyMessage: string;
   role: EUserRole | null;
+  currentEmail: string | null;
 }
 const initState: AuthStateProps = {
   jwt: "",
@@ -138,6 +161,7 @@ const initState: AuthStateProps = {
   user: null,
   successfullyMessage: "",
   role: null,
+  currentEmail: null,
 };
 
 const authSlide = createSlice({
@@ -194,6 +218,40 @@ const authSlide = createSlice({
         state.error = action.payload as string;
       })
       .addCase(logout.fulfilled, () => initState);
+
+      builder.addCase(signup.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+        state.successfullyMessage = "";
+      })
+      .addCase(signup.fulfilled, (state, action) => {
+        state.loading = false;
+        state.jwt = action.payload.jwt;
+        state.loggedIn = true;
+        state.error = "";
+        state.successfullyMessage = "";
+        state.role = EUserRole.ROLE_CUSTOMER;
+      })
+      .addCase(signup.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
+      builder.addCase(createSeller.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+        state.successfullyMessage = "";
+      })
+      .addCase(createSeller.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.successfullyMessage = "Otp sent your email";
+        state.currentEmail = action.payload.email
+      })
+      .addCase(createSeller.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
   },
 });
 

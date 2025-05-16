@@ -1,14 +1,42 @@
 import { Box, TextField } from "@mui/material";
+import { FormikProps } from "formik";
 import React from "react";
+import { BecomeSellerFormValue } from "../../SellerAccountForm";
 
-const SellerAccountFormStep1 = ({ formik }: any) => {
+const SellerAccountFormStep1 = ({ formik }: { formik: FormikProps<BecomeSellerFormValue> }) => {
   return (
     <Box>
-      <p className="text-xl font-bold text-center pb-9">Contact Details</p>
-      <div className="space-y-9 grid grid-cols-12 gap-5">
-        <div className="col-span-6">
-          <TextField
+      <p className="text-xl font-bold text-center pb-9">Personal Details</p>
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-12">
+           <TextField
+           required
             fullWidth
+            name="email"
+            label="Email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
+          />
+         
+        </div>
+        <div className="col-span-12">
+           <TextField
+            fullWidth
+            required
+            name="sellerName"
+            label="Seller Name"
+            value={formik.values.sellerName}
+            onChange={formik.handleChange}
+            error={formik.touched.sellerName && Boolean(formik.errors.sellerName)}
+            helperText={formik.touched.sellerName && formik.errors.sellerName}
+          />
+        </div>
+         <div className="col-span-12">
+           <TextField
+            fullWidth
+            required
             name="mobile"
             label="Mobile"
             value={formik.values.mobile}
@@ -17,10 +45,10 @@ const SellerAccountFormStep1 = ({ formik }: any) => {
             helperText={formik.touched.mobile && formik.errors.mobile}
           />
         </div>
-        {/* Mã số thuế (MST) của Việt Nam được gọi là Tax Identification Number (TIN) hoặc Tax Code. */}
-        <div className="col-span-6">
-          <TextField
+        <div className="col-span-12">
+           <TextField
             fullWidth
+            required
             name="taxCode"
             label="Tax Code"
             value={formik.values.taxCode}
@@ -29,6 +57,7 @@ const SellerAccountFormStep1 = ({ formik }: any) => {
             helperText={formik.touched.taxCode && formik.errors.taxCode}
           />
         </div>
+        
       </div>
     </Box>
   );

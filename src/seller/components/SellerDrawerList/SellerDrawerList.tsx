@@ -9,6 +9,8 @@ import {
   ShoppingBag
 } from "@mui/icons-material";
 import DrawerList, { MenuItem } from "../../../components/DrawerList/DrawerList";
+import { useAppSelector } from "../../../states/store";
+import { EAccountStatus } from "../../../types/SellerTypes";
 
 
 const menu: MenuItem[] = [
@@ -61,8 +63,13 @@ const menu2 : MenuItem[] = [
 ];
 
 const SellerDrawerList = ({toggleDrawer} : {toggleDrawer : any}) => {
+  const sellerState = useAppSelector((store) => store.seller);
+
+
   return <>
-    <DrawerList menu1={menu} menu2={menu2} toggleDrawer={()=>{}}/>
+    <DrawerList menu1={sellerState.profile?.accountStatus === EAccountStatus.ACTIVE 
+      && sellerState.profile?.acceptTerms === true ? menu : []
+    } menu2={menu2} toggleDrawer={()=>{}}/>
   </>;
 };
 

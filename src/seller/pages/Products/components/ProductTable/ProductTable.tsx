@@ -136,7 +136,7 @@ const ProductTable = () => {
                     <div>
                       <div className="flex items-center">
                         <h1 className="font-bold text-[var(--primary-color)]">
-                          MultiP{" "}
+                          Product with variants{" "}
                         </h1>
                         ({item.subProducts.length}{" "}
                         {item.subProducts.length > 1 ? "items" : "item"})

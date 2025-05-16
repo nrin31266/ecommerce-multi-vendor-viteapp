@@ -15,6 +15,7 @@ const SellerAccountFormStep3 = ({
         <div className="col-span-12">
           <TextField
             fullWidth
+            required
             name="bankDetails.accountNumber"
             label="Account Number"
             value={formik.values.bankDetails.accountNumber}
@@ -31,23 +32,25 @@ const SellerAccountFormStep3 = ({
         </div>
         <div className="col-span-12">
           <TextField
-            fullWidth
-            name="bankDetails.SWIFTCode"
+            required
+            fullWidth 
+            name="bankDetails.swiftCode"
             label="SWIFT Code"
-            value={formik.values.bankDetails.SWIFTCode}
+            value={formik.values.bankDetails.swiftCode}
             onChange={formik.handleChange}
             error={
-              formik.touched.bankDetails?.SWIFTCode &&
-              Boolean(formik.errors.bankDetails?.SWIFTCode)
+              formik.touched.bankDetails?.swiftCode &&
+              Boolean(formik.errors.bankDetails?.swiftCode)
             }
             helperText={
-              formik.touched.bankDetails?.SWIFTCode &&
-              formik.errors.bankDetails?.SWIFTCode
+              formik.touched.bankDetails?.swiftCode &&
+              formik.errors.bankDetails?.swiftCode
             }
           />
         </div>
         <div className="col-span-12">
           <TextField
+            required
             fullWidth
             name="bankDetails.accountHolderName"
             label="Account Holder Name"

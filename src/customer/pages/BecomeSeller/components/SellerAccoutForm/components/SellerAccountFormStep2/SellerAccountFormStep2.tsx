@@ -10,124 +10,72 @@ const SellerAccountFormStep2 = ({
 }) => {
   return (
     <Box>
-      <p className="text-xl font-bold text-center pb-9">Pickup Address</p>
+      <p className="text-xl font-bold text-center pb-9">Business Details</p>
       <div className="grid grid-cols-12 gap-5">
         <div className="col-span-12">
           <TextField
             fullWidth
-            name="pickupAddress.name"
-            label="Name"
-            value={formik.values.pickupAddress.name}
+            required
+            name="businessDetails.businessName"
+            label="Business Name"
+            value={formik.values.businessDetails.businessName}
             onChange={formik.handleChange}
             error={
-              formik.touched.pickupAddress?.name &&
-              Boolean(formik.errors.pickupAddress?.name)
+              formik.touched.businessDetails?.businessName && Boolean(formik.errors.businessDetails?.businessName)
             }
             helperText={
-              formik.touched.pickupAddress?.name &&
-              formik.errors.pickupAddress?.name
+              formik.touched.businessDetails?.businessName && formik.errors.businessDetails?.businessName
             }
           />
         </div>
-        <div className="col-span-6">
-          <TextField
-            fullWidth
-            name="pickupAddress.mobile"
-            label="Mobile"
-            value={formik.values.pickupAddress.mobile}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.pickupAddress?.mobile &&
-              Boolean(formik.errors.pickupAddress?.mobile)
-            }
-            helperText={
-              formik.touched.pickupAddress?.mobile &&
-              formik.errors.pickupAddress?.mobile
-            }
-          />
-        </div>
-        <div className="col-span-6">
-          <TextField
-            fullWidth
-            name="pickupAddress.address"
-            label="Address"
-            value={formik.values.pickupAddress.address}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.pickupAddress?.address &&
-              Boolean(formik.errors.pickupAddress?.address)
-            }
-            helperText={
-              formik.touched.pickupAddress?.address &&
-              formik.errors.pickupAddress?.address
-            }
-          />
-        </div>
+        {/* businessEmail */}
         <div className="col-span-12">
           <TextField
             fullWidth
-            name="pickupAddress.locality"
-            label="Locality"
-            value={formik.values.pickupAddress.locality}
+            required
+            name="businessDetails.businessEmail"
+            label="Business Email"
+            value={formik.values.businessDetails.businessEmail}
             onChange={formik.handleChange}
             error={
-              formik.touched.pickupAddress?.locality &&
-              Boolean(formik.errors.pickupAddress?.locality)
+              formik.touched.businessDetails?.businessEmail && Boolean(formik.errors.businessDetails?.businessEmail)
             }
             helperText={
-              formik.touched.pickupAddress?.locality &&
-              formik.errors.pickupAddress?.locality
+              formik.touched.businessDetails?.businessEmail && formik.errors.businessDetails?.businessEmail
             }
           />
         </div>
+        {/* businessMobile */}
         <div className="col-span-12">
           <TextField
             fullWidth
-            name="pickupAddress.city"
-            label="City"
-            value={formik.values.pickupAddress.city}
+            required
+            name="businessDetails.businessMobile"
+            label="Business Mobile"
+            value={formik.values.businessDetails.businessMobile}
             onChange={formik.handleChange}
             error={
-              formik.touched.pickupAddress?.city &&
-              Boolean(formik.errors.pickupAddress?.city)
+              formik.touched.businessDetails?.businessMobile && Boolean(formik.errors.businessDetails?.businessMobile)
             }
             helperText={
-              formik.touched.pickupAddress?.city &&
-              formik.errors.pickupAddress?.city
+              formik.touched.businessDetails?.businessMobile && formik.errors.businessDetails?.businessMobile
             }
           />
         </div>
-        <div className="col-span-6">
+        {/* businessAddress */}
+        <div className="col-span-12">
           <TextField
             fullWidth
-            name="pickupAddress.state"
-            label="State"
-            value={formik.values.pickupAddress.state}
+            required
+            name="businessDetails.businessAddress"
+            label="Business Address"
+            value={formik.values.businessDetails.businessAddress}
             onChange={formik.handleChange}
             error={
-              formik.touched.pickupAddress?.state &&
-              Boolean(formik.errors.pickupAddress?.state)
+              formik.touched.businessDetails?.businessAddress && Boolean(formik.errors.businessDetails?.businessAddress)
             }
             helperText={
-              formik.touched.pickupAddress?.state &&
-              formik.errors.pickupAddress?.state
-            }
-          />
-        </div>
-        <div className="col-span-6">
-          <TextField
-            fullWidth
-            name="pickupAddress.zipCode"
-            label="Zip Code"
-            value={formik.values.pickupAddress.zipCode}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.pickupAddress?.zipCode &&
-              Boolean(formik.errors.pickupAddress?.zipCode)
-            }
-            helperText={
-              formik.touched.pickupAddress?.zipCode &&
-              formik.errors.pickupAddress?.zipCode
+              formik.touched.businessDetails?.businessAddress && formik.errors.businessDetails?.businessAddress
             }
           />
         </div>

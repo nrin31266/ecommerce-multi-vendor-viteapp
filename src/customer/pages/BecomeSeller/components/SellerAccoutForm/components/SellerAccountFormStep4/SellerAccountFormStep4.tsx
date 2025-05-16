@@ -10,74 +10,82 @@ const SellerAccountFormStep4 = ({
 }) => {
   return (
     <div>
-      <p className="text-xl font-bold text-center pb-9">Supplier Details</p>
+      <p className="text-xl font-bold text-center pb-9">
+        Pickup Address Details
+      </p>
       <div className="grid grid-cols-12 gap-5">
         <div className="col-span-12">
           <TextField
             fullWidth
-            name="businessDetails.businessName"
-            label="Business Name"
-            value={formik.values.businessDetails.businessName}
+            required
+            name="pickupAddress.province"
+            label="Province"
+            value={formik.values.pickupAddress.province}
             onChange={formik.handleChange}
             error={
-              formik.touched.businessDetails?.businessName &&
-              Boolean(formik.errors.businessDetails?.businessName)
+              formik.touched.pickupAddress?.province &&
+              Boolean(formik.errors.pickupAddress?.province)
             }
             helperText={
-              formik.touched.businessDetails?.businessName &&
-              formik.errors.businessDetails?.businessName
+              formik.touched.pickupAddress?.province &&
+              formik.errors.pickupAddress?.province
             }
           />
         </div>
-
+        {/* district */}
         <div className="col-span-12">
           <TextField
             fullWidth
-            name="sellerName"
-            label="Seller Name"
-            value={formik.values.bankDetails.accountNumber}
+            required
+            name="pickupAddress.district"
+            label="District"
+            value={formik.values.pickupAddress.district}
             onChange={formik.handleChange}
             error={
-              formik.touched.sellerName &&
-              Boolean(formik.errors.sellerName)
+              formik.touched.pickupAddress?.district &&
+              Boolean(formik.errors.pickupAddress?.district)
             }
             helperText={
-              formik.touched.sellerName &&
-              formik.errors.sellerName
+              formik.touched.pickupAddress?.district &&
+              formik.errors.pickupAddress?.district
             }
           />
         </div>
+        {/* ward */}
         <div className="col-span-12">
           <TextField
             fullWidth
-            name="email"
-            label="Email"
-            value={formik.values.email}
+            required
+            name="pickupAddress.ward"
+            label="Ward"
+            value={formik.values.pickupAddress.ward}
             onChange={formik.handleChange}
             error={
-              formik.touched.email &&
-              Boolean(formik.errors.email)
+              formik.touched.pickupAddress?.ward &&
+              Boolean(formik.errors.pickupAddress?.ward)
             }
             helperText={
-              formik.touched.email &&
-              formik.errors.email
+              formik.touched.pickupAddress?.ward &&
+              formik.errors.pickupAddress?.ward
             }
           />
         </div>
+        {/* street */}
         <div className="col-span-12">
           <TextField
             fullWidth
-            name="password"
-            label="Password"
-            value={formik.values.password}
+            required
+            name="pickupAddress.street"
+            label="Street"
+            value={formik.values.pickupAddress.street}
             onChange={formik.handleChange}
             error={
-              formik.touched.password &&
-              Boolean(formik.errors.password)
+              formik.touched.pickupAddress?.street &&
+              Boolean(formik.errors.pickupAddress?.street)
             }
             helperText={
-              formik.touched.password &&
-              formik.errors.password
+              formik.touched.pickupAddress?.street &&
+              formik.errors.pickupAddress?.street
             }
           />
         </div>

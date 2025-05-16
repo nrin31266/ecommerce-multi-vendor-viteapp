@@ -233,11 +233,11 @@ const OrderTable = () => {
                         <img
                           src={item.subProduct.images[0]}
                           alt=""
-                          className="w-[50px] h-[50px] "
+                          className="w-[50px] h-[50px] object-contain"
                         />
                         <div>
                           <div>
-                            pi {item.product.id}, si: {item.subProduct.id}
+                            Product id {item.product.id}, Variant id: {item.subProduct.id}
                           </div>
                           <div className="overflow-ellipsis w-[320px] line-clamp-1">
                             {item.product.title}
