@@ -159,12 +159,14 @@ const SellerAccountForm = () => {
           </div>
         </section>
 
-        <div className="items-center flex justify-between px-10 mt-10">
+        <div className="items-center flex justify-between px-10 mt-10 gap-4">
           <Button
             onClick={() => setStepNumber(stepNumber - 1)}
             color="secondary"
             disabled={stepNumber === 0}
             variant="contained"
+            hidden={stepNumber === 4}
+            className="w-[100%]"
           >
             BACK
           </Button>
@@ -173,6 +175,7 @@ const SellerAccountForm = () => {
             loading={auth.loading}
             variant="contained"
             type="submit"
+            className="w-[100%]"
           >
             {stepNumber === 3 ? "CREATE" : "NEXT"}
           </Button>

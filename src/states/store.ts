@@ -16,6 +16,7 @@ import bannerSlide from './admin/bannerSlide';
 import categorySlide from './admin/categorySlide';
 import sellerTransactions from './seller/sellerTransactionSlide';
 import sellerReport from './seller/sellerReportSlide';
+import adminSellerSlice from './admin/adminSellerSlice';
 
 
 const rootReducer = combineReducers({
@@ -32,7 +33,8 @@ const rootReducer = combineReducers({
   adminBanner:  bannerSlide,
   adminCategory: categorySlide,
   sellerTransaction: sellerTransactions,
-  sellerReport: sellerReport
+  sellerReport: sellerReport,
+  adminSeller: adminSellerSlice
 });
 
 
