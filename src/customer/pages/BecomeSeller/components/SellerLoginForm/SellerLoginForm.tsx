@@ -65,7 +65,7 @@ const SellerLoginForm = () => {
                 <TextField
                   fullWidth
                   required
-                  type="number"
+                  type="text"
                   name="otp"
                   label="Otp"
                   value={formik.values.otp}
